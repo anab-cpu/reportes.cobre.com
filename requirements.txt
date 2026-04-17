@@ -1,0 +1,12 @@
+# Core
+streamlit>=1.32.0
+pandas>=2.1.0
+plotly>=5.20.0
+
+# HubSpot
+requests>=2.31.0
+python-dotenv>=1.0.1
+
+# Excel (Plan de Acción)
+openpyxl>=3.1.2
+xlsxwriter>=3.1.9
