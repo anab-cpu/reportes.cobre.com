@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dynamic CLABEs — Reporte de Campaña Email</title><!-- v2 -->
+  <title>Dynamic CLABEs — Reporte de Campaña Email</title>
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
   <style>
 *, *::before, *::after { box-sizing: border-box; }
@@ -133,53 +133,102 @@ body {
     <p>Boletín PMM + Push · "CLABEs dinámicas para cobrar en tiempo real" · Cobre · Generado: 17 Abr 2026</p>
   </div>
 
-  <!-- GLOBAL KPIs -->
-  <div class="kpi-grid" style="margin-bottom:1.5rem;">
-    <div class="kpi-card" style="border-left-color:#266D6C;">
-      <p class="kpi-value">537</p>
-      <p class="kpi-label">Enviados — Email 1</p>
+  <!-- CONCLUSIONES — siempre visibles -->
+  <div style="margin-bottom:1.5rem;">
+    <div class="seg-grid">
+      <div class="seg-card" style="border-color:#266D6C; background:#f0f8f8;">
+        <div style="font-size:0.95rem; font-weight:700; color:#266D6C; margin-bottom:0.5rem;">📧 Email a clientes actuales</div>
+        <ul style="margin:0; padding-left:1.2rem; font-size:0.85rem; line-height:1.7;">
+          <li>Boletín: <strong>537 enviados</strong>, apertura <strong>58.8%</strong> (2× benchmark fintech)</li>
+          <li>Push: <strong>81 enviados</strong>, apertura <strong>74.4%</strong>, CTOR <strong>8.6%</strong></li>
+          <li>19 contactos externos nuevos alcanzados (AstroPay, 99min, Xepelin)</li>
+          <li>El Push no reactivó no-abrientes del Boletín (1/10) — audiencia diferente</li>
+        </ul>
+      </div>
+      <div class="seg-card" style="border-color:#C0392B; background:#fdeceb;">
+        <div style="font-size:0.95rem; font-weight:700; color:#C0392B; margin-bottom:0.5rem;">🗄️ Uso real (Snowflake)</div>
+        <ul style="margin:0; padding-left:1.2rem; font-size:0.85rem; line-height:1.7;">
+          <li><strong>0 clientes externos</strong> usando Dynamic CLABEs en producción</li>
+          <li>Solo 2 cuentas internas de testing (Cobre Demo + Cobre Producto)</li>
+          <li>18,839 MMs en mar 2026 — casi todos rechazados (r017, llaves expiradas)</li>
+          <li>El pipeline de email no se ha traducido aún en activación real</li>
+        </ul>
+      </div>
+      <div class="seg-card" style="border-color:#518A89; background:#EDF6F5;">
+        <div style="font-size:0.95rem; font-weight:700; color:#518A89; margin-bottom:0.5rem;">💬 Diio a prospectos</div>
+        <ul style="margin:0; padding-left:1.2rem; font-size:0.85rem; line-height:1.7;">
+          <li>3 conversaciones específicas sobre Dynamic CLABEs MX</li>
+          <li><strong>Grupo Hotelero SF</strong> (4/5, reunión agendada) — <strong>no está en Salesforce</strong></li>
+          <li><strong>Xendit MX</strong>: CLABEs ya contratadas, DD bloqueando 267 días</li>
+          <li>ProntoPaga: 5 clics en email, sin deal en SF ni conversación en Diio</li>
+        </ul>
+      </div>
     </div>
-    <div class="kpi-card" style="border-left-color:#518A89;">
-      <p class="kpi-value">81</p>
-      <p class="kpi-label">Enviados — Email 2 (Push)</p>
-    </div>
-    <div class="kpi-card" style="border-left-color:#27AE60;">
-      <p class="kpi-value">58.8%</p>
-      <p class="kpi-label">Apertura Email 1</p>
-      <p class="kpi-delta">311 únicos / 529 entregados</p>
-    </div>
-    <div class="kpi-card" style="border-left-color:#27AE60;">
-      <p class="kpi-value">74.4%</p>
-      <p class="kpi-label">Apertura Email 2 (Push)</p>
-      <p class="kpi-delta">58 únicos / 78 entregados</p>
-    </div>
-    <div class="kpi-card" style="border-left-color:#D4820A;">
-      <p class="kpi-value">21</p>
-      <p class="kpi-label">Nuevos contactos alcanzados</p>
-      <p class="kpi-delta">26% del push no estaba en boletín</p>
-    </div>
-    <div class="kpi-card" style="border-left-color:#518A89;">
-      <p class="kpi-value">10.3%</p>
-      <p class="kpi-label">CTOR Email 2</p>
-      <p class="kpi-delta neutral">vs 0.6% Email 1</p>
+
+    <div style="margin-top:1.2rem;">
+      <div class="section-title">Siguientes pasos priorizados</div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Prioridad</th><th>Acción</th><th>Empresa</th><th>Responsable</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-red">🔴 P1</span></td>
+              <td>Crear oportunidad en Salesforce + demo técnica de Dynamic CLABEs antes de la siguiente reunión</td>
+              <td><strong>Grupo Hotelero Santa Fe</strong></td>
+              <td>Andres Garcia de Vinuesa</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-red">🔴 P1</span></td>
+              <td>Desbloquear DD técnica — 267 días en pipeline. CLABEs ya contratadas, falta activar integración</td>
+              <td><strong>Xendit MX</strong></td>
+              <td>Camila Kempff Seleme</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-orange">🟠 P2</span></td>
+              <td>Discovery call urgente — 5 clics en email, sin conversación en Diio ni deal en SF</td>
+              <td><strong>ProntoPaga</strong></td>
+              <td>KAM asignado</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-orange">🟠 P2</span></td>
+              <td>Añadir al Boletín + discovery call — 8/10 abrieron Push</td>
+              <td><strong>AstroPay</strong></td>
+              <td>KAM asignado</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-teal">🟡 P3</span></td>
+              <td>Discovery call — 5/5 abrieron Push, pain de conciliación SPEI</td>
+              <td><strong>99minutos</strong></td>
+              <td>KAM asignado</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-teal">🟡 P3</span></td>
+              <td>Discovery call — 3/3 abrieron Push, cuenta en SF sin deal abierto</td>
+              <td><strong>Xepelin</strong></td>
+              <td>KAM asignado</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-gray">⚪ P4</span></td>
+              <td>Canal alternativo (LinkedIn / llamada) — no responden a email</td>
+              <td><strong>FacilitaPay · Solvento · Exteral</strong></td>
+              <td>KAM asignado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- TAB BAR -->
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="showTab('tab1',this)">📊 Comparativa</button>
-    <button class="tab-btn" onclick="showTab('tab2',this)">📧 Email 1 — Boletín</button>
-    <button class="tab-btn" onclick="showTab('tab3',this)">🚀 Email 2 — Push</button>
-    <button class="tab-btn" onclick="showTab('tab4',this)">🔁 Solapamiento</button>
-    <button class="tab-btn" onclick="showTab('tab5',this)">✨ Nuevos Contactos</button>
-    <button class="tab-btn" onclick="showTab('tab6',this)">💡 Conclusiones</button>
-    <button class="tab-btn" onclick="showTab('tab7',this)">🗄️ Uso Real (Snowflake)</button>
-    <button class="tab-btn" onclick="showTab('tab8',this)">💬 Conversaciones (Diio)</button>
+    <button class="tab-btn active" onclick="showTab('tab1',this)">📧 Email a clientes actuales</button>
+    <button class="tab-btn" onclick="showTab('tab2',this)">🗄️ Uso (Snowflake)</button>
+    <button class="tab-btn" onclick="showTab('tab3',this)">💬 Diio a prospectos</button>
   </div>
 
   <div class="tab-panel">
 
-    <!-- TAB 1: COMPARATIVA -->
+    <!-- TAB 1: EMAIL -->
     <div id="tab1" class="tab-content active">
       <div class="two-col">
         <div>
@@ -231,10 +280,15 @@ body {
           </table>
         </div>
       </div>
-    </div>
+    </div><!-- comparativa -->
 
-    <!-- TAB 2: EMAIL 1 -->
-    <div id="tab2" class="tab-content">
+      <hr style="border:none; border-top:2px solid #E8EAE9; margin:2rem 0;">
+
+      <!-- ── EMAIL 1 ── -->
+      <div>
+        <div class="section-title" style="font-size:1.1rem; color:#1a4f4e; margin-bottom:1rem;">📧 Email 1 — Boletín PMM</div>
+      </div>
+      <div id="email1_section">
       <div class="kpi-grid" style="margin-bottom:1.5rem;">
         <div class="kpi-card" style="border-left-color:#266D6C;">
           <p class="kpi-value">537</p><p class="kpi-label">Enviados</p>
@@ -311,8 +365,15 @@ body {
       </div>
     </div>
 
-    <!-- TAB 3: EMAIL 2 PUSH -->
-    <div id="tab3" class="tab-content">
+    </div><!-- email1_section -->
+
+      <hr style="border:none; border-top:2px solid #E8EAE9; margin:2rem 0;">
+
+      <!-- ── EMAIL 2 ── -->
+      <div>
+        <div class="section-title" style="font-size:1.1rem; color:#1a4f4e; margin-bottom:1rem;">🚀 Email 2 — Comunicado Push</div>
+      </div>
+      <div id="email2_section">
       <div class="kpi-grid" style="margin-bottom:1.5rem;">
         <div class="kpi-card" style="border-left-color:#518A89;">
           <p class="kpi-value">125</p><p class="kpi-label">Lista original</p>
@@ -348,7 +409,7 @@ body {
           <div class="section-title">¿Quiénes hicieron clic?</div>
           <div style="margin-top:0.5rem;">
             <div class="insight-box">
-              Los 6 clics del Email 2 provienen todos de <strong>ProntoPaga</strong>:
+              Los <strong>5 clics externos</strong> del Email 2 provienen todos de <strong>ProntoPaga</strong>:
             </div>
             <div class="table-wrap">
               <table class="data-table">
@@ -360,7 +421,6 @@ body {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td>angelaq@cobre.co</td><td>Cobre (interno)</td><td><span class="badge badge-green">Sí</span></td></tr>
                   <tr><td>carlos.villacorta@prontopaga.com</td><td>ProntoPaga</td><td><span class="badge badge-green">Sí</span></td></tr>
                   <tr><td>carmen.juarez@prontopaga.com</td><td>ProntoPaga</td><td><span class="badge badge-green">Sí</span></td></tr>
                   <tr><td>franco.orellana@prontopaga.com</td><td>ProntoPaga</td><td><span class="badge badge-green">Sí</span></td></tr>
@@ -374,14 +434,21 @@ body {
       </div>
 
       <div class="insight-box" style="margin-top:1rem;">
-        El Push tuvo un <strong>CTOR de 10.3%</strong> vs 0.6% del Boletín — casi 17x más efectivo para generar clics.
+        El Push tuvo un <strong>CTOR externo de 8.6%</strong> vs 0.6% del Boletín — ~14x más efectivo para generar clics.
         El asunto "Una CLABE por cobro = cero conciliación manual" resonó especialmente con ProntoPaga,
-        que generó el 100% de los clics.
+        que concentró el 100% de los clics externos.
       </div>
     </div>
 
-    <!-- TAB 4: SOLAPAMIENTO -->
-    <div id="tab4" class="tab-content">
+    </div><!-- email2_section -->
+
+      <hr style="border:none; border-top:2px solid #E8EAE9; margin:2rem 0;">
+
+      <!-- ── SOLAPAMIENTO ── -->
+      <div>
+        <div class="section-title" style="font-size:1.1rem; color:#1a4f4e; margin-bottom:1rem;">🔁 Solapamiento — ¿el Push llegó a quienes no abrieron el Boletín?</div>
+      </div>
+      <div id="overlap_section">
       <div class="two-col">
         <div>
           <div class="section-title">Composición del Email 2</div>
@@ -405,19 +472,19 @@ body {
             </div>
           </div>
           <div class="seg-card" style="border-color:#D4820A; background:#FEF3DC;">
-            <div style="font-size:2rem; font-weight:700; color:#D4820A;">2 / 15</div>
-            <div style="font-weight:700; margin:0.3rem 0;">13% — No abrieron el Boletín</div>
+            <div style="font-size:2rem; font-weight:700; color:#D4820A;">1 / 10</div>
+            <div style="font-weight:700; margin:0.3rem 0;">10% — No abrieron el Boletín</div>
             <div style="font-size:0.82rem; color:#444;">
-              15 contactos que recibieron ambos correos pero NO abrieron el Boletín →
-              solo 2 abrieron el Push. Audiencia menos receptiva.
+              10 contactos externos que recibieron ambos correos pero NO abrieron el Boletín →
+              solo 1 abrió el Push. El Push <em>no reactivó</em> a esta audiencia.
             </div>
           </div>
           <div class="seg-card" style="border-color:#518A89; background:#EDF6F5;">
-            <div style="font-size:2rem; font-weight:700; color:#518A89;">24</div>
-            <div style="font-weight:700; margin:0.3rem 0;">Nuevos — Solo recibieron Push</div>
+            <div style="font-size:2rem; font-weight:700; color:#518A89;">19</div>
+            <div style="font-weight:700; margin:0.3rem 0;">Nuevos externos — Solo recibieron Push</div>
             <div style="font-size:0.82rem; color:#444;">
-              24 contactos que no estaban en la lista del Boletín.
-              Empresas nuevas alcanzadas: AstroPay, 99minutos, Xepelin (nuevos contactos).
+              19 contactos externos que no estaban en la lista del Boletín.
+              Empresas: AstroPay (10), 99minutos (5), Xepelin (3), Stilakrediya (1).
             </div>
           </div>
         </div>
@@ -443,8 +510,7 @@ body {
             </thead>
             <tbody>
               <tr><td>karentm@cobre.co</td><td>Cobre</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-green">Sí</span></td></tr>
-              <tr><td>lluvia.cadena@…</td><td>—</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-green">Sí</span></td></tr>
-              <tr><td>andres.riano@…</td><td>—</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+
               <tr><td>cristian@solvento.com</td><td>Solvento</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
               <tr><td>daniel.alves@facilitapay.com</td><td>FacilitaPay</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
               <tr><td>danielaq@cobre.co</td><td>Cobre</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
@@ -463,10 +529,15 @@ body {
       </div>
     </div>
 
-    <!-- TAB 5: NUEVOS CONTACTOS -->
-    <div id="tab5" class="tab-content">
+      <hr style="border:none; border-top:2px solid #E8EAE9; margin:2rem 0;">
+
+      <!-- ── NUEVOS CONTACTOS EXTERNOS ── -->
+      <div>
+        <div class="section-title" style="font-size:1.1rem; color:#1a4f4e; margin-bottom:1rem;">✨ Nuevos contactos externos alcanzados</div>
+      </div>
+      <div id="new_contacts_section">
       <div class="insight-box">
-        El Push llegó a <strong>24 contactos nuevos</strong> que no estaban en el Boletín.
+        El Push llegó a <strong>19 contactos externos nuevos</strong> que no estaban en el Boletín.
         Las empresas con más contactos nuevos son <strong>AstroPay (10)</strong>, <strong>99minutos (5)</strong> y <strong>Xepelin (3)</strong>.
       </div>
 
@@ -505,68 +576,54 @@ body {
                 <tr><td>michelle.garcia@xepelin.com</td><td>Xepelin</td><td><span class="badge badge-green">Sí</span></td></tr>
                 <tr><td>ricardo.cuevas@xepelin.com</td><td>Xepelin</td><td><span class="badge badge-green">Sí</span></td></tr>
                 <tr><td>sebastian@xepelin.com</td><td>Xepelin</td><td><span class="badge badge-green">Sí</span></td></tr>
-                
-                
-                
+
                 <tr><td>gilberto.bedolla@stilakrediya.mx</td><td>Stilakrediya</td><td><span class="badge badge-green">Sí</span></td></tr>
-                <tr><td>diegor@cobre.co</td><td>Cobre (interno)</td><td><span class="badge badge-green">Sí</span></td></tr>
-                <tr><td>hillary@cobre.co</td><td>Cobre (interno)</td><td><span class="badge badge-orange">No</span></td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- new_contacts_section -->
 
-    <!-- TAB 6: CONCLUSIONES -->
-    <div id="tab6" class="tab-content">
-      <div class="seg-grid">
-        <div class="seg-card" style="border-color:#27AE60; background:#E8F8EE;">
-          <div style="font-size:1.1rem; font-weight:700; color:#27AE60; margin-bottom:0.5rem;">Impacto Email 1 (Boletín)</div>
-          <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; line-height:1.7;">
-            <li>Alcance masivo: <strong>537 enviados</strong>, 98.5% entregados</li>
-            <li>Tasa de apertura <strong>58.8%</strong> — muy por encima del benchmark fintech (~25%)</li>
-            <li>Clics bajos (0.6% CTOR): el contenido informó pero no generó acción inmediata</li>
-            <li>2 desuscritos — riesgo de lista mínimo</li>
-          </ul>
-        </div>
-        <div class="seg-card" style="border-color:#518A89; background:#EDF6F5;">
-          <div style="font-size:1.1rem; font-weight:700; color:#518A89; margin-bottom:0.5rem;">Impacto Email 2 (Push)</div>
-          <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; line-height:1.7;">
-            <li>Lista más segmentada: 81 enviados con alto engagement</li>
-            <li>Apertura <strong>74.4%</strong> — +15.6 pp vs Boletín</li>
-            <li>CTOR <strong>10.3%</strong> — ~17x mejor que el Boletín</li>
-            <li>ProntoPaga concentró el 100% de los clics (5 contactos)</li>
-            <li>AstroPay fue la empresa nueva con mayor respuesta (8/10 abrieron)</li>
-          </ul>
-        </div>
-        <div class="seg-card" style="border-color:#D4820A; background:#FEF3DC;">
-          <div style="font-size:1.1rem; font-weight:700; color:#D4820A; margin-bottom:0.5rem;">¿Llegamos a nuevos?</div>
-          <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; line-height:1.7;">
-            <li><strong>21 contactos nuevos</strong> alcanzados (26% del Push)</li>
-            <li>El Push <strong>no reactivó</strong> a no-abrientes del Boletín: solo 2/15 abrieron</li>
-            <li>Los que ya habían abierto el Boletín mantuvieron alto engagement: 83%</li>
-            <li>Audiencia nueva más receptiva que "recuperación": AstroPay 80% apertura</li>
-          </ul>
+      <hr style="border:none; border-top:2px solid #E8EAE9; margin:2rem 0;">
+
+      <!-- ── APRENDIZAJES ── -->
+      <div>
+        <div class="section-title" style="font-size:1.1rem; color:#1a4f4e; margin-bottom:1rem;">💡 Aprendizajes de la campaña</div>
+        <div class="seg-grid">
+          <div class="seg-card" style="border-color:#27AE60; background:#E8F8EE;">
+            <div style="font-size:0.95rem; font-weight:700; color:#27AE60; margin-bottom:0.5rem;">Apertura excepcional</div>
+            <ul style="margin:0; padding-left:1.2rem; font-size:0.85rem; line-height:1.7;">
+              <li>Boletín: <strong>58.8%</strong> — 2× el benchmark fintech (~25%)</li>
+              <li>Push: <strong>74.4%</strong> — lista segmentada, alta intención</li>
+              <li>El 83% de quienes abrieron el Boletín también abrió el Push — señal de audiencia calificada</li>
+            </ul>
+          </div>
+          <div class="seg-card" style="border-color:#518A89; background:#EDF6F5;">
+            <div style="font-size:0.95rem; font-weight:700; color:#518A89; margin-bottom:0.5rem;">El Push fue más accionable</div>
+            <ul style="margin:0; padding-left:1.2rem; font-size:0.85rem; line-height:1.7;">
+              <li>CTOR Push (8.6%) vs Boletín (0.6%) — el copy directo generó más clics</li>
+              <li>"Una CLABE por cobro = cero conciliación" resonó con ProntoPaga (100% de clics)</li>
+              <li>El Boletín informó; el Push generó intención de acción</li>
+            </ul>
+          </div>
+          <div class="seg-card" style="border-color:#D4820A; background:#FEF3DC;">
+            <div style="font-size:0.95rem; font-weight:700; color:#D4820A; margin-bottom:0.5rem;">Gaps identificados</div>
+            <ul style="margin:0; padding-left:1.2rem; font-size:0.85rem; line-height:1.7;">
+              <li>El Push <strong>no reactivó</strong> a no-abrientes del Boletín (1/10 abrió)</li>
+              <li>FacilitaPay, Solvento y Exteral siguen sin engagement — necesitan canal distinto</li>
+              <li>Xendit y Grupo Hotelero Santa Fe, los prospectos más calientes de Diio, <strong>no estaban en la lista de emails</strong></li>
+            </ul>
+          </div>
         </div>
       </div>
 
-      <div class="insight-box" style="margin-top:1.5rem;">
-        <strong>Recomendaciones:</strong>
-        <ol style="margin:0.5rem 0 0; padding-left:1.2rem; line-height:1.8; font-size:0.88rem;">
-          <li>Continúa con mensajes de <strong>alta segmentación</strong> para el segmento de mayor intención
-              (ya abrieron ambos correos — 35 contactos calientes).</li>
-          <li>Considera un <strong>tercer toque directo</strong> a ProntoPaga, AstroPay y Xepelin dado el alto engagement.</li>
-          <li>Los no-abrientes del Boletín no responden al Push — evalúa <strong>canal alternativo</strong>
-              (llamada, LinkedIn) para FacilitaPay, Solvento y Exteral.</li>
-          <li>Incluye más contactos de <strong>AstroPay y 99minutos</strong> en el Boletín — mostraron alta receptividad
-              en el Push pero no estaban en la lista principal.</li>
-        </ol>
-      </div>
-    </div>
+    </div><!-- /tab1 -->
 
-    <!-- TAB 7: USO REAL SNOWFLAKE -->
-    <div id="tab7" class="tab-content">
+
+
+    <!-- TAB 2: USO REAL -->
+    <div id="tab2" class="tab-content">
 
       <div class="insight-box" style="border-left-color:#C0392B; background:#fdeceb;">
         <strong>Hallazgo clave:</strong> A la fecha (17 Abr 2026), <strong>ningún cliente externo</strong>
@@ -706,10 +763,10 @@ body {
         </div>
       </div>
 
-    </div><!-- /tab7 -->
+    </div><!-- /tab2 -->
 
-    <!-- TAB 8: CONVERSACIONES DIIO -->
-    <div id="tab8" class="tab-content">
+    <!-- TAB 3: DIIO -->
+    <div id="tab3" class="tab-content">
 
       <div class="insight-box" style="margin-bottom:1.2rem; border-left-color:#266D6C; background:#edf6f5;">
         Análisis enfocado en conversaciones de Diio donde se mencionó explícitamente <strong>Dynamic CLABEs</strong>
@@ -1104,7 +1161,7 @@ body {
         </div>
       </div>
 
-    </div><!-- /tab8 -->
+    </div><!-- /tab3 -->
 
   </div><!-- /tab-panel -->
 </div><!-- /page -->
@@ -1131,7 +1188,7 @@ Plotly.newPlot('chart_compare', [
   {
     name: 'Email 2 — Push',
     x: ['Enviados','Entregados','Aperturas únicas','Clics'],
-    y: [81, 78, 58, 6],
+    y: [81, 78, 58, 5],
     type: 'bar',
     marker: { color: '#518A89' }
   }
@@ -1209,7 +1266,7 @@ Plotly.newPlot('chart_funnel2', [
   {
     type: 'funnel',
     y: ['Lista original', 'Enviados', 'Entregados', 'Aperturas únicas', 'Clics'],
-    x: [125, 81, 78, 58, 6],
+    x: [125, 81, 78, 58, 5],
     marker: { color: ['#1a4f4e','#266D6C','#2e8382','#37a09f','#27AE60'] },
     textinfo: 'value+percent initial',
     textposition: 'inside'
@@ -1225,8 +1282,8 @@ Plotly.newPlot('chart_funnel2', [
 Plotly.newPlot('chart_overlap_pie', [
   {
     type: 'pie',
-    labels: ['Recibieron ambos correos (70%)', 'Solo Push — nuevos (30%)'],
-    values: [57, 24],
+    labels: ['Recibieron ambos correos (75%)', 'Solo Push — nuevos externos (25%)'],
+    values: [57, 19],
     marker: { colors: ['#266D6C', '#D4820A'] },
     hole: 0.4,
     textinfo: 'label+value',
@@ -1244,9 +1301,9 @@ Plotly.newPlot('chart_overlap_bar', [
   {
     type: 'bar',
     orientation: 'h',
-    y: ['No abrieron Email1\n(15 contactos)', 'Sí abrieron Email1\n(42 contactos)', 'Nuevos contactos\n(24 contactos)'],
-    x: [13, 83, null],
-    text: ['13% abrieron Push (2/15)', '83% abrieron Push (35/42)', '71% abrieron Push (17/24)'],
+    y: ['No abrieron Email1\n(10 ext.)', 'Sí abrieron Email1\n(42 contactos)', 'Nuevos externos\n(19 contactos)'],
+    x: [10, 83, null],
+    text: ['10% abrieron Push (1/10)', '83% abrieron Push (35/42)', '74% abrieron Push (14/19)'],
     textposition: 'outside',
     marker: { color: ['#C0392B', '#27AE60', '#D4820A'] }
   }
@@ -1289,9 +1346,9 @@ Plotly.newPlot('chart_new_companies', [
   {
     type: 'bar',
     x: ['AstroPay', '99minutos', 'Xepelin', 'Cobre', 'Stilakrediya'],
-    y: [10, 5, 3, 2, 1],
-    marker: { color: ['#266D6C','#518A89','#27AE60','#D4820A','#7F8C8D'] },
-    text: [10, 5, 3, 2, 1],
+    y: [10, 5, 3, 3, 2, 1],
+    marker: { color: ['#266D6C','#518A89','#37a09f','#27AE60','#D4820A','#7F8C8D'] },
+    text: [10, 5, 3, 3, 2, 1],
     textposition: 'outside'
   }
 ], {
