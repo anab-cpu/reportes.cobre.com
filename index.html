@@ -313,54 +313,9 @@ body {
         </div>
       </div>
 
-      <div class="two-col">
-        <div>
-          <div class="section-title">Funnel Email 1</div>
-          <div id="chart_funnel1" style="height:320px;"></div>
-        </div>
-        <div>
-          <div class="section-title">Distribución por lotes (11 batches)</div>
-          <div id="chart_batches" style="height:320px;"></div>
-        </div>
-      </div>
-
-      <div style="margin-top:1.5rem;">
-        <div class="section-title">Detalle por lote</div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Campaign ID</th>
-                <th>Procesados</th>
-                <th>Enviados</th>
-                <th>Entregados</th>
-                <th>Aperturas</th>
-                <th>Clics</th>
-                <th>Rebotes</th>
-                <th>Dropped</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>410539530</td><td>10</td><td>10</td><td>10</td><td>5</td><td>0</td><td>0</td><td>0</td></tr>
-              <tr><td>410539962</td><td>300</td><td>298</td><td>293</td><td>117</td><td>1</td><td>5</td><td>39</td></tr>
-              <tr><td>410539963</td><td>10</td><td>10</td><td>10</td><td>3</td><td>0</td><td>0</td><td>0</td></tr>
-              <tr><td>410539964</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-              <tr><td>410540021</td><td>4</td><td>4</td><td>4</td><td>2</td><td>0</td><td>0</td><td>0</td></tr>
-              <tr><td>410540022</td><td>2</td><td>2</td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
-              <tr><td>410540107</td><td>111</td><td>111</td><td>109</td><td>87</td><td>0</td><td>2</td><td>1</td></tr>
-              <tr><td>410540149</td><td>51</td><td>51</td><td>50</td><td>20</td><td>0</td><td>1</td><td>2</td></tr>
-              <tr><td>410540150</td><td>36</td><td>36</td><td>36</td><td>19</td><td>1</td><td>0</td><td>3</td></tr>
-              <tr><td>410540800</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-              <tr><td>410540801</td><td>15</td><td>15</td><td>15</td><td>8</td><td>0</td><td>0</td><td>0</td></tr>
-              <tr style="background:#f0f8f8; font-weight:700;"><td>TOTAL</td><td>539</td><td>537</td><td>529</td><td>262</td><td>2</td><td>8</td><td>45</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="insight-box" style="margin-top:1.5rem;">
-        <strong>El batch 410539962</strong> concentró el 55% del volumen total (298 enviados) y logró 117 aperturas —
-        el lote de mayor alcance. El batch 410540107 tuvo la mejor tasa de apertura relativa (87/109 = <strong>79.8%</strong>).
+      <div style="max-width:480px;">
+        <div class="section-title">Funnel Email 1</div>
+        <div id="chart_funnel1" style="height:320px;"></div>
       </div>
 
     </div><!-- email1_section -->
@@ -1230,32 +1185,6 @@ Plotly.newPlot('chart_funnel1', [
   plot_bgcolor: 'white',
   paper_bgcolor: 'white',
   showlegend: false
-}, { responsive: true, displayModeBar: false });
-
-// ── Chart 4: Batches Email 1 ──────────────────────────────────────
-Plotly.newPlot('chart_batches', [
-  {
-    name: 'Enviados',
-    x: ['530','962','963','021','022','107','149','150','801'],
-    y: [10, 298, 10, 4, 2, 111, 51, 36, 15],
-    type: 'bar',
-    marker: { color: '#266D6C' }
-  },
-  {
-    name: 'Aperturas',
-    x: ['530','962','963','021','022','107','149','150','801'],
-    y: [5, 117, 3, 2, 1, 87, 20, 19, 8],
-    type: 'bar',
-    marker: { color: '#27AE60' }
-  }
-], {
-  barmode: 'group',
-  margin: { t: 20, b: 40, l: 40, r: 10 },
-  xaxis: { title: 'Último 3 dígitos del Campaign ID' },
-  legend: { orientation: 'h', y: -0.2 },
-  plot_bgcolor: 'white',
-  paper_bgcolor: 'white',
-  yaxis: { gridcolor: '#eee' }
 }, { responsive: true, displayModeBar: false });
 
 // ── Chart 5: Funnel Email 2 ───────────────────────────────────────
