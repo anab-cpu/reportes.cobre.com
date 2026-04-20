@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dynamic CLABEs — Reporte de Campaña Email</title>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+  <style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #F1F0EC;
+  color: #212121;
+  font-size: 15px;
+}
+.page { max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+
+/* Header */
+.main-header {
+  background: linear-gradient(135deg, #266D6C 0%, #1a4f4e 100%);
+  color: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 1.5rem;
+}
+.main-header h1 { margin: 0; font-size: 1.7rem; }
+.main-header p  { margin: 0.3rem 0 0; font-size: 0.9rem; color: #c8e6e5; }
+
+/* KPI grid */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.8rem; }
+.kpi-card {
+  background: white; border-radius: 12px; padding: 1rem 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-left: 5px solid #266D6C;
+}
+.kpi-value { font-size: 1.9rem; font-weight: 700; color: #266D6C; margin: 0; }
+.kpi-label { font-size: 0.8rem; color: #666; margin: 0; }
+.kpi-delta { font-size: 0.75rem; color: #27AE60; font-weight: 600; margin: 0.2rem 0 0; }
+.kpi-delta.neg { color: #C0392B; }
+.kpi-delta.neutral { color: #888; }
+
+/* Tabs */
+.tab-bar {
+  display: flex; gap: 0; flex-wrap: wrap;
+  background: white; border-radius: 12px 12px 0 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07); overflow: hidden;
+  margin-bottom: 0;
+}
+.tab-btn {
+  padding: 0.8rem 1.2rem; font-size: 0.88rem; font-weight: 600;
+  color: #555; background: transparent; border: none; cursor: pointer;
+  border-bottom: 3px solid transparent; white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+.tab-btn:hover   { color: #266D6C; background: #f5f5f5; }
+.tab-btn.active  { color: #266D6C; border-bottom-color: #266D6C; background: #f9f9f9; }
+.tab-content     { display: none; }
+.tab-content.active { display: block; }
+.tab-panel {
+  background: white; border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 1.5rem; margin-bottom: 1.5rem;
+}
+
+/* Layouts */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+@media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .three-col { grid-template-columns: 1fr; } }
+
+/* Tables */
+.table-wrap { overflow-x: auto; border-radius: 8px; }
+.data-table {
+  width: 100%; border-collapse: collapse; font-size: 0.85rem;
+}
+.data-table th {
+  background: #266D6C; color: white;
+  padding: 0.5rem 0.75rem; text-align: left; white-space: nowrap;
+}
+.data-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid #eee; }
+.data-table tbody tr:hover { background: #f5fafa; }
+.data-table th.alt { background: #518A89; }
+
+/* Section titles */
+.section-title {
+  font-size: 0.95rem; font-weight: 700; color: #266D6C;
+  margin: 0 0 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;
+}
+
+/* Email comparison cards */
+.email-card {
+  border-radius: 12px; padding: 1.2rem 1.5rem;
+  border: 2px solid; margin-bottom: 1rem;
+}
+.email-card.email1 { border-color: #266D6C; background: #f0f8f8; }
+.email-card.email2 { border-color: #518A89; background: #edf6f5; }
+.email-card h3 { margin: 0 0 0.3rem; font-size: 1rem; }
+.email-card p  { margin: 0.2rem 0 0; font-size: 0.82rem; color: #555; }
+
+/* Overlap segments */
+.seg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 900px) { .seg-grid { grid-template-columns: 1fr; } }
+.seg-card { border-radius: 12px; padding: 1.2rem; border: 1.5px solid; }
+
+/* Badge chips */
+.badge {
+  display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 600;
+}
+.badge-green  { background: #e8f8ee; color: #1e7e34; }
+.badge-teal   { background: #e4f0ef; color: #266D6C; }
+.badge-orange { background: #fef3dc; color: #9b6000; }
+.badge-red    { background: #fdeceb; color: #922b21; }
+.badge-gray   { background: #f2f3f4; color: #555; }
+
+/* Insight box */
+.insight-box {
+  background: #f0f8f8; border-left: 4px solid #266D6C;
+  border-radius: 0 8px 8px 0; padding: 0.9rem 1.1rem;
+  margin: 1rem 0; font-size: 0.88rem;
+}
+.insight-box strong { color: #1a4f4e; }
+
+/* Company tag */
+.company-tag {
+  display: inline-block; background: #e4f0ef; color: #266D6C;
+  border-radius: 6px; padding: 0.15rem 0.5rem;
+  font-size: 0.78rem; font-weight: 600; margin: 0.15rem;
+}
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="main-header">
+    <h1>CLABEs Dinámicas — Reporte de Campaña Email</h1>
+    <p>Boletín PMM + Push · "CLABEs dinámicas para cobrar en tiempo real" · Cobre · Generado: 17 Abr 2026</p>
+  </div>
+
+  <!-- GLOBAL KPIs -->
+  <div class="kpi-grid" style="margin-bottom:1.5rem;">
+    <div class="kpi-card" style="border-left-color:#266D6C;">
+      <p class="kpi-value">537</p>
+      <p class="kpi-label">Enviados — Email 1</p>
+    </div>
+    <div class="kpi-card" style="border-left-color:#518A89;">
+      <p class="kpi-value">81</p>
+      <p class="kpi-label">Enviados — Email 2 (Push)</p>
+    </div>
+    <div class="kpi-card" style="border-left-color:#27AE60;">
+      <p class="kpi-value">58.8%</p>
+      <p class="kpi-label">Apertura Email 1</p>
+      <p class="kpi-delta">311 únicos / 529 entregados</p>
+    </div>
+    <div class="kpi-card" style="border-left-color:#27AE60;">
+      <p class="kpi-value">74.4%</p>
+      <p class="kpi-label">Apertura Email 2 (Push)</p>
+      <p class="kpi-delta">58 únicos / 78 entregados</p>
+    </div>
+    <div class="kpi-card" style="border-left-color:#D4820A;">
+      <p class="kpi-value">21</p>
+      <p class="kpi-label">Nuevos contactos alcanzados</p>
+      <p class="kpi-delta">26% del push no estaba en boletín</p>
+    </div>
+    <div class="kpi-card" style="border-left-color:#518A89;">
+      <p class="kpi-value">10.3%</p>
+      <p class="kpi-label">CTOR Email 2</p>
+      <p class="kpi-delta neutral">vs 0.6% Email 1</p>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('tab1',this)">📊 Comparativa</button>
+    <button class="tab-btn" onclick="showTab('tab2',this)">📧 Email 1 — Boletín</button>
+    <button class="tab-btn" onclick="showTab('tab3',this)">🚀 Email 2 — Push</button>
+    <button class="tab-btn" onclick="showTab('tab4',this)">🔁 Solapamiento</button>
+    <button class="tab-btn" onclick="showTab('tab5',this)">✨ Nuevos Contactos</button>
+    <button class="tab-btn" onclick="showTab('tab6',this)">💡 Conclusiones</button>
+    <button class="tab-btn" onclick="showTab('tab7',this)">🗄️ Uso Real (Snowflake)</button>
+    <button class="tab-btn" onclick="showTab('tab8',this)">💬 Conversaciones (Diio)</button>
+  </div>
+
+  <div class="tab-panel">
+
+    <!-- TAB 1: COMPARATIVA -->
+    <div id="tab1" class="tab-content active">
+      <div class="two-col">
+        <div>
+          <div class="section-title">Métricas lado a lado</div>
+          <div id="chart_compare" style="height:340px;"></div>
+        </div>
+        <div>
+          <div class="section-title">Funnel comparativo</div>
+          <div id="chart_funnel" style="height:340px;"></div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:1.5rem;">
+        <div class="email-card email1">
+          <h3 style="color:#266D6C;">Email 1 — Boletín PMM</h3>
+          <p><strong>Asunto:</strong> Nuevo: CLABEs dinámicas para cobrar en tiempo real desde tu plataforma</p>
+          <p style="margin-top:0.6rem; font-size:0.8rem; color:#888;">ID: 209454881925 · Tipo: LocalTimeBatch (11 lotes)</p>
+        </div>
+        <div class="email-card email2">
+          <h3 style="color:#518A89;">Email 2 — Comunicado Push</h3>
+          <p><strong>Asunto:</strong> Una CLABE por cobro = cero conciliación manual</p>
+          <p style="margin-top:0.6rem; font-size:0.8rem; color:#888;">ID: 210989882639 · Tipo: Batch (1 lote) · De: community@cobre.co</p>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <div class="section-title">Tabla resumen</div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Métrica</th>
+                <th>Email 1 (Boletín)</th>
+                <th>Email 2 (Push)</th>
+                <th>Diferencia</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Enviados</td><td>537</td><td>81</td><td style="color:#888;">–</td></tr>
+              <tr><td>Entregados</td><td>529</td><td>78</td><td style="color:#888;">–</td></tr>
+              <tr><td>Tasa entrega</td><td>98.5%</td><td>96.3%</td><td><span class="badge badge-red">-2.2 pp</span></td></tr>
+              <tr><td>Aperturas únicas</td><td>311</td><td>58</td><td style="color:#888;">–</td></tr>
+              <tr><td><strong>Tasa de apertura</strong></td><td><strong>58.8%</strong></td><td><strong>74.4%</strong></td><td><span class="badge badge-green">+15.6 pp</span></td></tr>
+              <tr><td>Clics</td><td>2</td><td>6</td><td style="color:#888;">–</td></tr>
+              <tr><td><strong>CTOR (clic/apertura)</strong></td><td><strong>0.6%</strong></td><td><strong>10.3%</strong></td><td><span class="badge badge-green">+9.7 pp</span></td></tr>
+              <tr><td>Rebotes</td><td>8</td><td>3</td><td style="color:#888;">–</td></tr>
+              <tr><td>Desuscritos</td><td>2</td><td>0</td><td><span class="badge badge-green">0</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: EMAIL 1 -->
+    <div id="tab2" class="tab-content">
+      <div class="kpi-grid" style="margin-bottom:1.5rem;">
+        <div class="kpi-card" style="border-left-color:#266D6C;">
+          <p class="kpi-value">537</p><p class="kpi-label">Enviados</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#266D6C;">
+          <p class="kpi-value">529</p><p class="kpi-label">Entregados</p>
+          <p class="kpi-delta">98.5% tasa entrega</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#27AE60;">
+          <p class="kpi-value">311</p><p class="kpi-label">Aperturas únicas</p>
+          <p class="kpi-delta">58.8% sobre entregados</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#518A89;">
+          <p class="kpi-value">2</p><p class="kpi-label">Clics</p>
+          <p class="kpi-delta neutral">CTOR 0.6%</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#C0392B;">
+          <p class="kpi-value">8</p><p class="kpi-label">Rebotes</p>
+          <p class="kpi-delta neg">1.5% tasa rebote</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#D4820A;">
+          <p class="kpi-value">2</p><p class="kpi-label">Desuscritos</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="section-title">Funnel Email 1</div>
+          <div id="chart_funnel1" style="height:320px;"></div>
+        </div>
+        <div>
+          <div class="section-title">Distribución por lotes (11 batches)</div>
+          <div id="chart_batches" style="height:320px;"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <div class="section-title">Detalle por lote</div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Campaign ID</th>
+                <th>Procesados</th>
+                <th>Enviados</th>
+                <th>Entregados</th>
+                <th>Aperturas</th>
+                <th>Clics</th>
+                <th>Rebotes</th>
+                <th>Dropped</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>410539530</td><td>10</td><td>10</td><td>10</td><td>5</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>410539962</td><td>300</td><td>298</td><td>293</td><td>117</td><td>1</td><td>5</td><td>39</td></tr>
+              <tr><td>410539963</td><td>10</td><td>10</td><td>10</td><td>3</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>410539964</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>410540021</td><td>4</td><td>4</td><td>4</td><td>2</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>410540022</td><td>2</td><td>2</td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr><td>410540107</td><td>111</td><td>111</td><td>109</td><td>87</td><td>0</td><td>2</td><td>1</td></tr>
+              <tr><td>410540149</td><td>51</td><td>51</td><td>50</td><td>20</td><td>0</td><td>1</td><td>2</td></tr>
+              <tr><td>410540150</td><td>36</td><td>36</td><td>36</td><td>19</td><td>1</td><td>0</td><td>3</td></tr>
+              <tr><td>410540800</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>410540801</td><td>15</td><td>15</td><td>15</td><td>8</td><td>0</td><td>0</td><td>0</td></tr>
+              <tr style="background:#f0f8f8; font-weight:700;"><td>TOTAL</td><td>539</td><td>537</td><td>529</td><td>262</td><td>2</td><td>8</td><td>45</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="insight-box" style="margin-top:1.5rem;">
+        <strong>El batch 410539962</strong> concentró el 55% del volumen total (298 enviados) y logró 117 aperturas —
+        el lote de mayor alcance. El batch 410540107 tuvo la mejor tasa de apertura relativa (87/109 = <strong>79.8%</strong>).
+      </div>
+    </div>
+
+    <!-- TAB 3: EMAIL 2 PUSH -->
+    <div id="tab3" class="tab-content">
+      <div class="kpi-grid" style="margin-bottom:1.5rem;">
+        <div class="kpi-card" style="border-left-color:#518A89;">
+          <p class="kpi-value">125</p><p class="kpi-label">Lista original</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#518A89;">
+          <p class="kpi-value">81</p><p class="kpi-label">Enviados efectivos</p>
+          <p class="kpi-delta neutral">44 suprimidos/dropped</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#266D6C;">
+          <p class="kpi-value">78</p><p class="kpi-label">Entregados</p>
+          <p class="kpi-delta">96.3% tasa entrega</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#27AE60;">
+          <p class="kpi-value">58</p><p class="kpi-label">Aperturas únicas</p>
+          <p class="kpi-delta">74.4% sobre entregados</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#27AE60;">
+          <p class="kpi-value">6</p><p class="kpi-label">Clics</p>
+          <p class="kpi-delta">CTOR 10.3%</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#C0392B;">
+          <p class="kpi-value">3</p><p class="kpi-label">Rebotes</p>
+          <p class="kpi-delta neg">3.7% tasa rebote</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="section-title">Funnel Email 2</div>
+          <div id="chart_funnel2" style="height:320px;"></div>
+        </div>
+        <div>
+          <div class="section-title">¿Quiénes hicieron clic?</div>
+          <div style="margin-top:0.5rem;">
+            <div class="insight-box">
+              Los 6 clics del Email 2 provienen todos de <strong>ProntoPaga</strong>:
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Contacto</th>
+                    <th>Empresa</th>
+                    <th>Abrió Email 1</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>angelaq@cobre.co</td><td>Cobre (interno)</td><td><span class="badge badge-green">Sí</span></td></tr>
+                  <tr><td>carlos.villacorta@prontopaga.com</td><td>ProntoPaga</td><td><span class="badge badge-green">Sí</span></td></tr>
+                  <tr><td>carmen.juarez@prontopaga.com</td><td>ProntoPaga</td><td><span class="badge badge-green">Sí</span></td></tr>
+                  <tr><td>franco.orellana@prontopaga.com</td><td>ProntoPaga</td><td><span class="badge badge-green">Sí</span></td></tr>
+                  <tr><td>juancarlos.flores@prontopaga.com</td><td>ProntoPaga</td><td><span class="badge badge-green">Sí</span></td></tr>
+                  <tr><td>juanfrancisco.rodriguez@prontopaga.com</td><td>ProntoPaga</td><td><span class="badge badge-green">Sí</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-box" style="margin-top:1rem;">
+        El Push tuvo un <strong>CTOR de 10.3%</strong> vs 0.6% del Boletín — casi 17x más efectivo para generar clics.
+        El asunto "Una CLABE por cobro = cero conciliación manual" resonó especialmente con ProntoPaga,
+        que generó el 100% de los clics.
+      </div>
+    </div>
+
+    <!-- TAB 4: SOLAPAMIENTO -->
+    <div id="tab4" class="tab-content">
+      <div class="two-col">
+        <div>
+          <div class="section-title">Composición del Email 2</div>
+          <div id="chart_overlap_pie" style="height:300px;"></div>
+        </div>
+        <div>
+          <div class="section-title">¿El Push llegó a quienes no abrieron el Boletín?</div>
+          <div id="chart_overlap_bar" style="height:300px;"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <div class="section-title">Segmentos de solapamiento</div>
+        <div class="seg-grid">
+          <div class="seg-card" style="border-color:#27AE60; background:#E8F8EE;">
+            <div style="font-size:2rem; font-weight:700; color:#27AE60;">35 / 42</div>
+            <div style="font-weight:700; margin:0.3rem 0;">83% — Ya abrieron el Boletín</div>
+            <div style="font-size:0.82rem; color:#444;">
+              42 contactos que recibieron ambos correos Y habían abierto el Boletín →
+              35 volvieron a abrir el Push. Alta intención confirmada.
+            </div>
+          </div>
+          <div class="seg-card" style="border-color:#D4820A; background:#FEF3DC;">
+            <div style="font-size:2rem; font-weight:700; color:#D4820A;">2 / 15</div>
+            <div style="font-weight:700; margin:0.3rem 0;">13% — No abrieron el Boletín</div>
+            <div style="font-size:0.82rem; color:#444;">
+              15 contactos que recibieron ambos correos pero NO abrieron el Boletín →
+              solo 2 abrieron el Push. Audiencia menos receptiva.
+            </div>
+          </div>
+          <div class="seg-card" style="border-color:#518A89; background:#EDF6F5;">
+            <div style="font-size:2rem; font-weight:700; color:#518A89;">24</div>
+            <div style="font-weight:700; margin:0.3rem 0;">Nuevos — Solo recibieron Push</div>
+            <div style="font-size:0.82rem; color:#444;">
+              24 contactos que no estaban en la lista del Boletín.
+              Empresas nuevas alcanzadas: AstroPay, 99minutos, Xepelin (nuevos contactos).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <div class="section-title">Detalle: recibieron Email 2 y NO abrieron Email 1</div>
+        <div class="insight-box">
+          Solo <strong>2 de 15 contactos</strong> que no habían abierto el Boletín abrieron el Push:
+          <strong>karentm@cobre.co</strong> y un contacto externo adicional.
+          El Push <em>no logró</em> reactivar a la mayoría de los no-abrientes del Boletín.
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Contacto</th>
+                <th>Empresa</th>
+                <th>Recibió Email 1</th>
+                <th>Abrió Email 1</th>
+                <th>Abrió Email 2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>karentm@cobre.co</td><td>Cobre</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-green">Sí</span></td></tr>
+              <tr><td>lluvia.cadena@…</td><td>—</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-green">Sí</span></td></tr>
+              <tr><td>andres.riano@…</td><td>—</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>cristian@solvento.com</td><td>Solvento</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>daniel.alves@facilitapay.com</td><td>FacilitaPay</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>danielaq@cobre.co</td><td>Cobre</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>dhernandez@exteral.com</td><td>Exteral</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>diegor@cobre.co</td><td>Cobre</td><td><span class="badge badge-red">No (nuevo)</span></td><td>—</td><td><span class="badge badge-green">Sí</span></td></tr>
+              <tr><td>hillary@cobre.co</td><td>Cobre</td><td><span class="badge badge-red">No (nuevo)</span></td><td>—</td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>juans@cobre.co</td><td>Cobre</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>pedro.diniz@facilitapay.com</td><td>FacilitaPay</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>pedro.fraga@facilitapay.com</td><td>FacilitaPay</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>pedro@solvento.com</td><td>Solvento</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>plataformafx@exteral.com</td><td>Exteral</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+              <tr><td>rheres@exteral.com</td><td>Exteral</td><td><span class="badge badge-teal">Sí</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-orange">No</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: NUEVOS CONTACTOS -->
+    <div id="tab5" class="tab-content">
+      <div class="insight-box">
+        El Push llegó a <strong>24 contactos nuevos</strong> que no estaban en el Boletín.
+        Las empresas con más contactos nuevos son <strong>AstroPay (10)</strong>, <strong>99minutos (5)</strong> y <strong>Xepelin (3)</strong>.
+      </div>
+
+      <div class="two-col" style="margin-top:1.2rem;">
+        <div>
+          <div class="section-title">Nuevos por empresa</div>
+          <div id="chart_new_companies" style="height:320px;"></div>
+        </div>
+        <div>
+          <div class="section-title">Lista completa de nuevos contactos</div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Contacto</th>
+                  <th>Empresa</th>
+                  <th>Abrió Push</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>alejandro.lastra@astropay.com</td><td>AstroPay</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>alex.bukstein@astropay.com</td><td>AstroPay</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>blessilda.siasat@astropay.com</td><td>AstroPay</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>facundo.dossantos@astropay.com</td><td>AstroPay</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>ignacio.murissich@astropay.com</td><td>AstroPay</td><td><span class="badge badge-orange">No</span></td></tr>
+                <tr><td>ines.carreras@astropay.com</td><td>AstroPay</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>joaquin.goni@astropay.com</td><td>AstroPay</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>karen.bauer@astropay.com</td><td>AstroPay</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>lia.picovsky@astropay.com</td><td>AstroPay</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>marc@astropay.com</td><td>AstroPay</td><td><span class="badge badge-orange">No</span></td></tr>
+                <tr><td>alessandra.abate@99minutos.com</td><td>99minutos</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>diana.lopez@99minutos.com</td><td>99minutos</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>diego@99minutos.com</td><td>99minutos</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>javier.martinez@99minutos.com</td><td>99minutos</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>omar.gonzalez@99minutos.com</td><td>99minutos</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>michelle.garcia@xepelin.com</td><td>Xepelin</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>ricardo.cuevas@xepelin.com</td><td>Xepelin</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>sebastian@xepelin.com</td><td>Xepelin</td><td><span class="badge badge-green">Sí</span></td></tr>
+                
+                
+                
+                <tr><td>gilberto.bedolla@stilakrediya.mx</td><td>Stilakrediya</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>diegor@cobre.co</td><td>Cobre (interno)</td><td><span class="badge badge-green">Sí</span></td></tr>
+                <tr><td>hillary@cobre.co</td><td>Cobre (interno)</td><td><span class="badge badge-orange">No</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: CONCLUSIONES -->
+    <div id="tab6" class="tab-content">
+      <div class="seg-grid">
+        <div class="seg-card" style="border-color:#27AE60; background:#E8F8EE;">
+          <div style="font-size:1.1rem; font-weight:700; color:#27AE60; margin-bottom:0.5rem;">Impacto Email 1 (Boletín)</div>
+          <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; line-height:1.7;">
+            <li>Alcance masivo: <strong>537 enviados</strong>, 98.5% entregados</li>
+            <li>Tasa de apertura <strong>58.8%</strong> — muy por encima del benchmark fintech (~25%)</li>
+            <li>Clics bajos (0.6% CTOR): el contenido informó pero no generó acción inmediata</li>
+            <li>2 desuscritos — riesgo de lista mínimo</li>
+          </ul>
+        </div>
+        <div class="seg-card" style="border-color:#518A89; background:#EDF6F5;">
+          <div style="font-size:1.1rem; font-weight:700; color:#518A89; margin-bottom:0.5rem;">Impacto Email 2 (Push)</div>
+          <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; line-height:1.7;">
+            <li>Lista más segmentada: 81 enviados con alto engagement</li>
+            <li>Apertura <strong>74.4%</strong> — +15.6 pp vs Boletín</li>
+            <li>CTOR <strong>10.3%</strong> — ~17x mejor que el Boletín</li>
+            <li>ProntoPaga concentró el 100% de los clics (5 contactos)</li>
+            <li>AstroPay fue la empresa nueva con mayor respuesta (8/10 abrieron)</li>
+          </ul>
+        </div>
+        <div class="seg-card" style="border-color:#D4820A; background:#FEF3DC;">
+          <div style="font-size:1.1rem; font-weight:700; color:#D4820A; margin-bottom:0.5rem;">¿Llegamos a nuevos?</div>
+          <ul style="margin:0; padding-left:1.2rem; font-size:0.88rem; line-height:1.7;">
+            <li><strong>21 contactos nuevos</strong> alcanzados (26% del Push)</li>
+            <li>El Push <strong>no reactivó</strong> a no-abrientes del Boletín: solo 2/15 abrieron</li>
+            <li>Los que ya habían abierto el Boletín mantuvieron alto engagement: 83%</li>
+            <li>Audiencia nueva más receptiva que "recuperación": AstroPay 80% apertura</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="insight-box" style="margin-top:1.5rem;">
+        <strong>Recomendaciones:</strong>
+        <ol style="margin:0.5rem 0 0; padding-left:1.2rem; line-height:1.8; font-size:0.88rem;">
+          <li>Continúa con mensajes de <strong>alta segmentación</strong> para el segmento de mayor intención
+              (ya abrieron ambos correos — 35 contactos calientes).</li>
+          <li>Considera un <strong>tercer toque directo</strong> a ProntoPaga, AstroPay y Xepelin dado el alto engagement.</li>
+          <li>Los no-abrientes del Boletín no responden al Push — evalúa <strong>canal alternativo</strong>
+              (llamada, LinkedIn) para FacilitaPay, Solvento y Exteral.</li>
+          <li>Incluye más contactos de <strong>AstroPay y 99minutos</strong> en el Boletín — mostraron alta receptividad
+              en el Push pero no estaban en la lista principal.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- TAB 7: USO REAL SNOWFLAKE -->
+    <div id="tab7" class="tab-content">
+
+      <div class="insight-box" style="border-left-color:#C0392B; background:#fdeceb;">
+        <strong>Hallazgo clave:</strong> A la fecha (17 Abr 2026), <strong>ningún cliente externo</strong>
+        está usando Dynamic CLABEs en producción. Los únicos 2 usuarios son cuentas internas de Cobre
+        utilizadas para pruebas y desarrollo.
+      </div>
+
+      <div class="kpi-grid" style="margin: 1.2rem 0;">
+        <div class="kpi-card" style="border-left-color:#C0392B;">
+          <p class="kpi-value">0</p>
+          <p class="kpi-label">Clientes externos activos</p>
+          <p class="kpi-delta neg">Meta pendiente</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#D4820A;">
+          <p class="kpi-value">2</p>
+          <p class="kpi-label">Cuentas internas usando la feature</p>
+          <p class="kpi-delta neutral">Cobre Demo + Cobre Producto</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#266D6C;">
+          <p class="kpi-value">18,839</p>
+          <p class="kpi-label">Total MMs tipo r2p_spei</p>
+          <p class="kpi-delta neutral">Solo en marzo 2026</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#27AE60;">
+          <p class="kpi-value">9</p>
+          <p class="kpi-label">MMs completados exitosamente</p>
+          <p class="kpi-delta neg">0.05% tasa de éxito global</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#518A89;">
+          <p class="kpi-value">Mar 2026</p>
+          <p class="kpi-label">Único mes con actividad</p>
+          <p class="kpi-delta neutral">Mar 3 – Mar 20</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#C0392B;">
+          <p class="kpi-value">18,830</p>
+          <p class="kpi-label">MMs rechazados (expirados)</p>
+          <p class="kpi-delta neg">Código r017</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="section-title">Detalle por cuenta interna</div>
+          <div class="table-wrap" style="margin-top:0.5rem;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Cuenta</th>
+                  <th>Client ID</th>
+                  <th>MMs</th>
+                  <th>Completados</th>
+                  <th>Rechazados</th>
+                  <th>Monto total</th>
+                  <th>Período</th>
+                  <th>Días activo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Cobre Demo</strong></td>
+                  <td style="font-family:monospace; font-size:0.78rem;">cli_xxz85j60is</td>
+                  <td>18,820</td>
+                  <td><span class="badge badge-green">1</span></td>
+                  <td><span class="badge badge-red">18,819</span></td>
+                  <td>MXN $18,820</td>
+                  <td>Mar 3–20</td>
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <td><strong>Cobre Producto</strong></td>
+                  <td style="font-family:monospace; font-size:0.78rem;">cli_vdke2laqnj</td>
+                  <td>19</td>
+                  <td><span class="badge badge-green">8</span></td>
+                  <td><span class="badge badge-red">11</span></td>
+                  <td>MXN $17.50</td>
+                  <td>Mar 3–19</td>
+                  <td>8</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:1.2rem;">
+            <div class="section-title">Razones de rechazo</div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Código</th><th>Descripción</th><th>Cuenta</th><th>Cantidad</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>r017</td><td>Payment rejected due to expired money movement.</td><td>Cobre Demo</td><td>18,815</td></tr>
+                  <tr><td>r017</td><td>Payment rejected due to expired key.</td><td>Cobre Demo</td><td>4</td></tr>
+                  <tr><td>r017</td><td>Payment rejected due to expired money movement.</td><td>Cobre Producto</td><td>5</td></tr>
+                  <tr><td>r017</td><td>Payment rejected due to expired key.</td><td>Cobre Producto</td><td>6</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">Actividad diaria</div>
+          <div id="chart_daily_activity" style="height:280px;"></div>
+          <div class="insight-box" style="margin-top:1rem; font-size:0.83rem;">
+            <strong>5 de marzo:</strong> Cobre Demo generó 18,814 MMs en un solo día — todos $1 MXN,
+            todos rechazados por expiración. Parece un <strong>load test o stress test</strong> de la funcionalidad.
+            Cobre Producto hizo pruebas más graduales con montos variados ($0.50–$2.00 MXN) durante 8 días.
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <div class="section-title">Interpretación y próximos pasos</div>
+        <div class="seg-grid">
+          <div class="seg-card" style="border-color:#C0392B; background:#fdeceb;">
+            <div style="font-weight:700; color:#922b21; margin-bottom:0.5rem;">Gap de adopción</div>
+            <div style="font-size:0.85rem; line-height:1.6;">
+              La campaña de email tuvo excelente engagement (59–74% apertura) pero
+              <strong>aún no se ha traducido en activación de clientes externos</strong>.
+              El pipeline va desde "interés" hasta "cuenta activa en producción".
+            </div>
+          </div>
+          <div class="seg-card" style="border-color:#D4820A; background:#FEF3DC;">
+            <div style="font-weight:700; color:#9b6000; margin-bottom:0.5rem;">Feature en testing interno</div>
+            <div style="font-size:0.85rem; line-height:1.6;">
+              Las pruebas de Cobre Demo y Cobre Producto indican que la funcionalidad está en
+              <strong>fase de validación técnica</strong>. El equipo de Producto está activo probando casos de uso.
+            </div>
+          </div>
+          <div class="seg-card" style="border-color:#27AE60; background:#E8F8EE;">
+            <div style="font-weight:700; color:#1e7e34; margin-bottom:0.5rem;">Clientes más calientes</div>
+            <div style="font-size:0.85rem; line-height:1.6;">
+              ProntoPaga (5 clics en email) y AstroPay (80% apertura en Push)
+              son los candidatos más receptivos para <strong>outreach directo de activación</strong>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab7 -->
+
+    <!-- TAB 8: CONVERSACIONES DIIO -->
+    <div id="tab8" class="tab-content">
+
+      <div class="insight-box" style="margin-bottom:1.2rem; border-left-color:#266D6C; background:#edf6f5;">
+        Análisis enfocado en conversaciones de Diio donde se mencionó explícitamente <strong>Dynamic CLABEs</strong>
+        o <strong>CLABEs dinámicas</strong> en el contexto de operaciones México (SPEI / cobro). Se encontraron
+        <strong>3 conversaciones</strong> en 2 empresas: Xendit y Grupo Hotelero Santa Fe.
+        <strong>Ninguna de estas empresas recibió los correos de campaña</strong> — gap directo de prospección.
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid" style="margin-bottom:1.4rem;">
+        <div class="kpi-card" style="border-left-color:#266D6C;">
+          <p class="kpi-value">3</p>
+          <p class="kpi-label">Convs. sobre Dynamic CLABEs MX</p>
+          <p class="kpi-delta neutral">Xendit (×2) · Grupo Hotelero Santa Fe (×1)</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#27AE60;">
+          <p class="kpi-value">4/5</p>
+          <p class="kpi-label">Prob. éxito — Grupo Hotelero SF</p>
+          <p class="kpi-delta pos">Reunión de seguimiento agendada</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#518A89;">
+          <p class="kpi-value">3/5</p>
+          <p class="kpi-label">Prob. éxito — Xendit</p>
+          <p class="kpi-delta neutral">Dynamic CLABEs como necesidad identificada</p>
+        </div>
+        <div class="kpi-card" style="border-left-color:#C0392B;">
+          <p class="kpi-value">0</p>
+          <p class="kpi-label">Recibieron campaña de email</p>
+          <p class="kpi-delta neg">Xendit y G.H. Santa Fe no estaban en la lista</p>
+        </div>
+      </div>
+
+      <!-- Resumen de conversaciones -->
+      <div style="margin-bottom:1.6rem;">
+        <div class="section-title">Las 3 conversaciones — Dynamic CLABEs / CLABEs dinámicas para MX</div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Empresa</th>
+                <th>Ejecutivo Cobre</th>
+                <th>Tipo</th>
+                <th>Fecha</th>
+                <th>Prob. éxito</th>
+                <th>Eje Dynamic CLABEs</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Xendit</strong></td>
+                <td>Camila Kempff Seleme</td>
+                <td>Mensajería / Prospección</td>
+                <td>Oct 2025</td>
+                <td><span class="badge badge-orange">3/5</span></td>
+                <td>CLABEs dinámicas como prerequisito para identificar recaudos por SPEI</td>
+              </tr>
+              <tr>
+                <td><strong>Grupo Hotelero Santa Fe</strong></td>
+                <td>Andres Garcia de Vinuesa</td>
+                <td>EM Discovery</td>
+                <td>2025–2026</td>
+                <td><span class="badge badge-green">4/5</span></td>
+                <td>Claves dinámicas como solución core: 8M llaves CLABE por saldo, expiran al cobrar, elimina conciliación manual</td>
+              </tr>
+              <tr>
+                <td><strong>Xendit</strong></td>
+                <td>Camila Kempff + Felipe Gedeon</td>
+                <td>Cobre Discovery</td>
+                <td>2025–2026</td>
+                <td><span class="badge badge-green">5/5</span></td>
+                <td>Dynamic keys mencionadas en el briefing; interés en suite completa (SPEI + CLABEs + Connect)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Perfiles por empresa -->
+      <div style="margin-bottom:1.6rem;">
+        <div class="section-title">Perfiles de conversación</div>
+        <div class="two-col">
+
+          <div class="seg-card" style="border-color:#27AE60; background:#f0faf4;">
+            <div style="font-weight:700; color:#27AE60; font-size:1rem; margin-bottom:0.6rem;">
+              Grupo Hotelero Santa Fe — 1 conversación · <span style="color:#266D6C;">Oportunidad caliente</span>
+            </div>
+            <div style="font-size:0.84rem; line-height:1.8;">
+              <strong>Ejecutivo:</strong> Andres Garcia de Vinuesa<br>
+              <strong>Tipo:</strong> EM Discovery<br>
+              <strong>Prob. éxito:</strong> <span style="color:#27AE60; font-weight:700;">4/5</span> — reunión de seguimiento agendada<br>
+              <strong>Interés declarado:</strong> SPEI + CLABEs dinámicas + Connect<br>
+              <br>
+              <strong>Pitch de CLABEs dinámicas presentado:</strong><br>
+              Generación de hasta <strong>8 millones de llaves CLABE por saldo</strong>. Cada llave dinámica se asigna
+              a un cobro específico y <strong>expira automáticamente al recibir el pago</strong>, eliminando por completo
+              la necesidad de conciliación manual. El cliente identificó esto como el dolor principal de su operación actual.<br>
+              <br>
+              <strong>Próximo paso:</strong> Segunda reunión de discovery agendada para profundizar en integración técnica.
+            </div>
+          </div>
+
+          <div class="seg-card" style="border-color:#518A89; background:#edf6f5;">
+            <div style="font-weight:700; color:#518A89; font-size:1rem; margin-bottom:0.6rem;">
+              Xendit — 2 conversaciones · <span style="color:#D4820A;">En proceso</span>
+            </div>
+            <div style="font-size:0.84rem; line-height:1.8;">
+              <strong>Ejecutivos:</strong> Camila Kempff Seleme + Felipe Gedeon<br>
+              <strong>Tipos:</strong> Prospección (Oct 2025) + Cobre Discovery<br>
+              <strong>Prob. éxito:</strong> 3/5 (prospección) · <span style="color:#27AE60; font-weight:700;">5/5</span> (discovery)<br>
+              <strong>Interlocutor cliente:</strong> Raymundo Guerrero<br>
+              <br>
+              <strong>Dynamic CLABEs en la conversación:</strong><br>
+              Raymundo no comprendía el concepto de CLABEs dinámicas al inicio. Su necesidad central es
+              <strong>identificar a qué cobro corresponde cada pago SPEI recibido</strong> — el caso de uso exacto
+              de las llaves dinámicas. Están evaluando alternativas. El proceso de DD genera fricción en el avance.<br>
+              <br>
+              <strong>Próximo paso:</strong> Completar Due Diligence, enviar contratos, coordinar con Producto para
+              demostración técnica de Dynamic CLABEs.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Objeciones y dolores -->
+      <div class="two-col" style="margin-bottom:1.6rem;">
+        <div>
+          <div class="section-title">Objeciones — conversaciones sobre Dynamic CLABEs MX</div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Objeción</th><th>Empresa</th><th>Nivel</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>No entendían que existen CLABEs dinámicas (vs. CLABE estática)</td>
+                  <td>Xendit</td>
+                  <td><span class="badge badge-red">Alta</span></td>
+                </tr>
+                <tr>
+                  <td>Proceso de Due Diligence genera fricción y retrasa el avance</td>
+                  <td>Xendit</td>
+                  <td><span class="badge badge-red">Alta</span></td>
+                </tr>
+                <tr>
+                  <td>Están evaluando alternativas — no exclusividad con Cobre</td>
+                  <td>Xendit</td>
+                  <td><span class="badge badge-orange">Media</span></td>
+                </tr>
+                <tr>
+                  <td>Necesitan demostración técnica para validar el flujo de expiración de llaves</td>
+                  <td>Grupo Hotelero Santa Fe</td>
+                  <td><span class="badge badge-orange">Media</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">Dolores que resuelven las Dynamic CLABEs</div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Dolor</th><th>Empresa</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>No saben a qué cobro corresponde cada SPEI recibido (conciliación manual)</td><td>Xendit, Grupo Hotelero Santa Fe</td></tr>
+                <tr><td>Cada pago requiere revisar referencia manualmente para identificar al pagador</td><td>Grupo Hotelero Santa Fe</td></tr>
+                <tr><td>CLABEs estáticas no permiten trazabilidad 1:1 cobro → pago</td><td>Xendit (Raymundo Guerrero)</td></tr>
+                <tr><td>Volumen alto de transacciones hace insostenible la conciliación manual</td><td>Grupo Hotelero Santa Fe (hotelería · 8M llaves)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cruce: Diio vs campaña email -->
+      <div style="margin-bottom:1.6rem;">
+        <div class="section-title">Cruce: conversaciones en Diio × campaña de email</div>
+        <div class="insight-box" style="border-left-color:#C0392B; background:#fdecea;">
+          <strong>Ninguna de las 2 empresas con conversaciones en Diio sobre Dynamic CLABEs recibió los emails de campaña.</strong>
+          Esto representa un gap directo: los prospectos más calientes (con necesidad ya identificada) nunca
+          llegaron a la campaña de awareness.
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Empresa</th>
+                <th>Convs. Diio sobre Dynamic CLABEs</th>
+                <th>Recibió Email 1 (Boletín)</th>
+                <th>Recibió Email 2 (Push)</th>
+                <th>Prob. éxito</th>
+                <th>Acción sugerida</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Grupo Hotelero Santa Fe</strong></td>
+                <td><span class="badge badge-green">Sí — pitch core</span></td>
+                <td><span class="badge badge-red">No</span></td>
+                <td><span class="badge badge-red">No</span></td>
+                <td><span class="badge badge-green">4/5</span></td>
+                <td>Prioridad 1 — ya tiene reunión agendada. Enviar material técnico de Dynamic CLABEs antes de la siguiente sesión</td>
+              </tr>
+              <tr>
+                <td><strong>Xendit</strong></td>
+                <td><span class="badge badge-green">Sí — necesidad identificada</span></td>
+                <td><span class="badge badge-red">No</span></td>
+                <td><span class="badge badge-red">No</span></td>
+                <td><span class="badge badge-orange">3–5/5</span></td>
+                <td>Demo técnica de Dynamic CLABEs para Raymundo Guerrero. Desbloquear DD lo antes posible</td>
+              </tr>
+              <tr>
+                <td><strong>ProntoPaga</strong></td>
+                <td><span class="badge badge-red">Sin convs. sobre Dynamic CLABEs</span></td>
+                <td><span class="badge badge-teal">Sí</span></td>
+                <td><span class="badge badge-teal">Sí — 5 clics</span></td>
+                <td>—</td>
+                <td>Máximo engagement en email pero sin seguimiento. Discovery call urgente</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Prospección -->
+      <div style="margin-bottom:1rem;">
+        <div class="section-title">Prospección recomendada</div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Prioridad</th>
+                <th>Empresa</th>
+                <th>Señal</th>
+                <th>Siguiente acción concreta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge-red">🔴 P1</span></td>
+                <td><strong>Grupo Hotelero Santa Fe</strong></td>
+                <td>Reunión de seguimiento ya agendada · 4/5 · pitch de claves dinámicas aceptado</td>
+                <td>Preparar demo técnica: flujo de creación de llave → cobro → expiración automática. Ejecutivo: Andres Garcia de Vinuesa</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-red">🔴 P1</span></td>
+                <td><strong>Xendit</strong></td>
+                <td>Necesidad de Dynamic CLABEs ya identificada · DD en proceso</td>
+                <td>Agendar demo específica de Dynamic CLABEs con Raymundo Guerrero. Ejecutivos: Camila Kempff + Felipe Gedeon</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-orange">🟠 P2</span></td>
+                <td><strong>ProntoPaga</strong></td>
+                <td>5 clics en email (máximo de la campaña) · sin conversación en Diio</td>
+                <td>Discovery call sobre caso de uso de cobro SPEI. Contactos: carlos.villacorta, franco.orellana</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-teal">🟡 P3</span></td>
+                <td><strong>99minutos</strong></td>
+                <td>5/5 abrieron Push · sin conversación en Diio</td>
+                <td>Discovery call — explorar pain de conciliación de pagos recibidos por SPEI</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-teal">🟡 P3</span></td>
+                <td><strong>Xepelin</strong></td>
+                <td>3/3 abrieron Push · sin conversación en Diio</td>
+                <td>Discovery call — identificar si tienen volumen de cobros SPEI que justifique Dynamic CLABEs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Estado en Salesforce (vía Diio) -->
+      <div style="margin-top:1.8rem;">
+        <div class="section-title">Estado en Salesforce — deals relacionados con Dynamic CLABEs MX</div>
+        <div class="insight-box" style="border-left-color:#266D6C; background:#edf6f5;">
+          Cruce entre las empresas del pipeline de email + conversaciones Diio y su estado actual en Salesforce.
+          <strong>Grupo Hotelero Santa Fe no tiene oportunidad abierta en Salesforce</strong> a pesar de ser el prospecto
+          con mayor probabilidad de éxito (4/5) y tener reunión de seguimiento agendada — gap crítico de CRM.
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Empresa</th>
+                <th>Deal en Salesforce</th>
+                <th>Stage</th>
+                <th>Prob.</th>
+                <th>Cierre est.</th>
+                <th>Semáforo</th>
+                <th>CLABEs en operación</th>
+                <th>Alerta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Xendit MX</strong></td>
+                <td><span class="badge badge-green">Sí — Xendit-MX</span></td>
+                <td><span class="badge badge-orange">Documents</span></td>
+                <td>90%</td>
+                <td>28 May 2026</td>
+                <td><span class="badge badge-green">🟢 Verde</span></td>
+                <td><span class="badge badge-green">Sí — SPEI Virtual Clabes contratadas</span></td>
+                <td><span class="badge badge-red">⚠ Tarea vencida · DD técnica en curso</span></td>
+              </tr>
+              <tr>
+                <td><strong>Xendit CO</strong></td>
+                <td><span class="badge badge-green">Sí — Xendit CO</span></td>
+                <td><span class="badge badge-orange">Documents</span></td>
+                <td>90%</td>
+                <td>20 May 2026</td>
+                <td>—</td>
+                <td><span class="badge badge-teal">Local Payments CO (no CLABEs)</span></td>
+                <td><span class="badge badge-orange">DD técnica en curso desde 14/04</span></td>
+              </tr>
+              <tr>
+                <td><strong>Grupo Hotelero Santa Fe</strong></td>
+                <td><span class="badge badge-red">No encontrado en SF</span></td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td><span class="badge badge-red">🚨 Crear oportunidad urgente — 4/5 en Diio</span></td>
+              </tr>
+              <tr>
+                <td><strong>99minutos</strong></td>
+                <td><span class="badge badge-teal">Cuenta en SF · sin deal abierto</span></td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td><span class="badge badge-orange">Abrió Push · iniciar discovery</span></td>
+              </tr>
+              <tr>
+                <td><strong>Xepelin</strong></td>
+                <td><span class="badge badge-teal">Cuenta en SF · sin deal abierto</span></td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td><span class="badge badge-orange">Abrió Push · iniciar discovery</span></td>
+              </tr>
+              <tr>
+                <td><strong>ProntoPaga</strong></td>
+                <td><span class="badge badge-red">No encontrado en SF</span></td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td><span class="badge badge-red">5 clics en email — no está en CRM</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Detalle Xendit MX -->
+        <div style="margin-top:1.2rem;">
+          <div class="section-title" style="font-size:0.9rem;">Detalle deal: Xendit MX — el más relevante para Dynamic CLABEs</div>
+          <div class="two-col">
+            <div class="seg-card" style="border-color:#27AE60; background:#f0faf4; font-size:0.84rem; line-height:1.8;">
+              <strong>Operaciones contratadas que incluyen CLABEs:</strong><br>
+              • SPEI Clabes Tesored<br>
+              • SPEI Virtual Clabes<br>
+              • Account Verification Clabe<br>
+              • SPEI Card Tesored<br>
+              <br>
+              <strong>Estado de integración:</strong> Activo / Implementación finalizada<br>
+              <strong>Estado de cuenta:</strong> En proceso<br>
+              <strong>Estado de onboarding:</strong> En proceso<br>
+              <strong>Credenciales QA:</strong> Sí — ya tiene acceso de pruebas
+            </div>
+            <div class="seg-card" style="border-color:#D4820A; background:#fef3dc; font-size:0.84rem; line-height:1.8;">
+              <strong>Situación actual (14 Abr 2026):</strong><br>
+              Empezaron la DD técnica ayer. Tarea vencida registrada en Salesforce.<br>
+              <br>
+              <strong>Next step en SF:</strong> "Llenar DD técnica que nos mandaron y empujar para que vuelvan a iniciar la integración"<br>
+              <br>
+              <strong>Stopper principal:</strong> Due Diligence — 267 días en el pipeline desde Sep 2025. Las CLABEs están <em>contratadas</em> pero la integración no arranca.<br>
+              <br>
+              <strong>Contacto:</strong> Raymundo Guerrero — raymundo.guerrero@xendit.co<br>
+              <strong>Ejecutivo Cobre:</strong> Camila Kempff Seleme
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab8 -->
+
+  </div><!-- /tab-panel -->
+</div><!-- /page -->
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  // Trigger Plotly resize
+  setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+}
+
+// ── Chart 1: Comparativa lado a lado ─────────────────────────────
+Plotly.newPlot('chart_compare', [
+  {
+    name: 'Email 1 — Boletín',
+    x: ['Enviados','Entregados','Aperturas únicas','Clics'],
+    y: [537, 529, 311, 2],
+    type: 'bar',
+    marker: { color: '#266D6C' }
+  },
+  {
+    name: 'Email 2 — Push',
+    x: ['Enviados','Entregados','Aperturas únicas','Clics'],
+    y: [81, 78, 58, 6],
+    type: 'bar',
+    marker: { color: '#518A89' }
+  }
+], {
+  barmode: 'group',
+  margin: { t: 20, b: 40, l: 50, r: 10 },
+  legend: { orientation: 'h', y: -0.15 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white',
+  yaxis: { gridcolor: '#eee' }
+}, { responsive: true, displayModeBar: false });
+
+// ── Chart 2: Funnel comparativo ───────────────────────────────────
+Plotly.newPlot('chart_funnel', [
+  {
+    type: 'funnel',
+    name: 'Email 1',
+    y: ['Enviados','Entregados','Abiertos','Clics'],
+    x: [537, 529, 311, 2],
+    marker: { color: ['#266D6C','#2e8382','#37a09f','#518A89'] },
+    textinfo: 'value+percent initial'
+  }
+], {
+  margin: { t: 20, b: 20, l: 110, r: 20 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white',
+  showlegend: false
+}, { responsive: true, displayModeBar: false });
+
+// ── Chart 3: Funnel Email 1 ───────────────────────────────────────
+Plotly.newPlot('chart_funnel1', [
+  {
+    type: 'funnel',
+    y: ['Lista original (~580)', 'Enviados', 'Entregados', 'Aperturas únicas', 'Clics'],
+    x: [580, 537, 529, 311, 2],
+    marker: { color: ['#1a4f4e','#266D6C','#2e8382','#37a09f','#518A89'] },
+    textinfo: 'value+percent initial',
+    textposition: 'inside'
+  }
+], {
+  margin: { t: 20, b: 20, l: 130, r: 20 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white',
+  showlegend: false
+}, { responsive: true, displayModeBar: false });
+
+// ── Chart 4: Batches Email 1 ──────────────────────────────────────
+Plotly.newPlot('chart_batches', [
+  {
+    name: 'Enviados',
+    x: ['530','962','963','021','022','107','149','150','801'],
+    y: [10, 298, 10, 4, 2, 111, 51, 36, 15],
+    type: 'bar',
+    marker: { color: '#266D6C' }
+  },
+  {
+    name: 'Aperturas',
+    x: ['530','962','963','021','022','107','149','150','801'],
+    y: [5, 117, 3, 2, 1, 87, 20, 19, 8],
+    type: 'bar',
+    marker: { color: '#27AE60' }
+  }
+], {
+  barmode: 'group',
+  margin: { t: 20, b: 40, l: 40, r: 10 },
+  xaxis: { title: 'Último 3 dígitos del Campaign ID' },
+  legend: { orientation: 'h', y: -0.2 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white',
+  yaxis: { gridcolor: '#eee' }
+}, { responsive: true, displayModeBar: false });
+
+// ── Chart 5: Funnel Email 2 ───────────────────────────────────────
+Plotly.newPlot('chart_funnel2', [
+  {
+    type: 'funnel',
+    y: ['Lista original', 'Enviados', 'Entregados', 'Aperturas únicas', 'Clics'],
+    x: [125, 81, 78, 58, 6],
+    marker: { color: ['#1a4f4e','#266D6C','#2e8382','#37a09f','#27AE60'] },
+    textinfo: 'value+percent initial',
+    textposition: 'inside'
+  }
+], {
+  margin: { t: 20, b: 20, l: 130, r: 20 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white',
+  showlegend: false
+}, { responsive: true, displayModeBar: false });
+
+// ── Chart 6: Solapamiento pie ─────────────────────────────────────
+Plotly.newPlot('chart_overlap_pie', [
+  {
+    type: 'pie',
+    labels: ['Recibieron ambos correos (70%)', 'Solo Push — nuevos (30%)'],
+    values: [57, 24],
+    marker: { colors: ['#266D6C', '#D4820A'] },
+    hole: 0.4,
+    textinfo: 'label+value',
+    textfont: { size: 12 }
+  }
+], {
+  margin: { t: 20, b: 20, l: 20, r: 20 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white',
+  showlegend: false
+}, { responsive: true, displayModeBar: false });
+
+// ── Chart 7: Overlap bar ──────────────────────────────────────────
+Plotly.newPlot('chart_overlap_bar', [
+  {
+    type: 'bar',
+    orientation: 'h',
+    y: ['No abrieron Email1\n(15 contactos)', 'Sí abrieron Email1\n(42 contactos)', 'Nuevos contactos\n(24 contactos)'],
+    x: [13, 83, null],
+    text: ['13% abrieron Push (2/15)', '83% abrieron Push (35/42)', '71% abrieron Push (17/24)'],
+    textposition: 'outside',
+    marker: { color: ['#C0392B', '#27AE60', '#D4820A'] }
+  }
+], {
+  xaxis: { title: '% que abrió el Push', range: [0, 110], ticksuffix: '%' },
+  margin: { t: 20, b: 50, l: 150, r: 20 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white',
+  yaxis: { gridcolor: '#eee' }
+}, { responsive: true, displayModeBar: false });
+
+// ── Chart 9: Actividad diaria Snowflake ──────────────────────────
+Plotly.newPlot('chart_daily_activity', [
+  {
+    name: 'Cobre Demo',
+    x: ['2026-03-03','2026-03-05','2026-03-11','2026-03-20'],
+    y: [4, 18814, 1, 1],
+    type: 'bar',
+    marker: { color: '#266D6C' }
+  },
+  {
+    name: 'Cobre Producto',
+    x: ['2026-03-03','2026-03-04','2026-03-05','2026-03-09','2026-03-11','2026-03-16','2026-03-17','2026-03-19'],
+    y: [3, 4, 7, 1, 1, 1, 1, 1],
+    type: 'bar',
+    marker: { color: '#518A89' }
+  }
+], {
+  barmode: 'stack',
+  margin: { t: 20, b: 50, l: 60, r: 10 },
+  xaxis: { title: 'Fecha' },
+  yaxis: { title: 'MMs', type: 'log', gridcolor: '#eee' },
+  legend: { orientation: 'h', y: -0.25 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white'
+}, { responsive: true, displayModeBar: false });
+
+// ── Chart 8: Nuevas empresas ──────────────────────────────────────
+Plotly.newPlot('chart_new_companies', [
+  {
+    type: 'bar',
+    x: ['AstroPay', '99minutos', 'Xepelin', 'Cobre', 'Stilakrediya'],
+    y: [10, 5, 3, 2, 1],
+    marker: { color: ['#266D6C','#518A89','#27AE60','#D4820A','#7F8C8D'] },
+    text: [10, 5, 3, 2, 1],
+    textposition: 'outside'
+  }
+], {
+  xaxis: { title: 'Empresa' },
+  yaxis: { title: 'Nuevos contactos', gridcolor: '#eee' },
+  margin: { t: 20, b: 60, l: 40, r: 10 },
+  plot_bgcolor: 'white',
+  paper_bgcolor: 'white',
+  showlegend: false
+}, { responsive: true, displayModeBar: false });
+</script>
+</body>
+</html>
