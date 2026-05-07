@@ -3,68 +3,198 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CLABEs Dinámicas — Reporte PMM</title>
+<title>CLABEs Dinámicas · Cobre PMM</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
-:root {
-  --bg:#F1F0EC; --card:#FFFFFF; --primary:#266D6C; --secondary:#518A89;
-  --success:#27AE60; --warning:#D4820A; --error:#C0392B;
-  --text:#1A1A1A; --muted:#6B7280; --border:#E5E3DC;
+:root{
+  /* Brand Book 2024 — palette */
+  --cloudy:#F1F0EC; --cloudy-10:#D9D8D4; --cloudy-20:#C1C0BD; --cloudy-40:#A4A3A1; --cloudy-60:#7D7D7B; --cloudy-80:#575655;
+  --deep:#212121; --deep-10:#A0A0A0; --deep-40:#606060; --deep-60:#414141;
+  --teal-pale:#A8C5C4; --teal-light:#7DA7A7; --teal-mid:#518A89; --teal:#266D6C; --teal-deep:#1E5756; --teal-darker:#174141;
+  /* Semantic tokens */
+  --bg:var(--cloudy); --card:#FFFFFF;
+  --primary:var(--teal); --secondary:var(--teal-mid);
+  --text:var(--deep); --muted:var(--cloudy-80); --border:var(--cloudy-10);
+  --success:#27AE60; --warning:#9B6000; --error:#922B21;
+  --accent:var(--teal-mid);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);font-size:14px;line-height:1.5;}
-.container{max-width:1200px;margin:0 auto;padding:24px 20px;}
-.header{background:linear-gradient(135deg,var(--primary) 0%,#1a4f4e 100%);color:white;padding:28px 32px;border-radius:12px;margin-bottom:24px;}
-.header h1{font-size:22px;font-weight:700;margin-bottom:6px;}
-.header p{opacity:.85;font-size:13px;}
-.conclusions{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:24px;margin-bottom:24px;}
-.conclusions h2{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--primary);}
+body{
+  background:var(--bg);
+  font-family:'Inter','-apple-system',BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  color:var(--text);font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.container{max-width:1200px;margin:0 auto;padding:24px 20px 56px;}
+
+/* Top nav · regreso al portal */
+.top-nav{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;margin-bottom:14px;color:var(--muted);
+  padding:6px 0;
+}
+.top-nav a{
+  color:var(--primary);text-decoration:none;font-weight:600;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:8px;transition:background .15s;
+}
+.top-nav a:hover{background:rgba(38,109,108,0.08);}
+.top-nav .divider{color:var(--cloudy-20);}
+.top-nav .current{color:var(--text);font-weight:600;}
+.top-nav .arrow{font-size:14px;line-height:1;display:inline-block;}
+
+/* Header */
+.header{
+  background:linear-gradient(135deg,var(--teal) 0%,var(--teal-deep) 100%);
+  color:white;padding:32px 36px;border-radius:14px;margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.header .release-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,0.15);
+  padding:4px 12px;border-radius:14px;
+  font-size:10.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.header h1{
+  font-size:26px;font-weight:700;margin-bottom:6px;
+  letter-spacing:-0.01em;
+}
+.header p.subtitle{opacity:.86;font-size:13px;font-weight:400;max-width:760px;}
+.header .geo-tag{display:inline-block;font-size:11px;font-weight:600;background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:6px;margin-left:6px;letter-spacing:0.04em;text-transform:uppercase;}
+
+/* Conclusiones */
+.conclusions{
+  background:var(--card);border-radius:12px;border:1px solid var(--border);
+  padding:24px;margin-bottom:24px;
+}
+.conclusions h2{
+  font-size:17px;font-weight:700;margin-bottom:18px;color:var(--text);
+  letter-spacing:-0.01em;
+}
+.conclusions h3{font-size:14px;font-weight:600;margin:20px 0 12px;color:var(--text);}
+
+/* Card */
 .card{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:16px;}
-.card-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px;}
+.card-title{
+  font-size:11.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.06em;color:var(--muted);margin-bottom:12px;
+}
+
+/* KPIs */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px;}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
-.kpi-value{font-size:24px;font-weight:700;color:var(--primary);}
-.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.04em;}
-.kpi-sub{font-size:12px;color:var(--secondary);margin-top:2px;}
+.kpi-value{font-size:24px;font-weight:700;color:var(--primary);letter-spacing:-0.01em;}
+.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.kpi-sub{font-size:12px;color:var(--cloudy-80);margin-top:3px;}
+
+/* Seg-grid (3 conclusiones cards) */
 .seg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
 .seg-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;}
-.seg-card h3{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--primary);}
+.seg-card h3{font-size:13.5px;font-weight:700;margin-bottom:10px;color:var(--primary);letter-spacing:-0.005em;}
 .seg-card ul{list-style:none;padding:0;}
-.seg-card li{padding:4px 0;font-size:13px;}
-.seg-card li::before{content:"▸";color:var(--secondary);margin-right:6px;}
-.email-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
+.seg-card li{padding:5px 0;font-size:13px;line-height:1.45;}
+.seg-card li::before{content:"›";color:var(--secondary);margin-right:8px;font-weight:700;}
+
+/* Email cards */
+.email-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:16px;}
 .email-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;border-left:4px solid var(--primary);}
 .email-card h3{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--text);}
-.email-card.boletin{border-left-color:#266D6C;}
-.email-card.push{border-left-color:#9B6000;}
+.email-card.es{border-left-color:var(--teal);}
+.email-card.en{border-left-color:var(--teal-mid);}
+.email-card.boletin{border-left-color:var(--teal);}
+.email-card.push{border-left-color:var(--teal-light);}
+.email-card.push-es{border-left-color:var(--cloudy-80);}
+.email-card.push-en{border-left-color:var(--cloudy-60);}
 .email-stat{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-top:1px dashed var(--border);}
 .email-stat:first-of-type{border-top:none;}
 .email-stat-val{font-weight:700;}
+
+/* KAM cards */
+.kam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px;}
+.kam-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;border-left:4px solid var(--primary);}
+.kam-card h3{font-size:13px;font-weight:700;margin-bottom:8px;}
+.kam-stat{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-top:1px dashed var(--border);}
+.kam-stat:first-of-type{border-top:none;}
+.kam-stat-val{font-weight:700;}
+
+/* Charts */
 .chart-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
 .chart-container{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
 .chart-container.full{grid-column:1/-1;}
-.chart-title{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;font-weight:600;}
+.chart-title{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;font-weight:700;}
+
+/* Tables */
 table{width:100%;border-collapse:collapse;font-size:12px;}
-table thead th{background:#F8F7F2;color:var(--muted);padding:10px 12px;text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border);}
-table tbody td{padding:9px 12px;border-bottom:1px solid #F0EFEA;vertical-align:top;}
-table tbody tr:hover{background:#FAFAF7;}
-.insight{background:#F0F8F8;border-left:4px solid var(--primary);padding:14px 16px;border-radius:6px;margin:12px 0;font-size:13px;}
-.insight-yellow{background:#FFFBEA;border-left-color:#D4820A;}
-.insight-red{background:#FDECEA;border-left-color:#C0392B;}
+table thead th{
+  background:var(--cloudy);color:var(--muted);padding:10px 12px;text-align:left;
+  font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em;
+  border-bottom:1px solid var(--border);
+}
+table tbody td{padding:9px 12px;border-bottom:1px solid var(--cloudy-10);vertical-align:top;}
+table tbody tr:hover{background:rgba(241,240,236,0.6);}
+
+/* Insights */
+.insight{background:rgba(168,197,196,0.18);border-left:4px solid var(--primary);padding:14px 16px;border-radius:6px;margin:12px 0;font-size:13px;line-height:1.55;}
+.insight-yellow{background:#FFF8E5;border-left-color:var(--warning);}
+.insight-red{background:#FCEFEE;border-left-color:var(--error);}
+
+/* Tabs */
 .tabs{display:flex;gap:6px;border-bottom:2px solid var(--border);margin-bottom:18px;flex-wrap:wrap;}
-.tab-btn{padding:10px 18px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.tab-btn{
+  padding:11px 20px;border:none;background:transparent;
+  font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+  font-family:inherit;
+}
+.tab-btn:hover{color:var(--text);}
 .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
+
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px;}
+
+/* Segment buckets (P1–P5) */
+.seg-bucket{padding:16px;border-radius:10px;margin-bottom:14px;border-left:6px solid var(--cloudy-20);}
+.seg-bucket h3{font-size:14px;font-weight:700;margin-bottom:8px;}
+
 hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+/* Footer */
+.report-footer{
+  margin-top:32px;padding:18px 24px;border-top:1px solid var(--border);
+  font-size:11.5px;color:var(--muted);
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.report-footer a{color:var(--primary);text-decoration:none;font-weight:600;}
+.report-footer a:hover{text-decoration:underline;}
+
+/* Print */
+@media print{
+  .top-nav,.tabs,.report-footer{display:none !important;}
+  .tab-content{display:block !important;page-break-inside:avoid;}
+}
 </style>
 </head>
 <body>
 <div class="container">
 
+<nav class="top-nav">
+  <a href="../index.html"><span class="arrow">←</span> Reportes Cobre PMM</a>
+  <span class="divider">/</span>
+  <span class="current">CLABEs Dinámicas</span>
+</nav>
+
 <div class="header">
-  <h1>🔢 CLABEs Dinámicas — Reporte PMM</h1>
-  <p>2 emails (Boletín + Push) · México · HubSpot Events API + Snowflake (r2p_spei) + Diio MCP · Generado: 07 May 2026</p>
+  <div class="release-badge">PMM · April Release 2026<span class="geo-tag">México</span></div>
+  <h1>CLABEs Dinámicas</h1>
+  <p class="subtitle">Campaña PMM April Release · 2 emails (Boletín + Push) · uso real desde Snowflake (MM_FLOW=payin, TYPE=r2p_spei) · pipeline en Diio.</p>
 </div>
 
 
@@ -72,7 +202,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       <h2>Conclusiones</h2>
       <div class="seg-grid">
         <div class="seg-card">
-          <h3>🗄️ Uso real (Snowflake · r2p_spei MX)</h3>
+          <h3>Uso real (Snowflake · r2p_spei MX)</h3>
           <ul>
             <li><strong>4 clientes externos</strong> con r2p_spei en producción</li>
             <li>42 txns (12 completadas, 30 fallidas)</li>
@@ -81,7 +211,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           </ul>
         </div>
         <div class="seg-card">
-          <h3>📧 Activación por email</h3>
+          <h3>Activación por email</h3>
           <ul>
             <li><strong>620 envíos</strong> totales (E1 Boletín + Push)</li>
             <li>Apertura global: <strong>60.3%</strong></li>
@@ -90,7 +220,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           </ul>
         </div>
         <div class="seg-card">
-          <h3>💬 Pipeline (Diio)</h3>
+          <h3>Pipeline (Diio)</h3>
           <ul>
             <li><strong>12 deals/discovery</strong> con mención explícita</li>
             <li><strong>Plukke, Limited, Paycools, Exlatin, Velafi</strong>: odds 5/5</li>
@@ -110,9 +240,9 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
     
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('intel',event)">🔍 Uso real + Pipeline</button>
-  <button class="tab-btn" onclick="switchTab('resumen',event)">📧 Resumen envíos</button>
-  <button class="tab-btn" onclick="switchTab('segmentos',event)">📊 Segmentos</button>
+  <button class="tab-btn active" onclick="switchTab('intel',event)">Uso real y pipeline</button>
+  <button class="tab-btn" onclick="switchTab('resumen',event)">Resumen envíos</button>
+  <button class="tab-btn" onclick="switchTab('segmentos',event)">Segmentos</button>
 </div>
 
 <div id="tab-intel" class="tab-content active">
@@ -204,7 +334,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       <div id="chart_sf_daily" style="height:300px;"></div>
     </div>
     <hr>
-    <div class="card-title" style="margin-bottom:12px;">💬 Conversaciones Diio — Virtual CLABE / R2P SPEI</div>
+    <div class="card-title" style="margin-bottom:12px;">Conversaciones Diio — Virtual CLABE / R2P SPEI</div>
     <div class="insight">
       <strong>12 conversaciones</strong> con mención explícita a Virtual CLABE / CLABEs dinámicas / R2P SPEI
       (extraídas vía MCP Diio entre 2026-01 y 2026-05). El interés comercial existe — la conversión a uso real aún no.
@@ -425,7 +555,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="text-align:center;">7</td>
           <td style="text-align:center;color:#27AE60;font-weight:700;">86%</td>
           <td style="text-align:center;">6</td>
-          <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">✓ 1 clics</span></td>
+          <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">1 clics</span></td>
         </tr><tr>
           <td><strong>Astropay MX</strong></td>
           <td style="text-align:center;">6</td>
@@ -502,6 +632,11 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       </div>
     </div>
     </div>
+
+<div class="report-footer">
+  <span>Cobre · Product Marketing · anab@cobre.co</span>
+  <span>HubSpot · Snowflake · Diio · Generado 07 May 2026</span>
+</div>
 
 </div>
 <script>

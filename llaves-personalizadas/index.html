@@ -3,98 +3,198 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Llaves Personalizadas Bre-B — Reporte PMM</title>
+<title>Llaves Personalizadas Bre-B · Cobre PMM</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
-:root {
-  --bg:#F1F0EC; --card:#FFFFFF; --primary:#266D6C; --secondary:#518A89;
-  --success:#27AE60; --warning:#D4820A; --error:#C0392B;
-  --text:#1A1A1A; --muted:#6B7280; --border:#E5E3DC;
+:root{
+  /* Brand Book 2024 — palette */
+  --cloudy:#F1F0EC; --cloudy-10:#D9D8D4; --cloudy-20:#C1C0BD; --cloudy-40:#A4A3A1; --cloudy-60:#7D7D7B; --cloudy-80:#575655;
+  --deep:#212121; --deep-10:#A0A0A0; --deep-40:#606060; --deep-60:#414141;
+  --teal-pale:#A8C5C4; --teal-light:#7DA7A7; --teal-mid:#518A89; --teal:#266D6C; --teal-deep:#1E5756; --teal-darker:#174141;
+  /* Semantic tokens */
+  --bg:var(--cloudy); --card:#FFFFFF;
+  --primary:var(--teal); --secondary:var(--teal-mid);
+  --text:var(--deep); --muted:var(--cloudy-80); --border:var(--cloudy-10);
+  --success:#27AE60; --warning:#9B6000; --error:#922B21;
+  --accent:var(--teal-mid);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);font-size:14px;line-height:1.5;}
-.container{max-width:1200px;margin:0 auto;padding:24px 20px;}
+body{
+  background:var(--bg);
+  font-family:'Inter','-apple-system',BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  color:var(--text);font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.container{max-width:1200px;margin:0 auto;padding:24px 20px 56px;}
+
+/* Top nav · regreso al portal */
+.top-nav{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;margin-bottom:14px;color:var(--muted);
+  padding:6px 0;
+}
+.top-nav a{
+  color:var(--primary);text-decoration:none;font-weight:600;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:8px;transition:background .15s;
+}
+.top-nav a:hover{background:rgba(38,109,108,0.08);}
+.top-nav .divider{color:var(--cloudy-20);}
+.top-nav .current{color:var(--text);font-weight:600;}
+.top-nav .arrow{font-size:14px;line-height:1;display:inline-block;}
 
 /* Header */
-.header{background:linear-gradient(135deg,var(--primary) 0%,#1a4f4e 100%);color:white;padding:28px 32px;border-radius:12px;margin-bottom:24px;}
-.header h1{font-size:22px;font-weight:700;margin-bottom:6px;}
-.header p{opacity:.8;font-size:13px;}
+.header{
+  background:linear-gradient(135deg,var(--teal) 0%,var(--teal-deep) 100%);
+  color:white;padding:32px 36px;border-radius:14px;margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.header .release-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,0.15);
+  padding:4px 12px;border-radius:14px;
+  font-size:10.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.header h1{
+  font-size:26px;font-weight:700;margin-bottom:6px;
+  letter-spacing:-0.01em;
+}
+.header p.subtitle{opacity:.86;font-size:13px;font-weight:400;max-width:760px;}
+.header .geo-tag{display:inline-block;font-size:11px;font-weight:600;background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:6px;margin-left:6px;letter-spacing:0.04em;text-transform:uppercase;}
 
-/* Conclusions */
-.conclusions{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:24px;margin-bottom:24px;}
-.conclusions h2{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--primary);}
+/* Conclusiones */
+.conclusions{
+  background:var(--card);border-radius:12px;border:1px solid var(--border);
+  padding:24px;margin-bottom:24px;
+}
+.conclusions h2{
+  font-size:17px;font-weight:700;margin-bottom:18px;color:var(--text);
+  letter-spacing:-0.01em;
+}
+.conclusions h3{font-size:14px;font-weight:600;margin:20px 0 12px;color:var(--text);}
 
-/* Cards */
+/* Card */
 .card{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:16px;}
-.card-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px;}
+.card-title{
+  font-size:11.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.06em;color:var(--muted);margin-bottom:12px;
+}
 
-/* KPI */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px;}
+/* KPIs */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px;}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
-.kpi-value{font-size:26px;font-weight:700;color:var(--primary);}
-.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.04em;}
-.kpi-sub{font-size:12px;color:var(--secondary);margin-top:2px;}
+.kpi-value{font-size:24px;font-weight:700;color:var(--primary);letter-spacing:-0.01em;}
+.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.kpi-sub{font-size:12px;color:var(--cloudy-80);margin-top:3px;}
 
-/* Seg grid */
-.seg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:16px;}
+/* Seg-grid (3 conclusiones cards) */
+.seg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
 .seg-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;}
-.seg-card h3{font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
-.seg-card p,.seg-card ul{font-size:13px;color:var(--muted);line-height:1.7;}
-.seg-card ul{padding-left:1.2rem;}
+.seg-card h3{font-size:13.5px;font-weight:700;margin-bottom:10px;color:var(--primary);letter-spacing:-0.005em;}
+.seg-card ul{list-style:none;padding:0;}
+.seg-card li{padding:5px 0;font-size:13px;line-height:1.45;}
+.seg-card li::before{content:"›";color:var(--secondary);margin-right:8px;font-weight:700;}
 
 /* Email cards */
-.email-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
-.email-card{background:var(--card);border-radius:12px;padding:18px;border:2px solid var(--border);}
-.email-card.e1{border-color:#266D6C;background:#f0f8f8;}
-.email-card.e2{border-color:#518A89;background:#edf6f5;}
-.email-card.e3{border-color:#84BDB5;background:#f0fafa;}
-.email-card h3{font-size:13px;font-weight:700;margin-bottom:10px;}
-.email-stat{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid #eee;}
-.email-stat:last-child{border-bottom:none;}
-.email-stat-val{font-weight:700;color:var(--primary);}
+.email-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:16px;}
+.email-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;border-left:4px solid var(--primary);}
+.email-card h3{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--text);}
+.email-card.es{border-left-color:var(--teal);}
+.email-card.en{border-left-color:var(--teal-mid);}
+.email-card.boletin{border-left-color:var(--teal);}
+.email-card.push{border-left-color:var(--teal-light);}
+.email-card.push-es{border-left-color:var(--cloudy-80);}
+.email-card.push-en{border-left-color:var(--cloudy-60);}
+.email-stat{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-top:1px dashed var(--border);}
+.email-stat:first-of-type{border-top:none;}
+.email-stat-val{font-weight:700;}
+
+/* KAM cards */
+.kam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px;}
+.kam-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;border-left:4px solid var(--primary);}
+.kam-card h3{font-size:13px;font-weight:700;margin-bottom:8px;}
+.kam-stat{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-top:1px dashed var(--border);}
+.kam-stat:first-of-type{border-top:none;}
+.kam-stat-val{font-weight:700;}
+
+/* Charts */
+.chart-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
+.chart-container{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.chart-container.full{grid-column:1/-1;}
+.chart-title{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;font-weight:700;}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:12px;}
+table thead th{
+  background:var(--cloudy);color:var(--muted);padding:10px 12px;text-align:left;
+  font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em;
+  border-bottom:1px solid var(--border);
+}
+table tbody td{padding:9px 12px;border-bottom:1px solid var(--cloudy-10);vertical-align:top;}
+table tbody tr:hover{background:rgba(241,240,236,0.6);}
+
+/* Insights */
+.insight{background:rgba(168,197,196,0.18);border-left:4px solid var(--primary);padding:14px 16px;border-radius:6px;margin:12px 0;font-size:13px;line-height:1.55;}
+.insight-yellow{background:#FFF8E5;border-left-color:var(--warning);}
+.insight-red{background:#FCEFEE;border-left-color:var(--error);}
 
 /* Tabs */
-.tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0;}
-.tab-btn{padding:10px 20px;background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;font-size:14px;font-weight:500;color:var(--muted);transition:all .15s;margin-bottom:-2px;}
+.tabs{display:flex;gap:6px;border-bottom:2px solid var(--border);margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{
+  padding:11px 20px;border:none;background:transparent;
+  font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+  font-family:inherit;
+}
+.tab-btn:hover{color:var(--text);}
 .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
 
-/* Tables */
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th{background:var(--bg);padding:10px 12px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:2px solid var(--border);}
-td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:#F7F6F2;}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px;}
 
-/* Insight */
-.insight{background:linear-gradient(135deg,#E8F5F5 0%,#F0F7F7 100%);border-left:4px solid var(--primary);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:16px;font-size:13px;}
-.insight strong{color:var(--primary);}
-.insight-red{background:#FDECEA;border-left:4px solid var(--error);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:16px;font-size:13px;}
+/* Segment buckets (P1–P5) */
+.seg-bucket{padding:16px;border-radius:10px;margin-bottom:14px;border-left:6px solid var(--cloudy-20);}
+.seg-bucket h3{font-size:14px;font-weight:700;margin-bottom:8px;}
 
-/* Charts */
-.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.chart-container{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
-.chart-title{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
-.chart-container.full{grid-column:1/-1;}
+hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 
-/* Overlap */
-.overlap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
-.overlap-card{border-radius:10px;padding:18px;border:1.5px solid;}
+/* Footer */
+.report-footer{
+  margin-top:32px;padding:18px 24px;border-top:1px solid var(--border);
+  font-size:11.5px;color:var(--muted);
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.report-footer a{color:var(--primary);text-decoration:none;font-weight:600;}
+.report-footer a:hover{text-decoration:underline;}
 
-hr{border:none;border-top:2px solid var(--border);margin:24px 0;}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.two-col .card{margin-bottom:0;}
-.gap-alert{display:inline-flex;align-items:center;gap:6px;background:#FDECEA;color:var(--error);font-weight:600;font-size:12px;padding:4px 10px;border-radius:20px;}
-@media(max-width:900px){.email-grid,.chart-row,.two-col,.overlap-grid{grid-template-columns:1fr;}}
+/* Print */
+@media print{
+  .top-nav,.tabs,.report-footer{display:none !important;}
+  .tab-content{display:block !important;page-break-inside:avoid;}
+}
 </style>
 </head>
 <body>
 <div class="container">
 
+<nav class="top-nav">
+  <a href="../index.html"><span class="arrow">←</span> Reportes Cobre PMM</a>
+  <span class="divider">/</span>
+  <span class="current">Llaves Personalizadas Bre-B</span>
+</nav>
+
 <div class="header">
-  <h1>🔑 Llaves Personalizadas Bre-B — Reporte PMM</h1>
-  <p>3 emails · E1 Boletín + E2 Wallets + E3 Push · HubSpot Events API + Snowflake + Diio · Generado: 07 May 2026</p>
+  <div class="release-badge">PMM · April Release 2026<span class="geo-tag">Colombia</span></div>
+  <h1>Llaves Personalizadas Bre-B</h1>
+  <p class="subtitle">Campaña PMM April Release · 3 emails (E1 Boletín + E2 Wallets + E3 Push) · uso real desde Snowflake (TYPE=breb_credit con KEY_VALUE personalizada) · pipeline en Diio.</p>
 </div>
 
 
@@ -102,312 +202,49 @@ hr{border:none;border-top:2px solid var(--border);margin:24px 0;}
       <h2>Conclusiones</h2>
       <div class="seg-grid">
         <div class="seg-card">
-          <h3>📧 Email a clientes actuales</h3>
+          <h3>Uso real (Snowflake · breb_credit)</h3>
           <ul>
-            <li>Boletín: <strong>523 enviados</strong>, apertura <strong>53.3%</strong> (2× benchmark fintech)</li>
-            <li>Solo wallets: <strong>19 enviados</strong>, apertura <strong>73.7%</strong> — lista muy segmentada</li>
-            <li>Push: <strong>35 enviados</strong>, apertura <strong>48.6%</strong></li>
-            <li>11 clics en E1: Wallbit (3), Vaki, dLocal, Eldorado, MuralPay, Cempresarial, Omnex, Transborder, Telefónica</li>
+            <li><strong>9 clientes activos</strong> con llaves personalizadas en producción</li>
+            <li><strong>12,526 transacciones</strong> · 100.0% de éxito</li>
+            <li><strong>$6.53B COP</strong> movilizados (completados)</li>
+            <li>Top 3 por volumen: <strong>Selenio SAS MX</strong> (9,115) · <strong>Majority Global LLC (Wallet) MX</strong> (3,174) · <strong>cli_vdke2laqnj</strong> (156)</li>
           </ul>
         </div>
         <div class="seg-card">
-          <h3>🗄️ Uso real (Snowflake)</h3>
+          <h3>Activación por email</h3>
           <ul>
-            <li><strong>9 clientes externos</strong> con transacciones breb_credit personalizadas</li>
-            <li><strong>Selenio SAS (Littio)</strong>: caso estrella — 9,115 txns, 3,376 llaves únicas, $5.10B COP (Mar–May 2026)</li>
-            <li><strong>Majority Global LLC</strong>: 3,174 txns · $401M COP — entrante nuevo</li>
-            <li><strong>Lavaquinha (Vaki)</strong>: 64 txns · <strong>Skandia</strong>: 11 · <strong>Wallbit</strong>: 2 (testing)</li>
-            <li>Gap: 260+ empresas abrieron el email vs 9 activas en producción</li>
+            <li>577 envíos totales (E1 Boletín + E2 Wallets + E3 Push)</li>
+            <li>Apertura global: <strong>53.7%</strong> (310 aperturas)</li>
+            <li>Clics totales: <strong>11</strong></li>
+            <li>Audiencia: clientes Cobre con saldo en CO + wallets</li>
           </ul>
         </div>
         <div class="seg-card">
-          <h3>💬 Diio / Pipeline</h3>
+          <h3>Pipeline (Diio)</h3>
           <ul>
-            <li>8 conversaciones con mención de llaves personalizadas / Bre-B</li>
-            <li><strong>Prix</strong> (5/5) y <strong>Samsung</strong> (5/5) — mayor probabilidad</li>
-            <li><strong>Payflow</strong>: bloqueado 113 días — validación masiva 150K llaves</li>
-            <li>Samsung y Comfandi sin deal en Salesforce — crear oportunidades urgente</li>
+            <li><strong>8 conversaciones</strong> con mención explícita de llaves Bre-B</li>
+            <li>Cliente dominante: <strong>Littio (Selenio SAS)</strong> con múltiples deals activos en 2026-02 → 2026-05</li>
+            <li>Diversificar pipeline: trabajar con KAMs para sumar nuevos prospects más allá de Littio</li>
           </ul>
         </div>
       </div>
 
-      <h3 style="font-size:14px;font-weight:600;margin:20px 0 12px;color:var(--text);">Siguientes pasos priorizados</h3>
-      <table>
-        <thead><tr><th>Prioridad</th><th>Acción</th><th>Empresa</th><th>KAM</th></tr></thead>
-        <tbody>
-          <tr style="background:#FDECEA;">
-            <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">P1</span></td>
-            <td>Demo de llaves personalizadas — Pain: llave no muestra nombre empresa. Deal activo en Solution Design.</td>
-            <td><strong>Prix</strong></td><td>Santiago Ramirez</td>
-          </tr>
-          <tr style="background:#FDECEA;">
-            <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">P1</span></td>
-            <td>Desbloquear validación masiva de 150K llaves. 113 días en Negociación 🔴.</td>
-            <td><strong>Payflow</strong></td><td>Manuela Jaramillo</td>
-          </tr>
-          <tr style="background:#FEF9C3;">
-            <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF9C3;color:#7C5B00">P2</span></td>
-            <td>Crear oportunidad en SF + demo técnica Bre-B. Odds 5/5 en Diio, sin deal abierto.</td>
-            <td><strong>Samsung</strong></td><td>Javier Murcia</td>
-          </tr>
-          <tr style="background:#FEF9C3;">
-            <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF9C3;color:#7C5B00">P2</span></td>
-            <td>Crear oportunidad en SF. Discovery activo, dudas regulatorias. No recibió ningún email.</td>
-            <td><strong>Comfandi</strong></td><td>Juliana Romero</td>
-          </tr>
-          <tr style="background:#CCFBF1;">
-            <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">P3</span></td>
-            <td>Wallbit: 3 clics en E1 + 2 txns en testing → discovery call para activar en producción.</td>
-            <td><strong>Wallbit</strong></td><td>—</td>
-          </tr>
-          <tr style="background:#CCFBF1;">
-            <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">P3</span></td>
-            <td>nicolas@vaki.co hizo clic en E1. Ya activo en prod — escalar uso y llaves personalizadas.</td>
-            <td><strong>Vaki</strong></td><td>Manuela Jaramillo</td>
-          </tr>
-        </tbody>
-      </table>
+      <h3>Hallazgos clave</h3>
+      <ul style="margin-left:1.2rem;line-height:1.9;font-size:13px;">
+        <li><strong>El producto tiene tracción real pero concentrada:</strong> 9 clientes activos, pero <strong>Selenio SAS MX</strong>  concentra la mayor parte del volumen.</li>
+        <li><strong>Tasa de éxito muy alta:</strong> 100.0% de las txns completan exitosamente — el producto funciona técnicamente.</li>
+        <li><strong>Próximo paso de PMM:</strong> escalar la cola larga (clientes con 1-100 txns) y diversificar el pipeline más allá de Littio.</li>
+      </ul>
     </div>
     
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('resumen')">📧 Resumen envíos</button>
-  <button class="tab-btn" onclick="switchTab('segmentos')">📊 Segmentos</button>
-  <button class="tab-btn" onclick="switchTab('intel')">🔍 Inteligencia</button>
+  <button class="tab-btn active" onclick="switchTab('intel',event)">Uso real y pipeline</button>
+  <button class="tab-btn" onclick="switchTab('resumen',event)">Resumen envíos</button>
+  <button class="tab-btn" onclick="switchTab('segmentos',event)">Segmentos</button>
 </div>
 
-<div id="tab-resumen" class="tab-content active">
-    
-    <div class="kpi-grid" style="margin-bottom:20px;">
-      <div class="kpi"><div class="kpi-value">542</div><div class="kpi-label">Contactos únicos</div><div class="kpi-sub">3 toques</div></div>
-      <div class="kpi"><div class="kpi-value">577</div><div class="kpi-label">Total enviados</div></div>
-      <div class="kpi"><div class="kpi-value">53.7%</div><div class="kpi-label">Open rate global</div><div class="kpi-sub">310 aperturas</div></div>
-      <div class="kpi"><div class="kpi-value">11</div><div class="kpi-label">Clics totales</div><div class="kpi-sub">E1: 11 clics</div></div>
-    </div>
-    <div class="email-grid">
-        <div class="email-card e1">
-          <h3>E1 — Boletín general</h3>
-          <p style="font-size:11px;color:#888;margin-bottom:10px;">Bre-B ahora con llaves personalizadas: más claridad en cada pago</p>
-          <div class="email-stat"><span>Enviados</span><span class="email-stat-val">523</span></div>
-          <div class="email-stat"><span>Apertura</span><span class="email-stat-val">53.3% (279)</span></div>
-          <div class="email-stat"><span>CTOR</span><span class="email-stat-val">3.9% (11)</span></div>
-          <div class="email-stat"><span>Rebotes</span><span class="email-stat-val">2</span></div>
-        </div>
-        <div class="email-card e2">
-          <h3>E2 — Solo wallets</h3>
-          <p style="font-size:11px;color:#888;margin-bottom:10px;">Bre-B para wallets: fondeo sin fricción, usuarios activos al día</p>
-          <div class="email-stat"><span>Enviados</span><span class="email-stat-val">19</span></div>
-          <div class="email-stat"><span>Apertura</span><span class="email-stat-val">73.7% (14)</span></div>
-          <div class="email-stat"><span>CTOR</span><span class="email-stat-val">0.0% (0)</span></div>
-          <div class="email-stat"><span>Rebotes</span><span class="email-stat-val">0</span></div>
-        </div>
-        <div class="email-card e3">
-          <h3>E3 — Push comunicado</h3>
-          <p style="font-size:11px;color:#888;margin-bottom:10px;">Ya disponible: Llaves Personalizadas</p>
-          <div class="email-stat"><span>Enviados</span><span class="email-stat-val">35</span></div>
-          <div class="email-stat"><span>Apertura</span><span class="email-stat-val">48.6% (17)</span></div>
-          <div class="email-stat"><span>CTOR</span><span class="email-stat-val">0.0% (0)</span></div>
-          <div class="email-stat"><span>Rebotes</span><span class="email-stat-val">0</span></div>
-        </div></div>
-    <div class="chart-row"><div class="chart-container"><div class="chart-title">E1 — Boletín general</div><div id="funnel_E1_boletin" style="height:280px;"></div></div><div class="chart-container"><div class="chart-title">E2 — Solo wallets</div><div id="funnel_E2_wallets" style="height:280px;"></div></div><div class="chart-container"><div class="chart-title">E3 — Push comunicado</div><div id="funnel_E3_push" style="height:280px;"></div></div></div>
-    
-        <div class="card" style="margin-top:16px;">
-          <div class="card-title">Clickers — E1 Boletín general (11 contactos)</div>
-          <div class="insight">
-            <strong>E2 y E3 no tuvieron clics.</strong> Los 11 clics del Boletín provienen de 11 contactos de
-            empresas externas: Wallbit (3 clics × 1 persona), dLocal, Vaki, Eldorado, MuralPay, Cempresarial,
-            Omnex Group, Transborder, Telefónica.
-          </div>
-          <table>
-            <thead><tr><th>Email</th><th>Empresa</th><th>Clics</th></tr></thead>
-            <tbody><tr><td>tomas.bruzza@wallbit.io</td><td>Wallbit</td><td style="text-align:center;">3</td></tr><tr><td>adolfo@eldorado.io</td><td>El Dorado</td><td style="text-align:center;">1</td></tr><tr><td>parker@muralpay.com</td><td>Muralpay</td><td style="text-align:center;">1</td></tr><tr><td>coordinacioncoponline@cempresarial.co</td><td>Cempresarial</td><td style="text-align:center;">1</td></tr><tr><td>lothr@cobre.co</td><td>Cobre</td><td style="text-align:center;">1</td></tr><tr><td>gchaverri@omnexgroup.com</td><td>Omnex Group</td><td style="text-align:center;">1</td></tr><tr><td>marcom@cobre.co</td><td>Cobre</td><td style="text-align:center;">1</td></tr><tr><td>payouts-int@dlocal.com</td><td>Kupa</td><td style="text-align:center;">1</td></tr><tr><td>lchantre@transborder.com.co</td><td>Transborder</td><td style="text-align:center;">1</td></tr><tr><td>nicolas@vaki.co</td><td>Vaki</td><td style="text-align:center;">1</td></tr><tr><td>liliana.romero@telefonica.com</td><td>Telefonica</td><td style="text-align:center;">1</td></tr></tbody>
-          </table>
-        </div>
-    
-        <hr>
-        <div style="font-size:14px;font-weight:700;color:#1a4f4e;margin-bottom:12px;">🔁 Solapamiento E1 ↔ E3</div>
-        <div class="overlap-grid">
-          <div class="overlap-card" style="border-color:#266D6C;background:#f0f8f8;">
-            <div style="font-size:1.8rem;font-weight:700;color:#266D6C;">488</div>
-            <div style="font-weight:700;margin:4px 0;">Solo Boletín E1</div>
-            <div style="font-size:12px;color:#555;">Contactos que recibieron únicamente el Boletín general.</div>
-          </div>
-          <div class="overlap-card" style="border-color:#518A89;background:#edf6f5;">
-            <div style="font-size:1.8rem;font-weight:700;color:#518A89;">35</div>
-            <div style="font-weight:700;margin:4px 0;">Recibieron E1 + E3</div>
-            <div style="font-size:12px;color:#555;">Todos los del Push también recibieron el Boletín. 4 abrieron ambos.</div>
-          </div>
-          <div class="overlap-card" style="border-color:#84BDB5;background:#f0fafa;">
-            <div style="font-size:1.8rem;font-weight:700;color:#37a09f;">0</div>
-            <div style="font-weight:700;margin:4px 0;">Solo E3 Push</div>
-            <div style="font-size:12px;color:#555;">Contactos nuevos alcanzados únicamente por el Push.</div>
-          </div>
-        </div>
-    </div>
-<div id="tab-segmentos" class="tab-content">
-    <div class="insight">
-      <strong>E1 Boletín general:</strong> 523 enviados · 20 empresas con ≥2 contactos.
-      Las wallets recibieron su propio correo (E2, 73.7% apertura). El Push E3 (35 contactos)
-      tuvo 48.6% de apertura — todos también recibieron E1.
-    </div>
-
-    <div class="card">
-      <div class="card-title">E1 — Boletín general: empresas con ≥2 contactos</div>
-      <table>
-        <thead><tr><th>Empresa</th><th>Enviados</th><th>Open Rate</th><th>Abrieron</th><th>Clics</th></tr></thead>
-        <tbody><tr>
-          <td><strong>Cobre</strong></td>
-          <td style="text-align:center;">29</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">93%</td>
-          <td style="text-align:center;">27</td>
-          <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">✓ 2 clics</span></td>
-        </tr><tr>
-          <td><strong>Pinguino</strong></td>
-          <td style="text-align:center;">4</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">4</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Gmail</strong></td>
-          <td style="text-align:center;">15</td>
-          <td style="text-align:center;color:#C0392B;font-weight:700;">27%</td>
-          <td style="text-align:center;">4</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Conduit</strong></td>
-          <td style="text-align:center;">8</td>
-          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
-          <td style="text-align:center;">4</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Dropi</strong></td>
-          <td style="text-align:center;">5</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">80%</td>
-          <td style="text-align:center;">4</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Infiniaweb</strong></td>
-          <td style="text-align:center;">4</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">75%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Aviatur</strong></td>
-          <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Klikenergy</strong></td>
-          <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Tryjeeves</strong></td>
-          <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Dlocal</strong></td>
-          <td style="text-align:center;">5</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">60%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Cabify</strong></td>
-          <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Mattilda COL</strong></td>
-          <td style="text-align:center;">2</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">2</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Muralpay</strong></td>
-          <td style="text-align:center;">4</td>
-          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
-          <td style="text-align:center;">2</td>
-          <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">✓ 1 clics</span></td>
-        </tr><tr>
-          <td><strong>Alzent digital</strong></td>
-          <td style="text-align:center;">2</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">2</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Localpayment</strong></td>
-          <td style="text-align:center;">7</td>
-          <td style="text-align:center;color:#C0392B;font-weight:700;">29%</td>
-          <td style="text-align:center;">2</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Pagsmile Colombia</strong></td>
-          <td style="text-align:center;">2</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">2</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Koywe</strong></td>
-          <td style="text-align:center;">5</td>
-          <td style="text-align:center;color:#D4820A;font-weight:700;">40%</td>
-          <td style="text-align:center;">2</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Klu</strong></td>
-          <td style="text-align:center;">2</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">2</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Heincke</strong></td>
-          <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">67%</td>
-          <td style="text-align:center;">2</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>AstroPay</strong></td>
-          <td style="text-align:center;">2</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">2</td>
-          <td></td>
-        </tr></tbody>
-      </table>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-title">E2 — Solo wallets (19 contactos)</div>
-        <table>
-          <thead><tr><th>Empresa</th><th>Enviados</th><th>Open Rate</th><th>Abrieron</th></tr></thead>
-          <tbody><tr><td>Selenio SAS</td><td>5</td><td style="color:#27AE60;font-weight:700;">80%</td><td>4</td></tr><tr><td>ARQ</td><td>3</td><td style="color:#27AE60;font-weight:700;">100%</td><td>3</td></tr><tr><td>belo app</td><td>2</td><td style="color:#27AE60;font-weight:700;">100%</td><td>2</td></tr><tr><td>COINSENDA</td><td>3</td><td style="color:#D4820A;font-weight:700;">33%</td><td>1</td></tr><tr><td>DUE PAYMENTS INC</td><td>1</td><td style="color:#27AE60;font-weight:700;">100%</td><td>1</td></tr><tr><td>Lemon CO</td><td>2</td><td style="color:#D4820A;font-weight:700;">50%</td><td>1</td></tr><tr><td>Manteca CBMM</td><td>1</td><td style="color:#27AE60;font-weight:700;">100%</td><td>1</td></tr><tr><td>Meru Colombia</td><td>1</td><td style="color:#27AE60;font-weight:700;">100%</td><td>1</td></tr><tr><td>Trokera.</td><td>1</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr></tbody>
-        </table>
-      </div>
-      <div class="card">
-        <div class="card-title">E3 — Push comunicado (35 contactos)</div>
-        <table>
-          <thead><tr><th>Empresa</th><th>Enviados</th><th>Open Rate</th><th>Abrieron</th></tr></thead>
-          <tbody><tr><td>Bamboo Payment</td><td>4</td><td style="color:#27AE60;font-weight:700;">100%</td><td>4</td></tr><tr><td>Conduit</td><td>4</td><td style="color:#27AE60;font-weight:700;">100%</td><td>4</td></tr><tr><td>Dropi</td><td>3</td><td style="color:#27AE60;font-weight:700;">100%</td><td>3</td></tr><tr><td>LOCALPAYMENT</td><td>5</td><td style="color:#D4820A;font-weight:700;">40%</td><td>2</td></tr><tr><td>Dlocal Colombia Sas</td><td>3</td><td style="color:#D4820A;font-weight:700;">33%</td><td>1</td></tr><tr><td>Infinia</td><td>2</td><td style="color:#D4820A;font-weight:700;">50%</td><td>1</td></tr><tr><td>NVIO PAGOS COLOMBIA</td><td>3</td><td style="color:#D4820A;font-weight:700;">33%</td><td>1</td></tr><tr><td>Roda Latam SAS</td><td>3</td><td style="color:#D4820A;font-weight:700;">33%</td><td>1</td></tr><tr><td>Betplay</td><td>2</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr><tr><td>Koywe</td><td>2</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr><tr><td>Kupa</td><td>1</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr><tr><td>Ripple</td><td>2</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr><tr><td>Use Row</td><td>1</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="chart-row" style="margin-top:16px;">
-      <div class="chart-container">
-        <div class="chart-title">E1 — Top 12 empresas por aperturas</div>
-        <div id="chart_top_companies" style="height:340px;"></div>
-      </div>
-      <div class="chart-container">
-        <div class="chart-title">Distribución de engagement E1</div>
-        <div id="chart_engagement_dist" style="height:340px;"></div>
-      </div>
-    </div>
-    </div>
-<div id="tab-intel" class="tab-content">
+<div id="tab-intel" class="tab-content active">
         <div class="kpi-grid" style="margin-bottom:16px;">
           <div class="kpi"><div class="kpi-value">9</div><div class="kpi-label">Clientes activos</div><div class="kpi-sub">breb_credit en producción</div></div>
           <div class="kpi"><div class="kpi-value">12,526</div><div class="kpi-label">Transacciones totales</div></div>
@@ -517,7 +354,7 @@ hr{border:none;border-top:2px solid var(--border);margin:24px 0;}
           <div id="chart_sf_daily" style="height:300px;"></div>
         </div>
     <hr>
-    <div class="card-title" style="margin-bottom:12px;">💬 Conversaciones Diio — Llaves Personalizadas / Bre-B</div>
+    <div class="card-title" style="margin-bottom:12px;">Conversaciones Diio — Llaves Personalizadas / Bre-B</div>
     <div class="insight">
       <strong>8 conversaciones</strong> identificadas en Diio con mención directa a llaves personalizadas,
       Bre-B payins/payouts o personalización de llaves. Prix y Samsung tienen odds 5/5 — mayor prioridad.
@@ -532,7 +369,7 @@ hr{border:none;border-top:2px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">EC: Solution Design</td>
           <td style="font-size:12px;">2026</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">5/5</span></td>
-          <td style="font-size:12px;"><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">✓ abrió E1</span></td>
+          <td style="font-size:12px;"><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">abrió E1</span></td>
           <td style="font-size:12px;max-width:280px;">Integración Bre-B pay-ins. Prix necesita que la llave muestre el nombre de la empresa para identificar cada cobro. Implementando R2P Bre-B Checkout + Direct Link. Deal activo: 'Prix - Pay-ins bre-b'.</td>
         </tr><tr>
           <td><strong>Littio</strong></td>
@@ -548,15 +385,15 @@ hr{border:none;border-top:2px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">G: Seguimiento ×2</td>
           <td style="font-size:12px;">2025–2026</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">4/5</span></td>
-          <td style="font-size:12px;"><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">✓ abrió E1</span></td>
-          <td style="font-size:12px;max-width:280px;">Necesitan validar 150,000 llaves masivamente sin mover dinero real — bloqueador principal. Quieren reducir costos via Bre-B para nómina. Deal 'Renegociación 2025 #2' en Negociación (🔴 113 días).</td>
+          <td style="font-size:12px;"><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">abrió E1</span></td>
+          <td style="font-size:12px;max-width:280px;">Necesitan validar 150,000 llaves masivamente sin mover dinero real — bloqueador principal. Quieren reducir costos via Bre-B para nómina. Deal 'Renegociación 2025 #2' en Negociación (113 días).</td>
         </tr><tr>
           <td><strong>Samsung Electronics</strong></td>
           <td style="font-size:12px;">Javier Murcia / Santiago Ramirez / Juliana Romero</td>
           <td style="font-size:12px;">EC: Solution Design</td>
           <td style="font-size:12px;">2026</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">5/5</span></td>
-          <td style="font-size:12px;"><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">✓ abrió E1</span></td>
+          <td style="font-size:12px;"><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">abrió E1</span></td>
           <td style="font-size:12px;max-width:280px;">Tech meeting sobre integración Bre-B + QR para experiencia de checkout. Mostraron ambiente QA, discutieron roadmap de implementación. Sin deal en Salesforce.</td>
         </tr><tr>
           <td><strong>Comfandi</strong></td>
@@ -593,14 +430,250 @@ hr{border:none;border-top:2px solid var(--border);margin:24px 0;}
         </tr></tbody>
     </table>
     </div></div>
+<div id="tab-resumen" class="tab-content">
+    
+    <div class="kpi-grid" style="margin-bottom:20px;">
+      <div class="kpi"><div class="kpi-value">542</div><div class="kpi-label">Contactos únicos</div><div class="kpi-sub">3 toques</div></div>
+      <div class="kpi"><div class="kpi-value">577</div><div class="kpi-label">Total enviados</div></div>
+      <div class="kpi"><div class="kpi-value">53.7%</div><div class="kpi-label">Open rate global</div><div class="kpi-sub">310 aperturas</div></div>
+      <div class="kpi"><div class="kpi-value">11</div><div class="kpi-label">Clics totales</div><div class="kpi-sub">E1: 11 clics</div></div>
+    </div>
+    <div class="email-grid">
+        <div class="email-card e1">
+          <h3>E1 — Boletín general</h3>
+          <p style="font-size:11px;color:#888;margin-bottom:10px;">Bre-B ahora con llaves personalizadas: más claridad en cada pago</p>
+          <div class="email-stat"><span>Enviados</span><span class="email-stat-val">523</span></div>
+          <div class="email-stat"><span>Apertura</span><span class="email-stat-val">53.3% (279)</span></div>
+          <div class="email-stat"><span>CTOR</span><span class="email-stat-val">3.9% (11)</span></div>
+          <div class="email-stat"><span>Rebotes</span><span class="email-stat-val">2</span></div>
+        </div>
+        <div class="email-card e2">
+          <h3>E2 — Solo wallets</h3>
+          <p style="font-size:11px;color:#888;margin-bottom:10px;">Bre-B para wallets: fondeo sin fricción, usuarios activos al día</p>
+          <div class="email-stat"><span>Enviados</span><span class="email-stat-val">19</span></div>
+          <div class="email-stat"><span>Apertura</span><span class="email-stat-val">73.7% (14)</span></div>
+          <div class="email-stat"><span>CTOR</span><span class="email-stat-val">0.0% (0)</span></div>
+          <div class="email-stat"><span>Rebotes</span><span class="email-stat-val">0</span></div>
+        </div>
+        <div class="email-card e3">
+          <h3>E3 — Push comunicado</h3>
+          <p style="font-size:11px;color:#888;margin-bottom:10px;">Ya disponible: Llaves Personalizadas</p>
+          <div class="email-stat"><span>Enviados</span><span class="email-stat-val">35</span></div>
+          <div class="email-stat"><span>Apertura</span><span class="email-stat-val">48.6% (17)</span></div>
+          <div class="email-stat"><span>CTOR</span><span class="email-stat-val">0.0% (0)</span></div>
+          <div class="email-stat"><span>Rebotes</span><span class="email-stat-val">0</span></div>
+        </div></div>
+    <div class="chart-row"><div class="chart-container"><div class="chart-title">E1 — Boletín general</div><div id="funnel_E1_boletin" style="height:280px;"></div></div><div class="chart-container"><div class="chart-title">E2 — Solo wallets</div><div id="funnel_E2_wallets" style="height:280px;"></div></div><div class="chart-container"><div class="chart-title">E3 — Push comunicado</div><div id="funnel_E3_push" style="height:280px;"></div></div></div>
+    
+        <div class="card" style="margin-top:16px;">
+          <div class="card-title">Clickers — E1 Boletín general (11 contactos)</div>
+          <div class="insight">
+            <strong>E2 y E3 no tuvieron clics.</strong> Los 11 clics del Boletín provienen de 11 contactos de
+            empresas externas: Wallbit (3 clics × 1 persona), dLocal, Vaki, Eldorado, MuralPay, Cempresarial,
+            Omnex Group, Transborder, Telefónica.
+          </div>
+          <table>
+            <thead><tr><th>Email</th><th>Empresa</th><th>Clics</th></tr></thead>
+            <tbody><tr><td>tomas.bruzza@wallbit.io</td><td>Wallbit</td><td style="text-align:center;">3</td></tr><tr><td>adolfo@eldorado.io</td><td>Eldorado</td><td style="text-align:center;">1</td></tr><tr><td>parker@muralpay.com</td><td>Muralpay</td><td style="text-align:center;">1</td></tr><tr><td>coordinacioncoponline@cempresarial.co</td><td>Cempresarial</td><td style="text-align:center;">1</td></tr><tr><td>lothr@cobre.co</td><td>Cobre</td><td style="text-align:center;">1</td></tr><tr><td>gchaverri@omnexgroup.com</td><td>Omnexgroup</td><td style="text-align:center;">1</td></tr><tr><td>marcom@cobre.co</td><td>Cobre</td><td style="text-align:center;">1</td></tr><tr><td>payouts-int@dlocal.com</td><td>Dlocal</td><td style="text-align:center;">1</td></tr><tr><td>lchantre@transborder.com.co</td><td>Transborder</td><td style="text-align:center;">1</td></tr><tr><td>nicolas@vaki.co</td><td>Vaki</td><td style="text-align:center;">1</td></tr><tr><td>liliana.romero@telefonica.com</td><td>Telefonica</td><td style="text-align:center;">1</td></tr></tbody>
+          </table>
+        </div>
+    
+        <hr>
+        <div style="font-size:14px;font-weight:700;color:#1a4f4e;margin-bottom:12px;">🔁 Solapamiento E1 ↔ E3</div>
+        <div class="overlap-grid">
+          <div class="overlap-card" style="border-color:#266D6C;background:#f0f8f8;">
+            <div style="font-size:1.8rem;font-weight:700;color:#266D6C;">488</div>
+            <div style="font-weight:700;margin:4px 0;">Solo Boletín E1</div>
+            <div style="font-size:12px;color:#555;">Contactos que recibieron únicamente el Boletín general.</div>
+          </div>
+          <div class="overlap-card" style="border-color:#518A89;background:#edf6f5;">
+            <div style="font-size:1.8rem;font-weight:700;color:#518A89;">35</div>
+            <div style="font-weight:700;margin:4px 0;">Recibieron E1 + E3</div>
+            <div style="font-size:12px;color:#555;">Todos los del Push también recibieron el Boletín. 4 abrieron ambos.</div>
+          </div>
+          <div class="overlap-card" style="border-color:#84BDB5;background:#f0fafa;">
+            <div style="font-size:1.8rem;font-weight:700;color:#37a09f;">0</div>
+            <div style="font-weight:700;margin:4px 0;">Solo E3 Push</div>
+            <div style="font-size:12px;color:#555;">Contactos nuevos alcanzados únicamente por el Push.</div>
+          </div>
+        </div>
+    </div>
+<div id="tab-segmentos" class="tab-content">
+    <div class="insight">
+      <strong>E1 Boletín general:</strong> 523 enviados · 20 empresas con ≥2 contactos.
+      Las wallets recibieron su propio correo (E2, 73.7% apertura). El Push E3 (35 contactos)
+      tuvo 48.6% de apertura — todos también recibieron E1.
+    </div>
+
+    <div class="card">
+      <div class="card-title">E1 — Boletín general: empresas con ≥2 contactos</div>
+      <table>
+        <thead><tr><th>Empresa</th><th>Enviados</th><th>Open Rate</th><th>Abrieron</th><th>Clics</th></tr></thead>
+        <tbody><tr>
+          <td><strong>Cobre</strong></td>
+          <td style="text-align:center;">34</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">85%</td>
+          <td style="text-align:center;">29</td>
+          <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">2 clics</span></td>
+        </tr><tr>
+          <td><strong>Gmail</strong></td>
+          <td style="text-align:center;">24</td>
+          <td style="text-align:center;color:#C0392B;font-weight:700;">29%</td>
+          <td style="text-align:center;">7</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Conduit</strong></td>
+          <td style="text-align:center;">8</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
+          <td style="text-align:center;">4</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Pinguino</strong></td>
+          <td style="text-align:center;">4</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">4</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Dropi</strong></td>
+          <td style="text-align:center;">5</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">80%</td>
+          <td style="text-align:center;">4</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Colurs</strong></td>
+          <td style="text-align:center;">4</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">75%</td>
+          <td style="text-align:center;">3</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Aviatur</strong></td>
+          <td style="text-align:center;">3</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">3</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Tryjeeves</strong></td>
+          <td style="text-align:center;">3</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">3</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Klikenergy</strong></td>
+          <td style="text-align:center;">3</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">3</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Cempresarial</strong></td>
+          <td style="text-align:center;">6</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
+          <td style="text-align:center;">3</td>
+          <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">1 clics</span></td>
+        </tr><tr>
+          <td><strong>Dlocal</strong></td>
+          <td style="text-align:center;">6</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
+          <td style="text-align:center;">3</td>
+          <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">1 clics</span></td>
+        </tr><tr>
+          <td><strong>Alianzatemporales</strong></td>
+          <td style="text-align:center;">2</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Mattilda</strong></td>
+          <td style="text-align:center;">2</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Mauaa-sas</strong></td>
+          <td style="text-align:center;">4</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Libgot</strong></td>
+          <td style="text-align:center;">2</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Localpayment</strong></td>
+          <td style="text-align:center;">5</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">40%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>LOCALPAYMENT</strong></td>
+          <td style="text-align:center;">4</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Koywe</strong></td>
+          <td style="text-align:center;">5</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">40%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Klu</strong></td>
+          <td style="text-align:center;">2</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Infiniaweb</strong></td>
+          <td style="text-align:center;">3</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">67%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr></tbody>
+      </table>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">E2 — Solo wallets (19 contactos)</div>
+        <table>
+          <thead><tr><th>Empresa</th><th>Enviados</th><th>Open Rate</th><th>Abrieron</th></tr></thead>
+          <tbody><tr><td>Selenio SAS</td><td>5</td><td style="color:#27AE60;font-weight:700;">80%</td><td>4</td></tr><tr><td>ARQ</td><td>3</td><td style="color:#27AE60;font-weight:700;">100%</td><td>3</td></tr><tr><td>belo app</td><td>2</td><td style="color:#27AE60;font-weight:700;">100%</td><td>2</td></tr><tr><td>COINSENDA</td><td>3</td><td style="color:#D4820A;font-weight:700;">33%</td><td>1</td></tr><tr><td>DUE PAYMENTS INC</td><td>1</td><td style="color:#27AE60;font-weight:700;">100%</td><td>1</td></tr><tr><td>Lemon CO</td><td>2</td><td style="color:#D4820A;font-weight:700;">50%</td><td>1</td></tr><tr><td>Manteca CBMM</td><td>1</td><td style="color:#27AE60;font-weight:700;">100%</td><td>1</td></tr><tr><td>Meru Colombia</td><td>1</td><td style="color:#27AE60;font-weight:700;">100%</td><td>1</td></tr><tr><td>Trokera.</td><td>1</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">E3 — Push comunicado (35 contactos)</div>
+        <table>
+          <thead><tr><th>Empresa</th><th>Enviados</th><th>Open Rate</th><th>Abrieron</th></tr></thead>
+          <tbody><tr><td>Bamboo Payment</td><td>4</td><td style="color:#27AE60;font-weight:700;">100%</td><td>4</td></tr><tr><td>Conduit</td><td>4</td><td style="color:#27AE60;font-weight:700;">100%</td><td>4</td></tr><tr><td>Dropi</td><td>3</td><td style="color:#27AE60;font-weight:700;">100%</td><td>3</td></tr><tr><td>LOCALPAYMENT</td><td>5</td><td style="color:#D4820A;font-weight:700;">40%</td><td>2</td></tr><tr><td>Dlocal Colombia Sas</td><td>3</td><td style="color:#D4820A;font-weight:700;">33%</td><td>1</td></tr><tr><td>Infinia</td><td>2</td><td style="color:#D4820A;font-weight:700;">50%</td><td>1</td></tr><tr><td>NVIO PAGOS COLOMBIA</td><td>3</td><td style="color:#D4820A;font-weight:700;">33%</td><td>1</td></tr><tr><td>Roda Latam SAS</td><td>3</td><td style="color:#D4820A;font-weight:700;">33%</td><td>1</td></tr><tr><td>Betplay</td><td>2</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr><tr><td>Koywe</td><td>2</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr><tr><td>Kupa</td><td>1</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr><tr><td>Ripple</td><td>2</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr><tr><td>Use Row</td><td>1</td><td style="color:#D4820A;font-weight:700;">0%</td><td>0</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="chart-row" style="margin-top:16px;">
+      <div class="chart-container">
+        <div class="chart-title">E1 — Top 12 empresas por aperturas</div>
+        <div id="chart_top_companies" style="height:340px;"></div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Distribución de engagement E1</div>
+        <div id="chart_engagement_dist" style="height:340px;"></div>
+      </div>
+    </div>
+    </div>
+
+<div class="report-footer">
+  <span>Cobre · Product Marketing · anab@cobre.co</span>
+  <span>HubSpot · Snowflake · Diio · Generado 07 May 2026</span>
+</div>
 
 </div>
 <script>
-function switchTab(tab){
+function switchTab(tab,evt){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
-  event.target.classList.add('active');
+  evt.target.classList.add('active');
   setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
 }
 
@@ -638,8 +711,8 @@ function switchTab(tab){
           showlegend:false,font:{family:'-apple-system,sans-serif',size:12}
         },{responsive:true,displayModeBar:false});
         Plotly.newPlot('chart_top_companies',[
-          {name:'Abrieron',x:["Cobre", "Pinguino", "Gmail", "Conduit", "Dropi", "Infiniaweb", "Aviatur", "Klikenergy", "Tryjeeves", "Dlocal", "Cabify", "Mattilda COL"],y:[27, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 2],type:'bar',marker:{color:'#266D6C'}},
-          {name:'Enviados',x:["Cobre", "Pinguino", "Gmail", "Conduit", "Dropi", "Infiniaweb", "Aviatur", "Klikenergy", "Tryjeeves", "Dlocal", "Cabify", "Mattilda COL"],y:[29, 4, 15, 8, 5, 4, 3, 3, 3, 5, 3, 2],type:'bar',marker:{color:'#E5E3DC'}}
+          {name:'Abrieron',x:["Cobre", "Gmail", "Conduit", "Pinguino", "Dropi", "Colurs", "Aviatur", "Tryjeeves", "Klikenergy", "Cempresarial", "Dlocal", "Alianzatemporales"],y:[29, 7, 4, 4, 4, 3, 3, 3, 3, 3, 3, 2],type:'bar',marker:{color:'#266D6C'}},
+          {name:'Enviados',x:["Cobre", "Gmail", "Conduit", "Pinguino", "Dropi", "Colurs", "Aviatur", "Tryjeeves", "Klikenergy", "Cempresarial", "Dlocal", "Alianzatemporales"],y:[34, 24, 8, 4, 5, 4, 3, 3, 3, 6, 6, 2],type:'bar',marker:{color:'#E5E3DC'}}
         ],{barmode:'overlay',margin:{t:10,b:120,l:40,r:10},
           xaxis:{tickangle:-45},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
           legend:{orientation:'h',y:-0.5},font:{family:'-apple-system,sans-serif',size:11}

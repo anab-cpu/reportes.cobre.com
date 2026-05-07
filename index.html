@@ -4,173 +4,113 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reportes Cobre · PMM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-*, *::before, *::after { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #F1F0EC;
-  color: #212121;
-  font-size: 15px;
-  min-height: 100vh;
+:root{
+  --cloudy:#F1F0EC; --cloudy-10:#D9D8D4; --cloudy-20:#C1C0BD; --cloudy-60:#7D7D7B; --cloudy-80:#575655;
+  --deep:#212121; --deep-40:#606060;
+  --teal:#266D6C; --teal-mid:#518A89; --teal-pale:#A8C5C4; --teal-deep:#1E5756;
 }
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 4rem;
+*,*::before,*::after{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Inter','-apple-system',BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  background:var(--cloudy);color:var(--deep);
+  font-size:15px;min-height:100vh;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
 }
+.page{max-width:1040px;margin:0 auto;padding:3rem 1.5rem 4rem;}
 
-/* Header */
-.main-header {
-  background: linear-gradient(135deg, #266D6C 0%, #1a4f4e 100%);
-  color: white;
-  padding: 2rem 2.5rem;
-  border-radius: 16px;
-  margin-bottom: 2.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+/* Brand header */
+.main-header{
+  background:linear-gradient(135deg,var(--teal) 0%,var(--teal-deep) 100%);
+  color:white;padding:2.4rem 2.6rem;border-radius:16px;margin-bottom:2.5rem;
 }
-.header-logo {
-  width: 48px;
-  height: 48px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
+.main-header .release{
+  display:inline-block;background:rgba(255,255,255,0.15);
+  padding:4px 12px;border-radius:14px;
+  font-size:10.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  margin-bottom:14px;
 }
-.main-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-.main-header p {
-  margin: 0.3rem 0 0;
-  font-size: 0.9rem;
-  color: #c8e6e5;
-}
+.main-header h1{margin:0;font-size:1.95rem;font-weight:700;letter-spacing:-0.01em;}
+.main-header p{margin:0.4rem 0 0;font-size:0.92rem;opacity:0.86;}
 
 /* Section label */
-.section-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #888;
-  margin-bottom: 1rem;
+.section-label{
+  font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--cloudy-80);margin-bottom:1rem;
 }
 
-/* Report cards grid */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.2rem;
+/* Cards grid */
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+  gap:1.2rem;
 }
 
-/* Card */
-.report-card {
-  background: white;
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  border: 1.5px solid transparent;
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  position: relative;
+.report-card{
+  background:white;border-radius:14px;padding:1.5rem;
+  box-shadow:0 2px 12px rgba(0,0,0,0.05);
+  border:1.5px solid transparent;
+  text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;gap:0.8rem;
+  transition:transform .15s,box-shadow .15s,border-color .15s;
+  position:relative;
 }
-.report-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(38,109,108,0.15);
-  border-color: #266D6C;
-}
-.report-card.disabled {
-  opacity: 0.6;
-  pointer-events: none;
-  cursor: default;
-}
-.report-card.disabled:hover {
-  transform: none;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  border-color: transparent;
+.report-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 24px rgba(38,109,108,0.15);
+  border-color:var(--teal);
 }
 
-.card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
+.card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:0.5rem;margin-bottom:2px;
 }
-.card-icon {
-  font-size: 1.6rem;
-  line-height: 1;
+.card-tag{
+  font-size:10.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--cloudy-80);
 }
-.card-badge {
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 20px;
-  white-space: nowrap;
-  flex-shrink: 0;
+.card-badge{
+  font-size:10.5px;font-weight:700;
+  padding:3px 9px;border-radius:14px;
+  white-space:nowrap;letter-spacing:0.04em;text-transform:uppercase;
 }
-.badge-new      { background: #e4f0ef; color: #266D6C; border: 1px solid #b8d8d7; }
-.badge-live     { background: #e8f8ee; color: #1e7e34; border: 1px solid #a8dab5; }
-.badge-soon     { background: #f2f3f4; color: #888;    border: 1px solid #ddd; }
+.badge-release{background:var(--teal-pale);color:var(--teal-deep);}
+.badge-co{background:#e8eef0;color:var(--teal-deep);}
+.badge-mx{background:#f3eee5;color:#7c5b00;}
 
-.card-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
+.card-title{
+  font-size:1.1rem;font-weight:700;color:var(--deep);
+  margin:0;letter-spacing:-0.01em;
 }
-.card-subtitle {
-  font-size: 0.82rem;
-  color: #666;
-  margin: 0;
-  line-height: 1.5;
+.card-subtitle{
+  font-size:0.84rem;color:var(--cloudy-80);
+  margin:0;line-height:1.55;
 }
 
-.card-meta {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  margin-top: 0.2rem;
+.card-meta{
+  display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.3rem;
 }
-.meta-chip {
-  font-size: 0.73rem;
-  background: #f5f5f3;
-  color: #555;
-  padding: 0.18rem 0.5rem;
-  border-radius: 6px;
-  font-weight: 500;
+.meta-chip{
+  font-size:0.72rem;background:var(--cloudy);
+  color:var(--deep-40);padding:.18rem .55rem;border-radius:6px;
+  font-weight:500;
 }
 
-.card-arrow {
-  position: absolute;
-  bottom: 1.2rem;
-  right: 1.3rem;
-  color: #266D6C;
-  font-size: 1rem;
-  opacity: 0;
-  transition: opacity 0.15s, transform 0.15s;
+.card-arrow{
+  position:absolute;bottom:1.1rem;right:1.3rem;
+  color:var(--teal);font-size:1rem;
+  opacity:0;transition:opacity .15s,transform .15s;
 }
-.report-card:hover .card-arrow {
-  opacity: 1;
-  transform: translateX(3px);
-}
+.report-card:hover .card-arrow{opacity:1;transform:translateX(3px);}
 
 /* Footer */
-.portal-footer {
-  margin-top: 3rem;
-  text-align: center;
-  font-size: 0.8rem;
-  color: #aaa;
+.portal-footer{
+  margin-top:3rem;text-align:center;font-size:0.78rem;
+  color:var(--cloudy-60);
 }
   </style>
 </head>
@@ -178,116 +118,86 @@ body {
 <div class="page">
 
   <div class="main-header">
-    <div class="header-logo">📊</div>
-    <div>
-      <h1>Reportes Cobre · PMM</h1>
-      <p>Métricas de campaña, uso de producto e inteligencia comercial · Actualizado 07 May 2026</p>
-    </div>
+    <span class="release">PMM · April Release 2026</span>
+    <h1>Reportes Cobre · Product Marketing</h1>
+    <p>Métricas de campaña, uso real de producto e inteligencia de pipeline · 5 reportes activos</p>
   </div>
 
-  <div class="section-label">Reportes publicados y en curso</div>
+  <div class="section-label">Reportes publicados</div>
 
   <div class="cards-grid">
 
-    <!-- Split Payments -->
-    <a class="report-card" href="split-payments/index.html">
-      <div class="card-header">
-        <span class="card-icon">💳</span>
-        <span class="card-badge badge-new">Nuevo</span>
-      </div>
-      <div>
-        <p class="card-title">Split Payments</p>
-        <p class="card-subtitle">9 KAMs · 439 contactos · 2 clientes en producción · 8 txns con cap diario bloqueando adopción · pipeline en Diio</p>
-      </div>
-      <div class="card-meta">
-        <span class="meta-chip">2 clientes prod</span>
-        <span class="meta-chip">$30M COP</span>
-        <span class="meta-chip">HubSpot + Snowflake + Diio</span>
-      </div>
-      <span class="card-arrow">→</span>
-    </a>
-
-    <!-- CLABEs Dinámicas -->
-    <a class="report-card" href="clabe-dinamicas/index.html">
-      <div class="card-header">
-        <span class="card-icon">🔢</span>
-        <span class="card-badge badge-new">Nuevo</span>
-      </div>
-      <div>
-        <p class="card-title">CLABEs Dinámicas</p>
-        <p class="card-subtitle">Boletín + Push · 563 contactos · 60% apertura · 4 clientes externos en producción (todos en testing) · 12 conversaciones Diio</p>
-      </div>
-      <div class="card-meta">
-        <span class="meta-chip">4 clientes prod</span>
-        <span class="meta-chip">$27 MXN</span>
-        <span class="meta-chip">MX · r2p_spei</span>
-      </div>
-      <span class="card-arrow">→</span>
-    </a>
-
-    <!-- Adopción Nequi -->
-    <div class="report-card disabled">
-      <div class="card-header">
-        <span class="card-icon">📱</span>
-        <span class="card-badge badge-soon">Próximamente</span>
-      </div>
-      <div>
-        <p class="card-title">Adopción Nequi Tokenization</p>
-        <p class="card-subtitle">Campaña de adopción a clientes CO · scoring de propensión · segmentos de riesgo y oportunidad</p>
-      </div>
-      <div class="card-meta">
-        <span class="meta-chip">CO</span>
-        <span class="meta-chip">HubSpot + Snowflake</span>
-      </div>
-    </div>
-
-    <!-- Contactabilidad -->
-    <div class="report-card disabled">
-      <div class="card-header">
-        <span class="card-icon">📞</span>
-        <span class="card-badge badge-soon">Próximamente</span>
-      </div>
-      <div>
-        <p class="card-title">Contactabilidad</p>
-        <p class="card-subtitle">Calidad y cobertura de datos de contacto en HubSpot · emails rebotados · gaps por segmento</p>
-      </div>
-      <div class="card-meta">
-        <span class="meta-chip">HubSpot CRM</span>
-      </div>
-    </div>
-
-    <!-- PayOuts con QR Bre-B -->
     <a class="report-card" href="payout-qr-breb/index.html">
       <div class="card-header">
-        <span class="card-icon">📲</span>
-        <span class="card-badge badge-new">Nuevo</span>
+        <span class="card-tag">Colombia · April Release</span>
+        <span class="card-badge badge-co">CO</span>
       </div>
-      <div>
-        <p class="card-title">PayOuts con QR Bre-B</p>
-        <p class="card-subtitle">4 emails (ES + EN) · 707 contactos · 109 clientes activos · $256B COP movilizados · pipeline en Diio</p>
-      </div>
+      <p class="card-title">PayOuts con QR Bre-B</p>
+      <p class="card-subtitle">4 emails (ES + EN) · 707 contactos únicos · 109 clientes activos · $256B COP movilizados · pipeline en Diio.</p>
       <div class="card-meta">
         <span class="meta-chip">109 clientes</span>
         <span class="meta-chip">472k txns · 88% éxito</span>
-        <span class="meta-chip">HubSpot + Snowflake + Diio</span>
+        <span class="meta-chip">Snowflake live</span>
       </div>
       <span class="card-arrow">→</span>
     </a>
 
-    <!-- Llaves Personalizadas -->
+    <a class="report-card" href="split-payments/index.html">
+      <div class="card-header">
+        <span class="card-tag">Colombia · April Release</span>
+        <span class="card-badge badge-co">CO</span>
+      </div>
+      <p class="card-title">Split Payments</p>
+      <p class="card-subtitle">9 KAMs · 439 contactos · 2 clientes en producción · adopción bloqueada por cap diario (f004) · pipeline en Diio.</p>
+      <div class="card-meta">
+        <span class="meta-chip">2 clientes prod</span>
+        <span class="meta-chip">$30M COP</span>
+        <span class="meta-chip">Snowflake live</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
     <a class="report-card" href="llaves-personalizadas/index.html">
       <div class="card-header">
-        <span class="card-icon">🗝️</span>
-        <span class="card-badge badge-new">Nuevo</span>
+        <span class="card-tag">Colombia · April Release</span>
+        <span class="card-badge badge-co">CO</span>
       </div>
-      <div>
-        <p class="card-title">Llaves Personalizadas</p>
-        <p class="card-subtitle">Boletín + Wallets + Push · 542 contactos únicos · 53% apertura · uso Snowflake + Diio</p>
-      </div>
+      <p class="card-title">Llaves Personalizadas Bre-B</p>
+      <p class="card-subtitle">3 emails (Boletín + Wallets + Push) · 542 contactos · 9 clientes activos · Littio (Selenio SAS) caso estrella.</p>
       <div class="card-meta">
-        <span class="meta-chip">542 contactos</span>
-        <span class="meta-chip">3 emails</span>
-        <span class="meta-chip">HubSpot + Snowflake + Diio</span>
+        <span class="meta-chip">9 clientes</span>
+        <span class="meta-chip">$5.10B COP</span>
+        <span class="meta-chip">Snowflake live</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="report-card" href="clabe-dinamicas/index.html">
+      <div class="card-header">
+        <span class="card-tag">México · April Release</span>
+        <span class="card-badge badge-mx">MX</span>
+      </div>
+      <p class="card-title">CLABEs Dinámicas</p>
+      <p class="card-subtitle">2 emails (Boletín + Push) · 563 contactos · 60% apertura · 4 clientes en testing · 12 deals activos en Diio.</p>
+      <div class="card-meta">
+        <span class="meta-chip">4 clientes prod</span>
+        <span class="meta-chip">$27 MXN</span>
+        <span class="meta-chip">r2p_spei</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="report-card" href="nequi-tokenization/index.html">
+      <div class="card-header">
+        <span class="card-tag">Colombia · April Release</span>
+        <span class="card-badge badge-co">CO</span>
+      </div>
+      <p class="card-title">Nequi Tokenization</p>
+      <p class="card-subtitle">Primer Toque · 343 cuentas · 1,452 enviados · 55.3% apertura · 39 adoptantes (A002) · pipeline en Diio.</p>
+      <div class="card-meta">
+        <span class="meta-chip">39 adoptantes</span>
+        <span class="meta-chip">P1: 23 Hot</span>
+        <span class="meta-chip">Snapshot 09 Abr</span>
       </div>
       <span class="card-arrow">→</span>
     </a>
