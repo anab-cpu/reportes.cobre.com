@@ -215,9 +215,9 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 </nav>
 
 <div class="header">
-  <div class="release-badge">PMM · April Release 2026<span class="geo-tag">Colombia</span></div>
+  <div class="release-badge">PMM · February Release 2026<span class="geo-tag">Colombia</span></div>
   <h1>PayOuts con QR Bre-B</h1>
-  <p class="subtitle">Campaña PMM April Release · 4 emails (ES/EN) · uso real desde Snowflake (MM_FLOW=payout, TYPE=breb) · pipeline en Diio.</p>
+  <p class="subtitle">Campaña PMM February Release · 4 emails (ES/EN) · uso real desde Snowflake (MM_FLOW=payout, TYPE=breb) · pipeline en Diio.</p>
 </div>
 
 
@@ -255,7 +255,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 
       <h3>Hallazgos clave</h3>
       <ul style="margin-left:1.2rem;line-height:1.9;font-size:13px;">
-        <li><strong>Adopción real de QR aún muy baja:</strong> 6 clientes con 71 payouts QR desde 2026-02-02 → 2026-05-05 — esperado para un April Release.</li>
+        <li><strong>Adopción real de QR aún muy baja:</strong> 6 clientes con 71 payouts QR desde 2026-02-02 → 2026-05-05 — esperado para un February Release.</li>
         <li><strong>Pipeline Diio ≫ uso real:</strong> 10 deals con mención explícita vs. 6 clientes en producción — la oportunidad es convertir conversaciones en transacciones.</li>
         <li><strong>Tasa de éxito QR: 32.4%</strong> — varias txns fallan por validación; vale revisar logs de error para diagnosticar fricción técnica.</li>
       </ul>
@@ -283,7 +283,7 @@ FROM COBRE_GOLD_DB.DATAWAREHOUSE.MONEY_MOVEMENTS
 WHERE MM_FLOW          = 'payout'
   AND TYPE             = 'breb'
   AND DESTINATION_TYPE = 'breb_qr';</pre>
-  <div class="query-note">Filtro canónico del campaign April Release: payouts hechos via QR Bre-B (<code>DESTINATION_TYPE='breb_qr'</code>). Excluye payouts a llave (<code>breb_key</code>), clearing house (<code>ch</code>) y DP (<code>dp</code>).</div>
+  <div class="query-note">Filtro canónico del campaign February Release: payouts hechos via QR Bre-B (<code>DESTINATION_TYPE='breb_qr'</code>). Excluye payouts a llave (<code>breb_key</code>), clearing house (<code>ch</code>) y DP (<code>dp</code>).</div>
 </div>
     
         <div class="card">
