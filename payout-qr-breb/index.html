@@ -225,12 +225,12 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       <h2>Conclusiones</h2>
       <div class="seg-grid">
         <div class="seg-card">
-          <h3>Uso real (Snowflake)</h3>
+          <h3>Uso real (Snowflake · breb_qr)</h3>
           <ul>
-            <li><strong>109 clientes activos</strong> con payouts Bre-B en producción</li>
-            <li><strong>474,436 transacciones</strong> · 88.4% de éxito</li>
-            <li><strong>$257.95B COP</strong> movilizados (completados)</li>
-            <li>Top 3: <strong>TapTap Send Mx</strong> (132,201) · <strong>AstroPay</strong> (99,445) · <strong>Selenio SAS MX</strong> (91,290)</li>
+            <li><strong>6 clientes</strong> han hecho payouts QR en producción</li>
+            <li><strong>71 transacciones</strong> · 32.4% de éxito (23 completadas)</li>
+            <li><strong>$55K COP</strong> movilizados (completados)</li>
+            <li>Top 3: <strong>Manteca CBMM MX</strong> (34) · <strong>cli_vdke2laqnj</strong> (21) · <strong>cli_xxz85j60is</strong> (9)</li>
           </ul>
         </div>
         <div class="seg-card">
@@ -239,7 +239,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
             <li><strong>1035 envíos</strong> totales (4 toques: E1 ES/EN + Push ES/EN)</li>
             <li>Apertura global: <strong>56.7%</strong></li>
             <li><strong>26 clics</strong> a las CTAs</li>
-            <li>Mismo público recibe ambos idiomas — ver tab Segmentos para gap</li>
+            <li>Mismo público recibe ambos idiomas — ver tab Segmentos</li>
           </ul>
         </div>
         <div class="seg-card">
@@ -253,11 +253,11 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
         </div>
       </div>
 
-      <h3 style="font-size:14px;font-weight:600;margin:20px 0 12px;color:var(--text);">Hallazgos clave</h3>
+      <h3>Hallazgos clave</h3>
       <ul style="margin-left:1.2rem;line-height:1.9;font-size:13px;">
-        <li><strong>El producto ya tiene tracción enorme:</strong> 109 clientes activos, $257.95B COP movilizados desde 2025-09-08.</li>
-        <li><strong>La campaña es de awareness, no de adopción:</strong> los grandes (TapTap, AstroPay, Selenio/Littio, Ripio MX) ya estaban antes del E1 (mar-2026).</li>
-        <li><strong>Tasa de éxito global ≈ 88%</strong> — los rejected más comunes son llaves inválidas (r018) y rechazos genéricos del banco (r000).</li>
+        <li><strong>Adopción real de QR aún muy baja:</strong> 6 clientes con 71 payouts QR desde 2026-02-02 → 2026-05-05 — esperado para un April Release.</li>
+        <li><strong>Pipeline Diio ≫ uso real:</strong> 10 deals con mención explícita vs. 6 clientes en producción — la oportunidad es convertir conversaciones en transacciones.</li>
+        <li><strong>Tasa de éxito QR: 32.4%</strong> — varias txns fallan por validación; vale revisar logs de error para diagnosticar fricción técnica.</li>
       </ul>
     </div>
     
@@ -271,1105 +271,106 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 <div id="tab-intel" class="tab-content active">
     
     <div class="kpi-grid">
-      <div class="kpi" style="border-left:4px solid var(--teal);"><div class="kpi-value">71</div><div class="kpi-label">Payouts QR (campaign)</div><div class="kpi-sub">23 completados · 6 clientes</div></div>
-      <div class="kpi"><div class="kpi-value">109</div><div class="kpi-label">Clientes Bre-B (todos)</div><div class="kpi-sub">payouts breb en prod</div></div>
-      <div class="kpi"><div class="kpi-value">474,436</div><div class="kpi-label">Total txns Bre-B</div><div class="kpi-sub">88.4% éxito · 2025-09-08→2026-05-07</div></div>
-      <div class="kpi"><div class="kpi-value">$257.95B</div><div class="kpi-label">Monto Bre-B (COP)</div><div class="kpi-sub">completados al 2026-05-07</div></div>
+      <div class="kpi"><div class="kpi-value">6</div><div class="kpi-label">Clientes con QR</div><div class="kpi-sub">DESTINATION_TYPE='breb_qr'</div></div>
+      <div class="kpi"><div class="kpi-value">71</div><div class="kpi-label">Total payouts QR</div><div class="kpi-sub">desde 2026-02-02</div></div>
+      <div class="kpi"><div class="kpi-value">23</div><div class="kpi-label">Completados</div><div class="kpi-sub">32.4% de éxito · 48 fallidos</div></div>
+      <div class="kpi"><div class="kpi-value">$55K</div><div class="kpi-label">Monto completado COP</div><div class="kpi-sub">al 2026-05-05</div></div>
     </div>
     <div class="query-block">
   <div class="query-label">Query <span class="badge">Snowflake</span></div>
-  <pre>-- Vista completa Bre-B (key + QR), contexto del producto
-SELECT *
-FROM COBRE_GOLD_DB.DATAWAREHOUSE.MONEY_MOVEMENTS
-WHERE MM_FLOW = 'payout'
-  AND TYPE    = 'breb';
-
--- Foco campaign April Release: solo QR
-SELECT *
+  <pre>SELECT *
 FROM COBRE_GOLD_DB.DATAWAREHOUSE.MONEY_MOVEMENTS
 WHERE MM_FLOW          = 'payout'
   AND TYPE             = 'breb'
   AND DESTINATION_TYPE = 'breb_qr';</pre>
-  <div class="query-note"><strong>Confirmado:</strong> el identificador de QR es <code>DESTINATION_TYPE='breb_qr'</code>. La distribución completa es <code>breb_key</code> (96% · pagos a llave), <code>breb_qr</code> (~0.015% · QR), <code>ch</code> y <code>dp</code>. El reporte muestra ambas vistas: la cifra grande (Bre-B total) como contexto, y la cifra QR-only como foco del campaign.</div>
+  <div class="query-note">Filtro canónico del campaign April Release: payouts hechos via QR Bre-B (<code>DESTINATION_TYPE='breb_qr'</code>). Excluye payouts a llave (<code>breb_key</code>), clearing house (<code>ch</code>) y DP (<code>dp</code>).</div>
 </div>
-    <div class="card">
-      <div class="card-title">Top 25 clientes por volumen — payouts Bre-B (Snowflake live)</div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead><tr><th>Cliente</th><th style="text-align:right;">Total</th><th style="text-align:right;">Completadas</th><th style="text-align:right;">Éxito</th><th style="text-align:right;">Monto completado</th><th>Primer uso</th><th>Último uso</th><th>Días</th></tr></thead>
-          <tbody><tr>
-          <td><strong>TapTap Send Mx</strong><br><small style="color:#888;font-family:monospace;">cli_tna629</small></td>
-          <td style="text-align:right;">132,201</td>
-          <td style="text-align:right;">121,830</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">92.2%</td>
-          <td style="text-align:right;font-family:monospace;">$75.69B COP</td>
-          <td style="text-align:center;">2025-10-24</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">196d</td>
-        </tr><tr>
-          <td><strong>AstroPay</strong><br><small style="color:#888;font-family:monospace;">cli_ara309</small></td>
-          <td style="text-align:right;">99,445</td>
-          <td style="text-align:right;">86,055</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">86.5%</td>
-          <td style="text-align:right;font-family:monospace;">$38.16B COP</td>
-          <td style="text-align:center;">2025-10-09</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">211d</td>
-        </tr><tr>
-          <td><strong>Selenio SAS MX</strong><br><small style="color:#888;font-family:monospace;">cli_loa379</small></td>
-          <td style="text-align:right;">91,290</td>
-          <td style="text-align:right;">81,810</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">89.6%</td>
-          <td style="text-align:right;font-family:monospace;">$51.97B COP</td>
-          <td style="text-align:center;">2025-10-06</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">214d</td>
-        </tr><tr>
-          <td><strong>Ripio MX</strong><br><small style="color:#888;font-family:monospace;">cli_lwo1cv8gpm</small></td>
-          <td style="text-align:right;">51,716</td>
-          <td style="text-align:right;">46,652</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">90.2%</td>
-          <td style="text-align:right;font-family:monospace;">$304.0M COP</td>
-          <td style="text-align:center;">2026-02-12</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">85d</td>
-        </tr><tr>
-          <td><strong>Meru Colombia</strong><br><small style="color:#888;font-family:monospace;">cli_umqszzbdw2</small></td>
-          <td style="text-align:right;">25,002</td>
-          <td style="text-align:right;">21,311</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">85.2%</td>
-          <td style="text-align:right;font-family:monospace;">$12.62B COP</td>
-          <td style="text-align:center;">2025-11-14</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">175d</td>
-        </tr><tr>
-          <td><strong>Holdings BPO MX</strong><br><small style="color:#888;font-family:monospace;">cli_hlo373</small></td>
-          <td style="text-align:right;">12,763</td>
-          <td style="text-align:right;">11,764</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">92.2%</td>
-          <td style="text-align:right;font-family:monospace;">$12.75B COP</td>
-          <td style="text-align:center;">2025-10-08</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">212d</td>
-        </tr><tr>
-          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_vdke2laqnj</small></td>
-          <td style="text-align:right;">8,986</td>
-          <td style="text-align:right;">8,358</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">93.0%</td>
-          <td style="text-align:right;font-family:monospace;">$30.0M COP</td>
-          <td style="text-align:center;">2025-09-08</td>
-          <td style="text-align:center;">2026-05-06</td>
-          <td style="text-align:center;">241d</td>
-        </tr><tr>
-          <td><strong>Exlatin Sas</strong><br><small style="color:#888;font-family:monospace;">cli_leyq7pp4ll</small></td>
-          <td style="text-align:right;">8,107</td>
-          <td style="text-align:right;">7,679</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">94.7%</td>
-          <td style="text-align:right;font-family:monospace;">$26.59B COP</td>
-          <td style="text-align:center;">2025-12-16</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">143d</td>
-        </tr><tr>
-          <td><strong>Solutions Interface LLC</strong><br><small style="color:#888;font-family:monospace;">cli_oppssffrqz</small></td>
-          <td style="text-align:right;">7,860</td>
-          <td style="text-align:right;">7,047</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">89.7%</td>
-          <td style="text-align:right;font-family:monospace;">$4.30B COP</td>
-          <td style="text-align:center;">2025-12-31</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">128d</td>
-        </tr><tr>
-          <td><strong>FLASH LATAM PAYMENTS S.A.S.</strong><br><small style="color:#888;font-family:monospace;">cli_aamjnj6dc8</small></td>
-          <td style="text-align:right;">7,375</td>
-          <td style="text-align:right;">3,163</td>
-          <td style="text-align:right;color:#C0392B;font-weight:700;">42.9%</td>
-          <td style="text-align:right;font-family:monospace;">$744.3M COP</td>
-          <td style="text-align:center;">2026-02-06</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">91d</td>
-        </tr><tr>
-          <td><strong>Supefina</strong><br><small style="color:#888;font-family:monospace;">cli_b0wble9b0f</small></td>
-          <td style="text-align:right;">3,370</td>
-          <td style="text-align:right;">2,624</td>
-          <td style="text-align:right;color:#D4820A;font-weight:700;">77.9%</td>
-          <td style="text-align:right;font-family:monospace;">$441.0M COP</td>
-          <td style="text-align:center;">2026-04-17</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">21d</td>
-        </tr><tr>
-          <td><strong>Ontop Holdings</strong><br><small style="color:#888;font-family:monospace;">cli_tkwhe6b8qx</small></td>
-          <td style="text-align:right;">3,048</td>
-          <td style="text-align:right;">2,659</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">87.2%</td>
-          <td style="text-align:right;font-family:monospace;">$5.26B COP</td>
-          <td style="text-align:center;">2026-04-07</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">31d</td>
-        </tr><tr>
-          <td><strong>RISI MX</strong><br><small style="color:#888;font-family:monospace;">cli_re28ovfgkh</small></td>
-          <td style="text-align:right;">2,999</td>
-          <td style="text-align:right;">2,659</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">88.7%</td>
-          <td style="text-align:right;font-family:monospace;">$3.31B COP</td>
-          <td style="text-align:center;">2025-11-30</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">159d</td>
-        </tr><tr>
-          <td><strong>Wallib SAS</strong><br><small style="color:#888;font-family:monospace;">cli_w4wd3lwvld</small></td>
-          <td style="text-align:right;">2,653</td>
-          <td style="text-align:right;">1,653</td>
-          <td style="text-align:right;color:#D4820A;font-weight:700;">62.3%</td>
-          <td style="text-align:right;font-family:monospace;">$3.79B COP</td>
-          <td style="text-align:center;">2025-11-20</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">169d</td>
-        </tr><tr>
-          <td><strong>Directa 24</strong><br><small style="color:#888;font-family:monospace;">cli_cec441</small></td>
-          <td style="text-align:right;">2,107</td>
-          <td style="text-align:right;">1,989</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">94.4%</td>
-          <td style="text-align:right;font-family:monospace;">$2.39B COP</td>
-          <td style="text-align:center;">2025-12-04</td>
-          <td style="text-align:center;">2026-04-16</td>
-          <td style="text-align:center;">134d</td>
-        </tr><tr>
-          <td><strong>Wallbit</strong><br><small style="color:#888;font-family:monospace;">cli_ih89dmjrg9</small></td>
-          <td style="text-align:right;">1,547</td>
-          <td style="text-align:right;">372</td>
-          <td style="text-align:right;color:#C0392B;font-weight:700;">24.0%</td>
-          <td style="text-align:right;font-family:monospace;">$200.3M COP</td>
-          <td style="text-align:center;">2026-01-23</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">105d</td>
-        </tr><tr>
-          <td><strong>Betterbro MX</strong><br><small style="color:#888;font-family:monospace;">cli_kpmhfqeuri</small></td>
-          <td style="text-align:right;">1,524</td>
-          <td style="text-align:right;">1,321</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">86.7%</td>
-          <td style="text-align:right;font-family:monospace;">$396.8M COP</td>
-          <td style="text-align:center;">2025-12-17</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">142d</td>
-        </tr><tr>
-          <td><strong>RISI MX</strong><br><small style="color:#888;font-family:monospace;">cli_5zcwg0qgwx</small></td>
-          <td style="text-align:right;">1,448</td>
-          <td style="text-align:right;">1,359</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">93.9%</td>
-          <td style="text-align:right;font-family:monospace;">$3.24B COP</td>
-          <td style="text-align:center;">2025-11-17</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">172d</td>
-        </tr><tr>
-          <td><strong>Doctor Peso Colombia</strong><br><small style="color:#888;font-family:monospace;">cli_0pkzmnnadj</small></td>
-          <td style="text-align:right;">1,393</td>
-          <td style="text-align:right;">1,261</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">90.5%</td>
-          <td style="text-align:right;font-family:monospace;">$795.3M COP</td>
-          <td style="text-align:center;">2026-03-26</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">43d</td>
-        </tr><tr>
-          <td><strong>Comfama</strong><br><small style="color:#888;font-family:monospace;">cli_egaj2bgyti</small></td>
-          <td style="text-align:right;">1,312</td>
-          <td style="text-align:right;">919</td>
-          <td style="text-align:right;color:#D4820A;font-weight:700;">70.0%</td>
-          <td style="text-align:right;font-family:monospace;">$930 COP</td>
-          <td style="text-align:center;">2025-12-05</td>
-          <td style="text-align:center;">2025-12-29</td>
-          <td style="text-align:center;">25d</td>
-        </tr><tr>
-          <td><strong>Infiniaweb.com</strong><br><small style="color:#888;font-family:monospace;">cli_y21znpmrxg</small></td>
-          <td style="text-align:right;">1,032</td>
-          <td style="text-align:right;">879</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">85.2%</td>
-          <td style="text-align:right;font-family:monospace;">$930.5M COP</td>
-          <td style="text-align:center;">2026-02-26</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">71d</td>
-        </tr><tr>
-          <td><strong>BE TO BEE SAS</strong><br><small style="color:#888;font-family:monospace;">cli_bte230</small></td>
-          <td style="text-align:right;">714</td>
-          <td style="text-align:right;">653</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">91.5%</td>
-          <td style="text-align:right;font-family:monospace;">$904.7M COP</td>
-          <td style="text-align:center;">2026-02-20</td>
-          <td style="text-align:center;">2026-05-06</td>
-          <td style="text-align:center;">76d</td>
-        </tr><tr>
-          <td><strong>Directa 24</strong><br><small style="color:#888;font-family:monospace;">cli_cca372</small></td>
-          <td style="text-align:right;">579</td>
-          <td style="text-align:right;">525</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">90.7%</td>
-          <td style="text-align:right;font-family:monospace;">$132.8M COP</td>
-          <td style="text-align:center;">2025-10-13</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">207d</td>
-        </tr><tr>
-          <td><strong>Smart Pay LLC</strong><br><small style="color:#888;font-family:monospace;">cli_hab3q9ohft</small></td>
-          <td style="text-align:right;">499</td>
-          <td style="text-align:right;">462</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">92.6%</td>
-          <td style="text-align:right;font-family:monospace;">$4.62B COP</td>
-          <td style="text-align:center;">2026-01-28</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">100d</td>
-        </tr><tr>
-          <td><strong>Majority Global LLC (Wallet) MX</strong><br><small style="color:#888;font-family:monospace;">cli_tkargozhgz</small></td>
-          <td style="text-align:right;">496</td>
-          <td style="text-align:right;">450</td>
-          <td style="text-align:right;color:#27AE60;font-weight:700;">90.7%</td>
-          <td style="text-align:right;font-family:monospace;">$133.6M COP</td>
-          <td style="text-align:center;">2026-03-27</td>
-          <td style="text-align:center;">2026-05-07</td>
-          <td style="text-align:center;">42d</td>
-        </tr></tbody>
-        </table>
-      </div>
-      
-        <details style="margin-top:8px;">
-          <summary style="cursor:pointer;color:var(--primary);font-weight:600;font-size:13px;padding:8px;">
-            ▾ Ver 84 clientes adicionales (cola larga)
-          </summary>
-          <div style="overflow-x:auto;margin-top:8px;">
+    
+        <div class="card">
+          <div class="card-title">Clientes con payouts QR (<code>DESTINATION_TYPE='breb_qr'</code>)</div>
+          <div style="overflow-x:auto;">
             <table>
-              <thead><tr><th>Cliente</th><th style="text-align:right;">Total</th><th style="text-align:right;">Completadas</th><th style="text-align:right;">Éxito</th><th style="text-align:right;">Monto completado</th><th>Primer uso</th><th>Último uso</th><th>Días</th></tr></thead>
+              <thead><tr><th>Cliente</th><th style="text-align:right;">QR txns</th><th style="text-align:right;">Completadas</th><th style="text-align:right;">Fallidas</th><th style="text-align:right;">Monto completado</th><th>Primer QR</th><th>Último QR</th></tr></thead>
               <tbody><tr>
-              <td>weibook<br><small style="color:#888;font-family:monospace;">cli_4uza4mhcym</small></td>
-              <td style="text-align:right;">458</td>
-              <td style="text-align:right;">378</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">82.5%</td>
-              <td style="text-align:right;font-family:monospace;">$290.7M COP</td>
-              <td style="text-align:center;">2025-09-26</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">224d</td>
-            </tr><tr>
-              <td>Thunes<br><small style="color:#888;font-family:monospace;">cli_z04fswje38</small></td>
-              <td style="text-align:right;">429</td>
-              <td style="text-align:right;">369</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">86.0%</td>
-              <td style="text-align:right;font-family:monospace;">$424.3M COP</td>
-              <td style="text-align:center;">2025-10-08</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">212d</td>
-            </tr><tr>
-              <td>web  strategies<br><small style="color:#888;font-family:monospace;">cli_wse612</small></td>
-              <td style="text-align:right;">418</td>
-              <td style="text-align:right;">343</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">82.1%</td>
-              <td style="text-align:right;font-family:monospace;">$1.46B COP</td>
-              <td style="text-align:center;">2026-02-26</td>
-              <td style="text-align:center;">2026-04-25</td>
-              <td style="text-align:center;">59d</td>
-            </tr><tr>
-              <td>Directa 24<br><small style="color:#888;font-family:monospace;">cli_coa443</small></td>
-              <td style="text-align:right;">383</td>
-              <td style="text-align:right;">350</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">91.4%</td>
-              <td style="text-align:right;font-family:monospace;">$396.1M COP</td>
-              <td style="text-align:center;">2026-02-03</td>
-              <td style="text-align:center;">2026-04-30</td>
-              <td style="text-align:center;">87d</td>
-            </tr><tr>
-              <td>Bitpoint<br><small style="color:#888;font-family:monospace;">cli_hprmqymewx</small></td>
-              <td style="text-align:right;">336</td>
-              <td style="text-align:right;">301</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">89.6%</td>
-              <td style="text-align:right;font-family:monospace;">$543.5M COP</td>
-              <td style="text-align:center;">2025-10-20</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">200d</td>
-            </tr><tr>
-              <td>Velafi/ Trubit MX (Nebula)<br><small style="color:#888;font-family:monospace;">cli_83glq73yk4</small></td>
-              <td style="text-align:right;">313</td>
-              <td style="text-align:right;">203</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">64.9%</td>
-              <td style="text-align:right;font-family:monospace;">$294.1M COP</td>
-              <td style="text-align:center;">2025-11-21</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">167d</td>
-            </tr><tr>
-              <td>Dropi<br><small style="color:#888;font-family:monospace;">cli_ddr5003</small></td>
-              <td style="text-align:right;">304</td>
-              <td style="text-align:right;">203</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">66.8%</td>
-              <td style="text-align:right;font-family:monospace;">$365.1M COP</td>
-              <td style="text-align:center;">2025-10-10</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">209d</td>
-            </tr><tr>
-              <td>Depay<br><small style="color:#888;font-family:monospace;">cli_idkhd06nbc</small></td>
-              <td style="text-align:right;">174</td>
-              <td style="text-align:right;">56</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">32.2%</td>
-              <td style="text-align:right;font-family:monospace;">$38K COP</td>
-              <td style="text-align:center;">2026-01-20</td>
-              <td style="text-align:center;">2026-04-27</td>
-              <td style="text-align:center;">98d</td>
-            </tr><tr>
-              <td>More payments MX<br><small style="color:#888;font-family:monospace;">cli_muo340</small></td>
-              <td style="text-align:right;">164</td>
-              <td style="text-align:right;">92</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">56.1%</td>
-              <td style="text-align:right;font-family:monospace;">$49.9M COP</td>
-              <td style="text-align:center;">2025-12-22</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">137d</td>
-            </tr><tr>
-              <td>DE LA RENTA INVERSIONES SAS<br><small style="color:#888;font-family:monospace;">cli_gcntysazfe</small></td>
-              <td style="text-align:right;">123</td>
-              <td style="text-align:right;">97</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">78.9%</td>
-              <td style="text-align:right;font-family:monospace;">$1.03B COP</td>
-              <td style="text-align:center;">2026-02-16</td>
-              <td style="text-align:center;">2026-03-03</td>
-              <td style="text-align:center;">16d</td>
-            </tr><tr>
-              <td>Manteca CBMM MX<br><small style="color:#888;font-family:monospace;">cli_yuqgswaftf</small></td>
-              <td style="text-align:right;">120</td>
-              <td style="text-align:right;">74</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">61.7%</td>
-              <td style="text-align:right;font-family:monospace;">$3.9M COP</td>
-              <td style="text-align:center;">2026-01-23</td>
-              <td style="text-align:center;">2026-05-03</td>
-              <td style="text-align:center;">101d</td>
-            </tr><tr>
-              <td>Muralpay<br><small style="color:#888;font-family:monospace;">cli_ksxvevoqng</small></td>
-              <td style="text-align:right;">113</td>
-              <td style="text-align:right;">107</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">94.7%</td>
-              <td style="text-align:right;font-family:monospace;">$141.7M COP</td>
-              <td style="text-align:center;">2026-01-12</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">116d</td>
-            </tr><tr>
-              <td>Bamboo Payment<br><small style="color:#888;font-family:monospace;">cli_6fweoqmrfc</small></td>
-              <td style="text-align:right;">112</td>
-              <td style="text-align:right;">100</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">89.3%</td>
-              <td style="text-align:right;font-family:monospace;">$206.8M COP</td>
-              <td style="text-align:center;">2025-10-08</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">212d</td>
-            </tr><tr>
-              <td>Samsung Electronics<br><small style="color:#888;font-family:monospace;">cli_jqqetoyoet</small></td>
-              <td style="text-align:right;">98</td>
-              <td style="text-align:right;">46</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">46.9%</td>
-              <td style="text-align:right;font-family:monospace;">$19K COP</td>
-              <td style="text-align:center;">2026-04-02</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">34d</td>
-            </tr><tr>
-              <td>SIDDHI SAS<br><small style="color:#888;font-family:monospace;">cli_lnumlvbnru</small></td>
-              <td style="text-align:right;">89</td>
-              <td style="text-align:right;">75</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">84.3%</td>
-              <td style="text-align:right;font-family:monospace;">$556.9M COP</td>
-              <td style="text-align:center;">2026-02-26</td>
-              <td style="text-align:center;">2026-04-20</td>
-              <td style="text-align:center;">54d</td>
-            </tr><tr>
-              <td>DE LA RENTA INVERSIONES SAS<br><small style="color:#888;font-family:monospace;">cli_rpgkzxhl7x</small></td>
-              <td style="text-align:right;">89</td>
-              <td style="text-align:right;">81</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">91.0%</td>
-              <td style="text-align:right;font-family:monospace;">$738.7M COP</td>
-              <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">4d</td>
-            </tr><tr>
-              <td>Prizmapay<br><small style="color:#888;font-family:monospace;">cli_c9vqruubyd</small></td>
-              <td style="text-align:right;">85</td>
-              <td style="text-align:right;">72</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">84.7%</td>
-              <td style="text-align:right;font-family:monospace;">$234.9M COP</td>
-              <td style="text-align:center;">2025-11-22</td>
-              <td style="text-align:center;">2026-04-23</td>
-              <td style="text-align:center;">153d</td>
-            </tr><tr>
-              <td>—<br><small style="color:#888;font-family:monospace;">cli_xxz85j60is</small></td>
-              <td style="text-align:right;">85</td>
-              <td style="text-align:right;">52</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">61.2%</td>
-              <td style="text-align:right;font-family:monospace;">$5K COP</td>
-              <td style="text-align:center;">2025-09-30</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">218d</td>
-            </tr><tr>
-              <td>DYP Capital<br><small style="color:#888;font-family:monospace;">cli_pqaf0vyrdl</small></td>
-              <td style="text-align:right;">75</td>
-              <td style="text-align:right;">69</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">92.0%</td>
-              <td style="text-align:right;font-family:monospace;">$417.4M COP</td>
-              <td style="text-align:center;">2025-10-07</td>
-              <td style="text-align:center;">2026-04-07</td>
-              <td style="text-align:center;">183d</td>
-            </tr><tr>
-              <td>Selenio SAS MX<br><small style="color:#888;font-family:monospace;">cli_pimvix9pk3</small></td>
-              <td style="text-align:right;">66</td>
-              <td style="text-align:right;">21</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">31.8%</td>
-              <td style="text-align:right;font-family:monospace;">$127K COP</td>
-              <td style="text-align:center;">2025-10-06</td>
-              <td style="text-align:center;">2026-04-27</td>
-              <td style="text-align:center;">204d</td>
-            </tr><tr>
-              <td>COLURS<br><small style="color:#888;font-family:monospace;">cli_oq6vfdg5bz</small></td>
-              <td style="text-align:right;">58</td>
-              <td style="text-align:right;">46</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">79.3%</td>
-              <td style="text-align:right;font-family:monospace;">$17.4M COP</td>
-              <td style="text-align:center;">2026-04-22</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">16d</td>
-            </tr><tr>
-              <td>Cobru 2025<br><small style="color:#888;font-family:monospace;">cli_wlyetxxpcd</small></td>
-              <td style="text-align:right;">51</td>
-              <td style="text-align:right;">44</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">86.3%</td>
-              <td style="text-align:right;font-family:monospace;">$36.5M COP</td>
-              <td style="text-align:center;">2025-10-24</td>
-              <td style="text-align:center;">2026-03-13</td>
-              <td style="text-align:center;">141d</td>
-            </tr><tr>
-              <td>Urbaser Colombia S.A.S. ESP<br><small style="color:#888;font-family:monospace;">cli_ya7lmaabyr</small></td>
-              <td style="text-align:right;">51</td>
-              <td style="text-align:right;">51</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$20.2M COP</td>
-              <td style="text-align:center;">2025-12-02</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">155d</td>
-            </tr><tr>
-              <td>Qash<br><small style="color:#888;font-family:monospace;">cli_yia3rpfssc</small></td>
-              <td style="text-align:right;">47</td>
-              <td style="text-align:right;">37</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">78.7%</td>
-              <td style="text-align:right;font-family:monospace;">$22.9M COP</td>
-              <td style="text-align:center;">2026-03-21</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">46d</td>
-            </tr><tr>
-              <td>TerraPay Mexico<br><small style="color:#888;font-family:monospace;">cli_xhpypbwraq</small></td>
-              <td style="text-align:right;">41</td>
-              <td style="text-align:right;">31</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">75.6%</td>
-              <td style="text-align:right;font-family:monospace;">$45K COP</td>
-              <td style="text-align:center;">2025-12-15</td>
-              <td style="text-align:center;">2026-01-20</td>
-              <td style="text-align:center;">37d</td>
-            </tr><tr>
-              <td>Upcard.app<br><small style="color:#888;font-family:monospace;">cli_f7vsybvvcs</small></td>
-              <td style="text-align:right;">41</td>
-              <td style="text-align:right;">29</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">70.7%</td>
-              <td style="text-align:right;font-family:monospace;">$15.7M COP</td>
-              <td style="text-align:center;">2026-04-22</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">16d</td>
-            </tr><tr>
-              <td>Smart Management Choice S.A.S<br><small style="color:#888;font-family:monospace;">cli_w1iczcqrox</small></td>
-              <td style="text-align:right;">38</td>
-              <td style="text-align:right;">38</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$4.8M COP</td>
-              <td style="text-align:center;">2025-12-24</td>
-              <td style="text-align:center;">2026-02-05</td>
-              <td style="text-align:center;">44d</td>
-            </tr><tr>
-              <td>Remitee<br><small style="color:#888;font-family:monospace;">cli_khe7wwc2mk</small></td>
-              <td style="text-align:right;">35</td>
-              <td style="text-align:right;">6</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">17.1%</td>
-              <td style="text-align:right;font-family:monospace;">$28K COP</td>
-              <td style="text-align:center;">2025-09-30</td>
-              <td style="text-align:center;">2026-02-10</td>
-              <td style="text-align:center;">134d</td>
-            </tr><tr>
-              <td>DYP Capital<br><small style="color:#888;font-family:monospace;">cli_ehjcfs9qcb</small></td>
+              <td><strong>Manteca CBMM MX</strong><br><small style="color:#888;font-family:monospace;">cli_yuqgswaftf</small></td>
               <td style="text-align:right;">34</td>
-              <td style="text-align:right;">33</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">97.1%</td>
-              <td style="text-align:right;font-family:monospace;">$344.4M COP</td>
-              <td style="text-align:center;">2026-03-02</td>
-              <td style="text-align:center;">2026-03-05</td>
-              <td style="text-align:center;">4d</td>
-            </tr><tr>
-              <td>Konfie<br><small style="color:#888;font-family:monospace;">cli_ulngaa0gfg</small></td>
-              <td style="text-align:right;">34</td>
-              <td style="text-align:right;">22</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">64.7%</td>
-              <td style="text-align:right;font-family:monospace;">$90.7M COP</td>
-              <td style="text-align:center;">2026-02-24</td>
-              <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">70d</td>
-            </tr><tr>
-              <td>TerraPay Mexico<br><small style="color:#888;font-family:monospace;">cli_dvp15n5etl</small></td>
-              <td style="text-align:right;">34</td>
-              <td style="text-align:right;">21</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">61.8%</td>
-              <td style="text-align:right;font-family:monospace;">$22.6M COP</td>
-              <td style="text-align:center;">2026-01-22</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">106d</td>
-            </tr><tr>
-              <td>Liberr<br><small style="color:#888;font-family:monospace;">cli_sprejt0l8u</small></td>
-              <td style="text-align:right;">33</td>
-              <td style="text-align:right;">32</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">97.0%</td>
-              <td style="text-align:right;font-family:monospace;">$41.1M COP</td>
-              <td style="text-align:center;">2025-12-26</td>
-              <td style="text-align:center;">2026-05-02</td>
-              <td style="text-align:center;">128d</td>
-            </tr><tr>
-              <td>Alzent digital<br><small style="color:#888;font-family:monospace;">cli_zkggvlvqf0</small></td>
-              <td style="text-align:right;">32</td>
-              <td style="text-align:right;">27</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">84.4%</td>
-              <td style="text-align:right;font-family:monospace;">$91K COP</td>
-              <td style="text-align:center;">2025-10-07</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">212d</td>
-            </tr><tr>
-              <td>DUE PAYMENTS INC<br><small style="color:#888;font-family:monospace;">cli_c2ekrzsnms</small></td>
-              <td style="text-align:right;">28</td>
-              <td style="text-align:right;">18</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">64.3%</td>
-              <td style="text-align:right;font-family:monospace;">$2.8M COP</td>
-              <td style="text-align:center;">2026-02-03</td>
-              <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">91d</td>
-            </tr><tr>
-              <td>Telefonica<br><small style="color:#888;font-family:monospace;">cli_ftqynbckyf</small></td>
-              <td style="text-align:right;">28</td>
-              <td style="text-align:right;">24</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">85.7%</td>
-              <td style="text-align:right;font-family:monospace;">$2K COP</td>
-              <td style="text-align:center;">2026-04-30</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">8d</td>
-            </tr><tr>
-              <td>VIVVI SAS<br><small style="color:#888;font-family:monospace;">cli_vis674</small></td>
-              <td style="text-align:right;">27</td>
+              <td style="text-align:right;">11</td>
               <td style="text-align:right;">23</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">85.2%</td>
-              <td style="text-align:right;font-family:monospace;">$58.6M COP</td>
-              <td style="text-align:center;">2025-10-16</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">203d</td>
+              <td style="text-align:right;font-family:monospace;">$41K COP</td>
+              <td style="text-align:center;">2026-03-10</td>
+              <td style="text-align:center;">2026-04-07</td>
             </tr><tr>
-              <td>INVERSIONES MALAPA<br><small style="color:#888;font-family:monospace;">cli_havgkpripf</small></td>
-              <td style="text-align:right;">22</td>
-              <td style="text-align:right;">20</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">90.9%</td>
-              <td style="text-align:right;font-family:monospace;">$8.2M COP</td>
-              <td style="text-align:center;">2025-12-12</td>
-              <td style="text-align:center;">2026-01-29</td>
-              <td style="text-align:center;">49d</td>
-            </tr><tr>
-              <td>Dopayment<br><small style="color:#888;font-family:monospace;">cli_3iddbmimlc</small></td>
+              <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_vdke2laqnj</small></td>
               <td style="text-align:right;">21</td>
-              <td style="text-align:right;">11</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">52.4%</td>
-              <td style="text-align:right;font-family:monospace;">$7K COP</td>
-              <td style="text-align:center;">2025-11-09</td>
-              <td style="text-align:center;">2025-11-27</td>
-              <td style="text-align:center;">19d</td>
-            </tr><tr>
-              <td>Fixit<br><small style="color:#888;font-family:monospace;">cli_fxt536</small></td>
-              <td style="text-align:right;">21</td>
+              <td style="text-align:right;">4</td>
               <td style="text-align:right;">17</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">81.0%</td>
-              <td style="text-align:right;font-family:monospace;">$17.7M COP</td>
-              <td style="text-align:center;">2025-10-15</td>
-              <td style="text-align:center;">2026-02-25</td>
-              <td style="text-align:center;">134d</td>
-            </tr><tr>
-              <td>TerraPay<br><small style="color:#888;font-family:monospace;">cli_nxmcamenmp</small></td>
-              <td style="text-align:right;">20</td>
-              <td style="text-align:right;">17</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">85.0%</td>
-              <td style="text-align:right;font-family:monospace;">$25K COP</td>
-              <td style="text-align:center;">2026-02-13</td>
-              <td style="text-align:center;">2026-03-26</td>
-              <td style="text-align:center;">42d</td>
-            </tr><tr>
-              <td>J&T Express Colombia<br><small style="color:#888;font-family:monospace;">cli_ohlzfiqg7i</small></td>
-              <td style="text-align:right;">19</td>
-              <td style="text-align:right;">19</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$80.8M COP</td>
+              <td style="text-align:right;font-family:monospace;">$3K COP</td>
+              <td style="text-align:center;">2026-02-02</td>
               <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">1d</td>
             </tr><tr>
-              <td>Ztech<br><small style="color:#888;font-family:monospace;">cli_ip2q8urixm</small></td>
-              <td style="text-align:right;">18</td>
-              <td style="text-align:right;">18</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$60.7M COP</td>
-              <td style="text-align:center;">2026-05-01</td>
-              <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">4d</td>
-            </tr><tr>
-              <td>AZlogica<br><small style="color:#888;font-family:monospace;">cli_wlyoukapxy</small></td>
-              <td style="text-align:right;">15</td>
-              <td style="text-align:right;">13</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">86.7%</td>
-              <td style="text-align:right;font-family:monospace;">$41.6M COP</td>
-              <td style="text-align:center;">2025-10-17</td>
-              <td style="text-align:center;">2025-12-30</td>
-              <td style="text-align:center;">75d</td>
-            </tr><tr>
-              <td>FINTRA LOGISTICS SAS<br><small style="color:#888;font-family:monospace;">cli_cmguktjmhb</small></td>
-              <td style="text-align:right;">13</td>
-              <td style="text-align:right;">11</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">84.6%</td>
-              <td style="text-align:right;font-family:monospace;">$7.7M COP</td>
-              <td style="text-align:center;">2026-01-16</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">110d</td>
-            </tr><tr>
-              <td>FLETX<br><small style="color:#888;font-family:monospace;">cli_7zehgmybxs</small></td>
-              <td style="text-align:right;">12</td>
-              <td style="text-align:right;">11</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">91.7%</td>
-              <td style="text-align:right;font-family:monospace;">$45K COP</td>
-              <td style="text-align:center;">2026-04-01</td>
-              <td style="text-align:center;">2026-04-28</td>
-              <td style="text-align:center;">28d</td>
-            </tr><tr>
-              <td>ImiBank<br><small style="color:#888;font-family:monospace;">cli_hoedqmc01d</small></td>
-              <td style="text-align:right;">11</td>
-              <td style="text-align:right;">11</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$5.2M COP</td>
-              <td style="text-align:center;">2025-10-18</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">202d</td>
-            </tr><tr>
-              <td>Innovatelearnig<br><small style="color:#888;font-family:monospace;">cli_iot647</small></td>
-              <td style="text-align:right;">11</td>
+              <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_xxz85j60is</small></td>
               <td style="text-align:right;">9</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">81.8%</td>
-              <td style="text-align:right;font-family:monospace;">$18.3M COP</td>
-              <td style="text-align:center;">2025-11-07</td>
-              <td style="text-align:center;">2026-04-28</td>
-              <td style="text-align:center;">173d</td>
-            </tr><tr>
-              <td>ComboPlay<br><small style="color:#888;font-family:monospace;">cli_cam359</small></td>
-              <td style="text-align:right;">9</td>
-              <td style="text-align:right;">9</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$5.4M COP</td>
-              <td style="text-align:center;">2025-10-14</td>
-              <td style="text-align:center;">2026-04-30</td>
-              <td style="text-align:center;">199d</td>
-            </tr><tr>
-              <td>Rosas Don Eloy<br><small style="color:#888;font-family:monospace;">cli_in4j1s6zuq</small></td>
-              <td style="text-align:right;">9</td>
-              <td style="text-align:right;">8</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">88.9%</td>
-              <td style="text-align:right;font-family:monospace;">$35.1M COP</td>
-              <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">2d</td>
-            </tr><tr>
-              <td>Heincke<br><small style="color:#888;font-family:monospace;">cli_dri7fqle70</small></td>
-              <td style="text-align:right;">9</td>
-              <td style="text-align:right;">9</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$24.2M COP</td>
-              <td style="text-align:center;">2025-11-18</td>
-              <td style="text-align:center;">2026-03-26</td>
-              <td style="text-align:center;">129d</td>
-            </tr><tr>
-              <td>Alzent digital<br><small style="color:#888;font-family:monospace;">cli_pxt01</small></td>
-              <td style="text-align:right;">8</td>
-              <td style="text-align:right;">8</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$1K COP</td>
-              <td style="text-align:center;">2026-03-18</td>
-              <td style="text-align:center;">2026-04-28</td>
-              <td style="text-align:center;">42d</td>
-            </tr><tr>
-              <td>Future Pay CO<br><small style="color:#888;font-family:monospace;">cli_vfq699unxo</small></td>
-              <td style="text-align:right;">8</td>
+              <td style="text-align:right;">3</td>
               <td style="text-align:right;">6</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">75.0%</td>
-              <td style="text-align:right;font-family:monospace;">$88 COP</td>
-              <td style="text-align:center;">2026-02-03</td>
-              <td style="text-align:center;">2026-02-05</td>
-              <td style="text-align:center;">3d</td>
-            </tr><tr>
-              <td>Borderless MX<br><small style="color:#888;font-family:monospace;">cli_ypzyibdlap</small></td>
-              <td style="text-align:right;">7</td>
-              <td style="text-align:right;">6</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">85.7%</td>
-              <td style="text-align:right;font-family:monospace;">$21K COP</td>
-              <td style="text-align:center;">2026-04-23</td>
-              <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">12d</td>
-            </tr><tr>
-              <td>Obed services<br><small style="color:#888;font-family:monospace;">cli_3p9cnivhpn</small></td>
-              <td style="text-align:right;">7</td>
-              <td style="text-align:right;">7</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$71.6M COP</td>
-              <td style="text-align:center;">2026-05-03</td>
-              <td style="text-align:center;">2026-05-03</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Due<br><small style="color:#888;font-family:monospace;">cli_rsh45gjq10</small></td>
-              <td style="text-align:right;">7</td>
-              <td style="text-align:right;">7</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$363K COP</td>
-              <td style="text-align:center;">2025-11-19</td>
-              <td style="text-align:center;">2026-01-06</td>
-              <td style="text-align:center;">49d</td>
-            </tr><tr>
-              <td>HRC TECHNOLOGIES<br><small style="color:#888;font-family:monospace;">cli_exs9ztfnky</small></td>
-              <td style="text-align:right;">6</td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">83.3%</td>
-              <td style="text-align:right;font-family:monospace;">$2.1M COP</td>
-              <td style="text-align:center;">2026-01-09</td>
-              <td style="text-align:center;">2026-04-01</td>
-              <td style="text-align:center;">83d</td>
-            </tr><tr>
-              <td>Ontop Holdings<br><small style="color:#888;font-family:monospace;">cli_z8poesizta</small></td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$2.1M COP</td>
-              <td style="text-align:center;">2026-01-08</td>
-              <td style="text-align:center;">2026-03-26</td>
-              <td style="text-align:center;">78d</td>
-            </tr><tr>
-              <td>Key2Pay/Aurora MX<br><small style="color:#888;font-family:monospace;">cli_ffyiyidy6y</small></td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;">4</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">80.0%</td>
-              <td style="text-align:right;font-family:monospace;">$4K COP</td>
-              <td style="text-align:center;">2025-10-16</td>
-              <td style="text-align:center;">2025-10-16</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Zamba<br><small style="color:#888;font-family:monospace;">cli_0wz1snmayn</small></td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$60K COP</td>
-              <td style="text-align:center;">2026-03-17</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">51d</td>
-            </tr><tr>
-              <td>Supra MX<br><small style="color:#888;font-family:monospace;">cli_spr280</small></td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">20.0%</td>
-              <td style="text-align:right;font-family:monospace;">$5K COP</td>
-              <td style="text-align:center;">2025-12-15</td>
-              <td style="text-align:center;">2025-12-17</td>
-              <td style="text-align:center;">3d</td>
-            </tr><tr>
-              <td>—<br><small style="color:#888;font-family:monospace;">cli_siikld3ljw</small></td>
-              <td style="text-align:right;">4</td>
-              <td style="text-align:right;">4</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$103 COP</td>
-              <td style="text-align:center;">2025-12-12</td>
-              <td style="text-align:center;">2026-04-01</td>
-              <td style="text-align:center;">111d</td>
-            </tr><tr>
-              <td>Poliplastics<br><small style="color:#888;font-family:monospace;">cli_pot534</small></td>
-              <td style="text-align:right;">4</td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">75.0%</td>
-              <td style="text-align:right;font-family:monospace;">$3.4M COP</td>
-              <td style="text-align:center;">2026-03-13</td>
-              <td style="text-align:center;">2026-04-30</td>
-              <td style="text-align:center;">49d</td>
-            </tr><tr>
-              <td>Betplay<br><small style="color:#888;font-family:monospace;">cli_pxdxyqv6zf</small></td>
-              <td style="text-align:right;">4</td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">75.0%</td>
-              <td style="text-align:right;font-family:monospace;">$136K COP</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">2026-05-07</td>
-              <td style="text-align:center;">3d</td>
-            </tr><tr>
-              <td>Currencybird MX<br><small style="color:#888;font-family:monospace;">cli_lyiawpyz5f</small></td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;color:#D4820A;font-weight:700;">66.7%</td>
-              <td style="text-align:right;font-family:monospace;">$3.0M COP</td>
-              <td style="text-align:center;">2026-05-04</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">3d</td>
-            </tr><tr>
-              <td>Pay Planet MX<br><small style="color:#888;font-family:monospace;">cli_fdeoe4ulge</small></td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$20K COP</td>
-              <td style="text-align:center;">2026-04-23</td>
-              <td style="text-align:center;">2026-04-29</td>
-              <td style="text-align:center;">7d</td>
-            </tr><tr>
-              <td>QUINTERO ASOCIADOS<br><small style="color:#888;font-family:monospace;">cli_qia597</small></td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$7.2M COP</td>
-              <td style="text-align:center;">2025-12-10</td>
-              <td style="text-align:center;">2025-12-23</td>
-              <td style="text-align:center;">14d</td>
-            </tr><tr>
-              <td>Wallib SAS<br><small style="color:#888;font-family:monospace;">cli_52zjuxckr3</small></td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">33.3%</td>
-              <td style="text-align:right;font-family:monospace;">$60K COP</td>
-              <td style="text-align:center;">2025-10-29</td>
-              <td style="text-align:center;">2025-11-19</td>
-              <td style="text-align:center;">22d</td>
-            </tr><tr>
-              <td>Tech365<br><small style="color:#888;font-family:monospace;">cli_fsgb7afrne</small></td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
               <td style="text-align:right;font-family:monospace;">$3 COP</td>
-              <td style="text-align:center;">2025-10-30</td>
-              <td style="text-align:center;">2025-11-11</td>
-              <td style="text-align:center;">13d</td>
+              <td style="text-align:center;">2026-02-02</td>
+              <td style="text-align:center;">2026-02-05</td>
             </tr><tr>
-              <td>Dandelion Payments Mx<br><small style="color:#888;font-family:monospace;">cli_thz52y1hjd</small></td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$14K COP</td>
-              <td style="text-align:center;">2026-04-28</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">9d</td>
-            </tr><tr>
-              <td>T.H. Soluciones Group<br><small style="color:#888;font-family:monospace;">cli_cmdf03cv1t</small></td>
-              <td style="text-align:right;">2</td>
+              <td><strong>Upcard.app</strong><br><small style="color:#888;font-family:monospace;">cli_f7vsybvvcs</small></td>
+              <td style="text-align:right;">5</td>
+              <td style="text-align:right;">5</td>
               <td style="text-align:right;">0</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">0.0%</td>
+              <td style="text-align:right;font-family:monospace;">$11K COP</td>
+              <td style="text-align:center;">2026-04-28</td>
+              <td style="text-align:center;">2026-05-05</td>
+            </tr><tr>
+              <td><strong>Alzent digital</strong><br><small style="color:#888;font-family:monospace;">cli_zkggvlvqf0</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">0</td>
+              <td style="text-align:right;">1</td>
               <td style="text-align:right;font-family:monospace;">$0 COP</td>
-              <td style="text-align:center;">2026-01-25</td>
-              <td style="text-align:center;">2026-01-25</td>
-              <td style="text-align:center;">1d</td>
+              <td style="text-align:center;">2026-03-11</td>
+              <td style="text-align:center;">2026-03-11</td>
             </tr><tr>
-              <td>Get in Motion<br><small style="color:#888;font-family:monospace;">cli_9ieytvr1ww</small></td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$12K COP</td>
-              <td style="text-align:center;">2026-03-13</td>
-              <td style="text-align:center;">2026-03-13</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Directa 24<br><small style="color:#888;font-family:monospace;">cli_cls438</small></td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$14K COP</td>
-              <td style="text-align:center;">2026-02-20</td>
-              <td style="text-align:center;">2026-04-02</td>
-              <td style="text-align:center;">42d</td>
-            </tr><tr>
-              <td>LAVAQUINHA SAS<br><small style="color:#888;font-family:monospace;">cli_4verugamvk</small></td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$179K COP</td>
-              <td style="text-align:center;">2026-03-19</td>
-              <td style="text-align:center;">2026-04-10</td>
-              <td style="text-align:center;">23d</td>
-            </tr><tr>
-              <td>Prix Colombia<br><small style="color:#888;font-family:monospace;">cli_jhgujwcymr</small></td>
-              <td style="text-align:right;">2</td>
+              <td><strong>Selenio SAS MX</strong><br><small style="color:#888;font-family:monospace;">cli_pimvix9pk3</small></td>
               <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#C0392B;font-weight:700;">50.0%</td>
-              <td style="text-align:right;font-family:monospace;">$20K COP</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">2026-05-06</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Bibisoft<br><small style="color:#888;font-family:monospace;">cli_x9uenndbcs</small></td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$2.0M COP</td>
-              <td style="text-align:center;">2025-12-25</td>
-              <td style="text-align:center;">2025-12-25</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>fluyez MX<br><small style="color:#888;font-family:monospace;">cli_hrqnfmkejh</small></td>
+              <td style="text-align:right;">0</td>
               <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$4K COP</td>
-              <td style="text-align:center;">2026-01-20</td>
-              <td style="text-align:center;">2026-01-20</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Enlace Operativo (Grupo Sura)<br><small style="color:#888;font-family:monospace;">cli_7xd5knokmc</small></td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$120 COP</td>
-              <td style="text-align:center;">2026-02-26</td>
-              <td style="text-align:center;">2026-02-26</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Ola Fintech<br><small style="color:#888;font-family:monospace;">cli_fvigxfgnju</small></td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$100K COP</td>
-              <td style="text-align:center;">2026-04-12</td>
-              <td style="text-align:center;">2026-04-12</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>—<br><small style="color:#888;font-family:monospace;">cli_coe542</small></td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$100 COP</td>
-              <td style="text-align:center;">2026-04-01</td>
-              <td style="text-align:center;">2026-04-01</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>YayaPay<br><small style="color:#888;font-family:monospace;">cli_3qjccqlafg</small></td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$57K COP</td>
-              <td style="text-align:center;">2025-10-22</td>
-              <td style="text-align:center;">2025-10-22</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Heincke<br><small style="color:#888;font-family:monospace;">cli_ooth07xuu5</small></td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$9.1M COP</td>
-              <td style="text-align:center;">2025-11-07</td>
-              <td style="text-align:center;">2025-11-07</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Servientrega<br><small style="color:#888;font-family:monospace;">cli_zcztkqsgoc</small></td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$203 COP</td>
-              <td style="text-align:center;">2026-01-30</td>
-              <td style="text-align:center;">2026-01-30</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Biodiversal<br><small style="color:#888;font-family:monospace;">cli_qrojn5vvud</small></td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$2.1M COP</td>
-              <td style="text-align:center;">2025-10-29</td>
-              <td style="text-align:center;">2025-10-29</td>
-              <td style="text-align:center;">1d</td>
-            </tr><tr>
-              <td>Echange MX<br><small style="color:#888;font-family:monospace;">cli_epj1la4slo</small></td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
-              <td style="text-align:right;font-family:monospace;">$4K COP</td>
-              <td style="text-align:center;">2026-04-06</td>
-              <td style="text-align:center;">2026-04-06</td>
-              <td style="text-align:center;">1d</td>
+              <td style="text-align:right;font-family:monospace;">$0 COP</td>
+              <td style="text-align:center;">2026-04-07</td>
+              <td style="text-align:center;">2026-04-07</td>
             </tr></tbody>
             </table>
           </div>
-        </details>
-    </div>
+        </div>
     
         <div class="card">
           <div class="card-title">Distribución por status code</div>
           <table>
             <thead><tr><th>State</th><th>Code</th><th>Descripción</th><th style="text-align:right;">N</th><th style="text-align:right;">Monto</th></tr></thead>
             <tbody><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">completed</span></td>
-              <td style="font-family:monospace;font-size:11px;">nan</td>
-              <td style="font-size:12px;">nan</td>
-              <td style="text-align:right;">411,863</td>
-              <td style="text-align:right;">$253.09B COP</td>
-            </tr><tr>
               <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">rejected</span></td>
               <td style="font-family:monospace;font-size:11px;">r000</td>
               <td style="font-size:12px;">Transaction rejected</td>
-              <td style="text-align:right;">32,291</td>
-              <td style="text-align:right;">$33.06B COP</td>
+              <td style="text-align:right;">36</td>
+              <td style="text-align:right;">$896K COP</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">completed</span></td>
+              <td style="font-family:monospace;font-size:11px;">nan</td>
+              <td style="font-size:12px;">nan</td>
+              <td style="text-align:right;">23</td>
+              <td style="text-align:right;">$55K COP</td>
             </tr><tr>
               <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">rejected</span></td>
               <td style="font-family:monospace;font-size:11px;">r018</td>
               <td style="font-size:12px;">Payment rejected due invalid key.</td>
-              <td style="text-align:right;">20,583</td>
-              <td style="text-align:right;">$7.30B COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">completed</span></td>
-              <td style="font-family:monospace;font-size:11px;">nan</td>
-              <td style="font-size:12px;">nan</td>
-              <td style="text-align:right;">5,910</td>
-              <td style="text-align:right;">$3.47B COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">rejected</span></td>
-              <td style="font-family:monospace;font-size:11px;">r006</td>
-              <td style="font-size:12px;">Invalid account number</td>
-              <td style="text-align:right;">932</td>
-              <td style="text-align:right;">$403.4M COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">rejected</span></td>
-              <td style="font-family:monospace;font-size:11px;">r026</td>
-              <td style="font-size:12px;">Payment rejected due to unavailable bank services</td>
-              <td style="text-align:right;">680</td>
-              <td style="text-align:right;">$769.8M COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF9C3;color:#7C5B00">processing</span></td>
-              <td style="font-family:monospace;font-size:11px;">nan</td>
-              <td style="font-size:12px;">nan</td>
-              <td style="text-align:right;">412</td>
-              <td style="text-align:right;">$25.5M COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#F3F4F6;color:#4B5563">failed</span></td>
-              <td style="font-family:monospace;font-size:11px;">f001</td>
-              <td style="font-size:12px;">Payment processing failed please try again</td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;">$27.3M COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#F3F4F6;color:#4B5563">failed</span></td>
-              <td style="font-family:monospace;font-size:11px;">f002</td>
-              <td style="font-size:12px;">NSF - Not Sufficient Funds in the designated account</td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;">$2 COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF9C3;color:#7C5B00">processing</span></td>
-              <td style="font-family:monospace;font-size:11px;">nan</td>
-              <td style="font-size:12px;">nan</td>
-              <td style="text-align:right;">2</td>
-              <td style="text-align:right;">$2.1M COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#F3F4F6;color:#4B5563">failed</span></td>
-              <td style="font-family:monospace;font-size:11px;">f001</td>
-              <td style="font-size:12px;">Payment processing failed please try again.</td>
-              <td style="text-align:right;">1</td>
-              <td style="text-align:right;">$12.6M COP</td>
+              <td style="text-align:right;">12</td>
+              <td style="text-align:right;">$29K COP</td>
             </tr></tbody>
           </table>
         </div>
     <div class="chart-container full" style="margin-bottom:16px;">
-      <div class="chart-title">Volumen diario de payouts (top 10 clientes)</div>
+      <div class="chart-title">Volumen diario de payouts QR por status</div>
       <div id="chart_sf_daily" style="height:340px;"></div>
     </div>
     <hr>
@@ -1759,7 +760,7 @@ function switchTab(tab,evt){
       paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
       legend:{orientation:'h',y:-0.2},font:{family:'-apple-system,sans-serif',size:11}
     },{responsive:true,displayModeBar:false});
-            Plotly.newPlot('chart_sf_daily',[{name:"TapTap Send Mx",x:["2025-10-24", "2025-10-31", "2025-11-04", "2025-11-27", "2025-11-28", "2025-12-01", "2025-12-02", "2025-12-05", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-13", "2025-12-14", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-20", "2025-12-21", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-25", "2025-12-26", "2025-12-27", "2025-12-28", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[1, 3, 1, 1, 1, 4, 3, 16, 11, 6, 64, 83, 152, 193, 134, 169, 255, 191, 158, 228, 218, 168, 212, 224, 241, 152, 211, 197, 108, 178, 266, 244, 138, 340, 244, 218, 263, 256, 298, 250, 442, 307, 189, 261, 308, 292, 329, 312, 338, 295, 350, 386, 343, 386, 465, 467, 184, 425, 435, 434, 450, 565, 444, 418, 1133, 713, 500, 552, 580, 560, 406, 498, 543, 551, 496, 533, 557, 372, 549, 623, 570, 755, 677, 529, 903, 1009, 477, 612, 1210, 519, 541, 936, 821, 941, 933, 830, 551, 814, 950, 689, 677, 809, 765, 659, 884, 913, 959, 954, 905, 1021, 692, 891, 1047, 948, 1205, 1029, 1049, 719, 444, 432, 825, 984, 974, 1053, 967, 1242, 510, 1909, 1729, 1800, 1439, 1150, 1192, 1669, 1701, 1724, 1864, 1732, 1206, 1641, 1540, 1321, 1267, 1552, 1525, 1188, 1432, 1799, 1841, 492, 1, 1077, 2782, 5740, 4360, 5133, 4112],type:"bar"},{name:"AstroPay",x:["2025-10-09", "2025-10-10", "2025-11-17", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-22", "2025-11-23", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-27", "2025-11-28", "2025-11-29", "2025-11-30", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-06", "2025-12-07", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-13", "2025-12-14", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-20", "2025-12-21", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-25", "2025-12-26", "2025-12-27", "2025-12-28", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[2, 2, 55, 122, 121, 120, 128, 153, 94, 123, 162, 116, 136, 150, 162, 111, 146, 281, 158, 199, 158, 131, 138, 124, 149, 190, 201, 172, 181, 164, 221, 227, 225, 235, 266, 232, 242, 281, 308, 346, 175, 220, 271, 255, 336, 363, 354, 180, 284, 297, 267, 365, 366, 386, 356, 395, 356, 273, 272, 327, 352, 377, 436, 351, 326, 370, 354, 410, 405, 361, 381, 206, 333, 430, 393, 423, 515, 381, 411, 488, 482, 452, 451, 573, 517, 416, 502, 462, 566, 483, 556, 544, 474, 494, 456, 467, 471, 536, 503, 404, 460, 519, 624, 591, 566, 528, 359, 480, 627, 627, 569, 647, 588, 491, 596, 509, 559, 565, 602, 622, 521, 625, 610, 654, 626, 629, 709, 574, 587, 712, 690, 797, 738, 758, 616, 665, 819, 817, 751, 624, 726, 739, 857, 401, 803, 673, 729, 723, 605, 660, 712, 774, 727, 727, 878, 830, 802, 770, 788, 830, 761, 821, 727, 809, 754, 979, 842, 1073, 770, 862, 874, 6361, 550],type:"bar"},{name:"Selenio SAS MX",x:["2025-10-07", "2025-10-08", "2025-10-09", "2025-10-10", "2025-10-11", "2025-10-12", "2025-10-13", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-18", "2025-10-19", "2025-10-20", "2025-10-21", "2025-10-22", "2025-10-23", "2025-10-24", "2025-10-25", "2025-10-26", "2025-10-27", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-31", "2025-11-01", "2025-11-02", "2025-11-03", "2025-11-04", "2025-11-05", "2025-11-06", "2025-11-07", "2025-11-08", "2025-11-09", "2025-11-10", "2025-11-11", "2025-11-12", "2025-11-13", "2025-11-14", "2025-11-15", "2025-11-16", "2025-11-17", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-22", "2025-11-23", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-27", "2025-11-28", "2025-11-29", "2025-11-30", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-06", "2025-12-07", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-13", "2025-12-14", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-20", "2025-12-21", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-25", "2025-12-26", "2025-12-27", "2025-12-28", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-06", "2026-05-07"],y:[7, 33, 35, 86, 59, 42, 49, 71, 88, 115, 128, 113, 111, 88, 184, 158, 188, 160, 177, 127, 161, 204, 190, 237, 222, 197, 154, 150, 274, 329, 260, 229, 199, 167, 242, 216, 229, 230, 236, 222, 183, 203, 282, 292, 289, 270, 303, 212, 212, 294, 275, 250, 287, 264, 213, 329, 406, 329, 333, 401, 259, 230, 237, 369, 351, 279, 304, 308, 210, 331, 361, 376, 401, 419, 394, 231, 344, 323, 384, 200, 347, 524, 414, 367, 430, 470, 248, 390, 342, 362, 487, 390, 454, 399, 533, 444, 282, 305, 348, 413, 423, 452, 347, 322, 359, 442, 383, 433, 435, 403, 210, 382, 410, 427, 433, 466, 431, 375, 575, 548, 519, 478, 696, 423, 330, 421, 450, 448, 444, 512, 454, 376, 429, 503, 492, 547, 505, 451, 307, 435, 490, 506, 550, 487, 498, 354, 491, 736, 635, 638, 597, 511, 404, 523, 538, 518, 539, 619, 586, 394, 543, 618, 531, 547, 585, 503, 410, 428, 547, 531, 523, 555, 522, 370, 462, 584, 670, 524, 466, 505, 409, 716, 172, 641, 588, 628, 552, 421, 556, 577, 659, 672, 577, 516, 428, 600, 564, 518, 605, 425, 361, 418, 647, 669, 667, 421, 788, 590, 387, 724, 110, 340],type:"bar"},{name:"Ripio MX",x:["2026-02-12", "2026-02-18", "2026-02-19", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[1, 1, 1, 1, 659, 501, 349, 436, 343, 375, 814, 583, 525, 395, 365, 368, 413, 551, 656, 753, 749, 674, 610, 885, 905, 948, 738, 770, 693, 592, 733, 792, 839, 749, 663, 883, 665, 469, 545, 456, 351, 450, 515, 454, 563, 292, 898, 591, 658, 654, 747, 758, 917, 801, 751, 741, 710, 605, 665, 722, 964, 761, 744, 667, 624, 411, 974, 1119, 595, 572, 492, 550, 807, 774, 679, 538],type:"bar"},{name:"Meru Colombia",x:["2025-11-14", "2025-11-17", "2025-11-22", "2025-11-23", "2025-11-25", "2025-11-28", "2025-12-01", "2025-12-07", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-17", "2025-12-19", "2025-12-20", "2025-12-21", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-25", "2025-12-26", "2025-12-27", "2025-12-28", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[1, 1, 6, 1, 2, 1, 2, 1, 3, 2, 1, 2, 32, 37, 24, 54, 72, 56, 34, 54, 54, 32, 74, 103, 81, 26, 93, 67, 70, 106, 81, 84, 79, 81, 85, 61, 66, 70, 72, 79, 114, 73, 83, 100, 93, 124, 141, 157, 153, 51, 106, 149, 145, 136, 165, 114, 72, 152, 143, 134, 147, 136, 155, 118, 112, 138, 154, 177, 203, 160, 125, 99, 140, 174, 137, 130, 147, 114, 134, 173, 147, 175, 90, 205, 55, 191, 213, 174, 118, 158, 210, 124, 133, 185, 153, 149, 174, 151, 126, 187, 147, 188, 192, 224, 220, 157, 185, 224, 186, 190, 218, 229, 171, 166, 203, 275, 188, 169, 199, 137, 214, 69, 265, 198, 232, 195, 169, 203, 213, 206, 214, 235, 203, 152, 224, 218, 207, 222, 253, 257, 214, 260, 298, 276, 216, 322, 254, 306, 259, 229, 166, 200],type:"bar"},{name:"Holdings BPO MX",x:["2025-11-06", "2025-11-11", "2025-11-14", "2025-11-28", "2025-12-16", "2025-12-17", "2025-12-30", "2026-01-02", "2026-01-03", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[3, 1, 5, 1, 11, 14, 79, 7, 1, 6, 7, 3, 3, 5, 4, 1, 1, 1, 7, 63, 8, 3, 4, 19, 10, 5, 8, 4, 4, 11, 7, 77, 9, 64, 7, 7, 16, 10, 8, 31, 17, 3, 5, 13, 18, 8, 7, 79, 5, 7, 9, 19, 13, 11, 40, 7, 6, 18, 20, 20, 15, 65, 9, 11, 19, 26, 24, 51, 18, 11, 14, 21, 26, 29, 20, 69, 16, 13, 23, 62, 23, 13, 48, 18, 11, 13, 22, 29, 96, 28, 14, 17, 77, 33, 31, 8, 8, 12, 11, 121, 25, 35, 103, 164, 85, 49, 230, 489, 370, 531, 740, 182, 112, 334, 547, 316, 384, 243, 181, 130, 215, 513, 256, 254, 739, 369, 182, 491, 753, 406, 261],type:"bar"},{name:"cli_vdke2laqnj",x:["2025-09-15", "2025-09-16", "2025-09-17", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26", "2025-09-29", "2025-09-30", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-05", "2025-10-06", "2025-10-07", "2025-10-16", "2025-10-28", "2025-10-29", "2025-10-30", "2025-11-11", "2025-11-13", "2025-11-14", "2025-11-19", "2025-11-21", "2025-11-25", "2025-12-01", "2025-12-02", "2025-12-04", "2025-12-06", "2025-12-09", "2025-12-12", "2025-12-18", "2025-12-22", "2025-12-26", "2025-12-29", "2026-01-07", "2026-01-08", "2026-01-20", "2026-01-31", "2026-02-03", "2026-02-09", "2026-02-19", "2026-02-23", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-13", "2026-03-17", "2026-03-31", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-14", "2026-04-17", "2026-04-23", "2026-04-24", "2026-04-30", "2026-05-04", "2026-05-06"],y:[2, 7, 1, 8, 170, 233, 2, 51, 4, 305, 2042, 5379, 1, 70, 1, 2, 3, 3, 4, 1, 6, 1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 2, 1, 1, 4, 2, 1, 1, 2, 1, 1, 2, 1, 3, 1, 1, 2, 5, 2, 2, 2],type:"bar"},{name:"Exlatin Sas",x:["2025-12-16", "2025-12-17", "2025-12-19", "2025-12-20", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-26", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-04", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[2, 9, 1, 1, 4, 2, 3, 2, 17, 22, 29, 18, 5, 4, 28, 12, 28, 18, 6, 5, 36, 22, 13, 36, 90, 49, 5, 173, 67, 22, 71, 7, 2, 92, 49, 65, 58, 164, 9, 3, 37, 89, 50, 13, 41, 3, 21, 104, 96, 92, 79, 33, 3, 74, 119, 133, 139, 76, 17, 1, 9, 96, 56, 144, 179, 82, 7, 34, 149, 40, 170, 110, 54, 1, 42, 18, 59, 16, 4, 78, 69, 68, 41, 174, 61, 28, 80, 211, 80, 17, 55, 14, 93, 110, 83, 1, 14, 268, 39, 48, 74, 52, 10, 5, 17, 77, 89, 63, 115, 8, 114, 121, 45, 60, 54, 174, 14, 142, 148, 216, 50, 51, 81, 47, 274, 97, 82],type:"bar"},{name:"Solutions Interface LLC",x:["2025-12-31", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[4, 5, 2, 1, 2, 5, 2, 37, 120, 34, 18, 15, 16, 8, 17, 11, 8, 4, 7, 18, 8, 12, 133, 81, 19, 25, 26, 24, 19, 29, 21, 15, 22, 15, 19, 15, 95, 140, 66, 47, 72, 44, 30, 30, 26, 27, 26, 24, 19, 13, 12, 31, 8, 150, 173, 62, 32, 23, 44, 19, 21, 34, 30, 28, 90, 176, 77, 78, 85, 36, 80, 44, 63, 23, 48, 30, 40, 36, 55, 247, 77, 63, 95, 81, 85, 97, 55, 31, 56, 51, 36, 35, 19, 68, 41, 49, 24, 227, 177, 112, 96, 62, 55, 52, 86, 51, 98, 86, 31, 45, 75, 96, 166, 213, 161, 83, 109, 50, 67, 76, 119, 66, 36, 49, 53, 79, 39],type:"bar"},{name:"FLASH LATAM PAYMENTS S.A.S.",x:["2026-02-06", "2026-03-24", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[1, 1, 4, 1, 10, 10, 9, 5, 7, 43, 94, 88, 87, 129, 134, 137, 138, 136, 104, 107, 122, 135, 98, 139, 198, 126, 131, 84, 108, 118, 100, 122, 93, 39, 75, 77, 25, 117],type:"bar"}],{
+            Plotly.newPlot('chart_sf_daily',[{name:"Manteca CBMM MX",x:["2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-19", "2026-04-03", "2026-04-06", "2026-04-07"],y:[2, 1, 1, 1, 2, 1, 1, 1, 1],type:"bar"},{name:"cli_vdke2laqnj",x:["2026-02-09", "2026-02-23"],y:[1, 3],type:"bar"},{name:"cli_xxz85j60is",x:["2026-02-02", "2026-02-03"],y:[1, 2],type:"bar"},{name:"Upcard.app",x:["2026-04-28", "2026-04-30", "2026-05-05"],y:[2, 1, 2],type:"bar"}],{
               barmode:'stack',margin:{t:10,b:60,l:60,r:10},
               xaxis:{title:'Fecha'},yaxis:{title:'Txns completadas'},
               paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
