@@ -180,6 +180,29 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
   .top-nav,.tabs,.report-footer{display:none !important;}
   .tab-content{display:block !important;page-break-inside:avoid;}
 }
+
+.query-block{
+  background:var(--cloudy);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;margin:12px 0;
+}
+.query-block .query-label{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;
+  color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.query-block .query-label .badge{
+  background:var(--teal-pale);color:var(--teal-deep);
+  padding:2px 8px;border-radius:10px;font-size:9.5px;letter-spacing:0.04em;
+}
+.query-block pre{
+  margin:0;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:6px;
+  font-family:'SF Mono','Monaco','Consolas','Courier New',monospace;
+  font-size:12px;line-height:1.5;color:var(--deep);
+  white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;
+}
+.query-block .query-note{
+  font-size:11.5px;color:var(--cloudy-80);margin-top:8px;line-height:1.4;
+}
+.query-block .query-note strong{color:var(--text);}
 </style>
 </head>
 <body>
@@ -253,6 +276,14 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       <div class="kpi"><div class="kpi-value">417,773</div><div class="kpi-label">Completadas</div><div class="kpi-sub">88.4% de éxito</div></div>
       <div class="kpi"><div class="kpi-value">$256.56B</div><div class="kpi-label">Monto completado COP</div><div class="kpi-sub">al 2026-05-07</div></div>
     </div>
+    <div class="query-block">
+  <div class="query-label">Query <span class="badge">Snowflake</span></div>
+  <pre>SELECT *
+FROM COBRE_GOLD_DB.DATAWAREHOUSE.MONEY_MOVEMENTS
+WHERE MM_FLOW = 'payout'
+  AND TYPE    = 'breb';</pre>
+  <div class="query-note">Filtro provisto por PMM. <strong>Caveat:</strong> captura todos los payouts Bre-B (llave + QR). En el dataset actual <code>QR_VALUE</code> está vacío en el 100% de los registros — significa que aún no se identifican payouts QR con esa columna o que el campaign aún no ha generado uso de QR puro. Pendiente confirmar con producto el filtro canónico para 'QR específico'.</div>
+</div>
     <div class="card">
       <div class="card-title">Top 25 clientes por volumen — payouts Bre-B (Snowflake live)</div>
       <div style="overflow-x:auto;">

@@ -180,6 +180,29 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
   .top-nav,.tabs,.report-footer{display:none !important;}
   .tab-content{display:block !important;page-break-inside:avoid;}
 }
+
+.query-block{
+  background:var(--cloudy);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;margin:12px 0;
+}
+.query-block .query-label{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;
+  color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.query-block .query-label .badge{
+  background:var(--teal-pale);color:var(--teal-deep);
+  padding:2px 8px;border-radius:10px;font-size:9.5px;letter-spacing:0.04em;
+}
+.query-block pre{
+  margin:0;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:6px;
+  font-family:'SF Mono','Monaco','Consolas','Courier New',monospace;
+  font-size:12px;line-height:1.5;color:var(--deep);
+  white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;
+}
+.query-block .query-note{
+  font-size:11.5px;color:var(--cloudy-80);margin-top:8px;line-height:1.4;
+}
+.query-block .query-note strong{color:var(--text);}
 </style>
 </head>
 <body>
@@ -251,6 +274,14 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       <div class="kpi"><div class="kpi-value">3</div><div class="kpi-label">Completadas</div><div class="kpi-sub">37.5% de éxito</div></div>
       <div class="kpi"><div class="kpi-value">$30.0M</div><div class="kpi-label">Monto completado</div><div class="kpi-sub">2026-04-08 → 2026-04-08</div></div>
     </div>
+    <div class="query-block">
+  <div class="query-label">Query <span class="badge">Snowflake</span></div>
+  <pre>SELECT *
+FROM COBRE_GOLD_DB.DATAWAREHOUSE.MONEY_MOVEMENTS
+WHERE SPLIT_ID IS NOT NULL
+  AND SPLIT_ID <> '';</pre>
+  <div class="query-note">Filtro: cualquier money movement con <code>SPLIT_ID</code> asignado pertenece a un split. Cuenta como uso real del producto Split Payments.</div>
+</div>
     <div class="insight-yellow">
       <strong>Producto en pre-launch.</strong> Sólo 2 clientes han probado Split Payments en producción
       (8 txns, 3 splits únicos). El campaña PMM (2026-04-08 → 2026-04-08) aún no

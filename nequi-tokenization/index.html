@@ -180,6 +180,29 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
   .top-nav,.tabs,.report-footer{display:none !important;}
   .tab-content{display:block !important;page-break-inside:avoid;}
 }
+
+.query-block{
+  background:var(--cloudy);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;margin:12px 0;
+}
+.query-block .query-label{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;
+  color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.query-block .query-label .badge{
+  background:var(--teal-pale);color:var(--teal-deep);
+  padding:2px 8px;border-radius:10px;font-size:9.5px;letter-spacing:0.04em;
+}
+.query-block pre{
+  margin:0;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:6px;
+  font-family:'SF Mono','Monaco','Consolas','Courier New',monospace;
+  font-size:12px;line-height:1.5;color:var(--deep);
+  white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;
+}
+.query-block .query-note{
+  font-size:11.5px;color:var(--cloudy-80);margin-top:8px;line-height:1.4;
+}
+.query-block .query-note strong{color:var(--text);}
 </style>
 </head>
 <body>
@@ -194,7 +217,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 <div class="header">
   <div class="release-badge">PMM · April Release 2026<span class="geo-tag">Colombia</span></div>
   <h1>Nequi Tokenization</h1>
-  <p class="subtitle">Campaña PMM April Release · Primer Toque · adopción real desde Snowflake (COUNTERPARTIES_SUBSCRIPTIONS · A002) · pipeline en Diio.</p>
+  <p class="subtitle">Campaña PMM April Release · Foco: adopción real desde COUNTERPARTIES_SUBSCRIPTIONS · pipeline en Diio · email Primer Toque como referencia.</p>
 </div>
 
 
@@ -202,28 +225,28 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       <h2>Conclusiones</h2>
       <div class="seg-grid">
         <div class="seg-card">
-          <h3>Uso real (Snowflake · A002)</h3>
+          <h3>Adopción real (Snowflake · A*)</h3>
           <ul>
-            <li><strong>39 empresas adoptantes</strong> usando Nequi Tokenization en producción</li>
-            <li>11.4% de las cuentas contactadas ya adoptaron</li>
-            <li>Gap principal: 803 aperturas únicas vs 39 adoptantes</li>
-            <li>Snapshot al 09 Abr 2026</li>
+            <li><strong>73 clientes</strong> con al menos una suscripción Nequi activa</li>
+            <li><strong>235,542 counterparties activas</strong> (41.2% de las únicas)</li>
+            <li>318,660 intentos exitosos sobre 926,572 totales (34.4%)</li>
+            <li>Top 3 por counterparties activas: <strong>RIDETECH COLOMBIA S.A.S - Yango</strong> (147,296 CP) · <strong>Tech365</strong> (75,003 CP) · <strong>GRUPO EMPRESARIAL ANAV SAS</strong> (7,526 CP)</li>
           </ul>
         </div>
         <div class="seg-card">
-          <h3>Activación por email (Primer Toque)</h3>
+          <h3>Email (Primer Toque · referencia)</h3>
           <ul>
-            <li><strong>1,452 enviados</strong> · 343 cuentas · 1,454 contactos únicos</li>
-            <li>Apertura: <strong>55.3%</strong> (803 aperturas únicas)</li>
-            <li>CTOR: <strong>5.2%</strong> (42 clics) · Bounce 0.1%</li>
-            <li>P1 Hot: <strong>23</strong> · P2 Warm: <strong>92</strong></li>
+            <li>1,452 enviados · 343 cuentas · 1,454 contactos únicos</li>
+            <li>Apertura: 55.3% · CTOR: 5.2%</li>
+            <li>P1 Hot: 23 · P2 Warm: 92</li>
+            <li>Snapshot al 09 Abr 2026 (campaña 200940423270)</li>
           </ul>
         </div>
         <div class="seg-card">
           <h3>Pipeline (Diio)</h3>
           <ul>
             <li><strong>12 conversaciones</strong> con mención explícita de Nequi Tokenization</li>
-            <li>Yango aparece 3 veces — cliente prioritario en optimización de integración</li>
+            <li>Yango aparece 3× — cliente prioritario en optimización</li>
             <li>DoPayment (5/5) y Yango Nov-2025 (5/5) — odds más altos</li>
             <li>Mayoría sin deal asociado — convertir a oportunidades en SF</li>
           </ul>
@@ -232,43 +255,1054 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 
       <h3>Hallazgos clave</h3>
       <ul style="margin-left:1.2rem;line-height:1.9;font-size:13px;">
-        <li><strong>39 adoptantes ≪ 803 aperturas:</strong> el funnel de email→adopción tiene espacio enorme — la 4.9% que abre→adopta indica que el deck/CTA no convierte.</li>
-        <li><strong>P2 + P3 = 241 cuentas</strong> abiertas a engagement pero sin acción — público para Push y WhatsApp KAM.</li>
-        <li><strong>Primer Toque sólo:</strong> el segundo toque del plan no se ha disparado. La campaña aún no está completa.</li>
+        <li><strong>73 adoptantes</strong> ya operan Nequi Tokenization en producción — el producto funciona, la pregunta es <em>cómo escalar la cola larga</em>.</li>
+        <li><strong>R081 (counterparty registry expired)</strong> domina las fallas con 428,884 registros — vale revisar ciclo de re-suscripción para evitar churn silencioso.</li>
+        <li><strong>41.2% de counterparties únicas están activas:</strong> el resto representa potencial de re-activación o limpieza de base.</li>
       </ul>
     </div>
     
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('intel',event)">Uso real y pipeline</button>
-  <button class="tab-btn" onclick="switchTab('resumen',event)">Resumen envíos</button>
-  <button class="tab-btn" onclick="switchTab('segmentos',event)">Segmentos P1–P5</button>
+  <button class="tab-btn active" onclick="switchTab('adopcion',event)">Adopción y pipeline</button>
+  <button class="tab-btn" onclick="switchTab('email',event)">Email (Primer Toque)</button>
 </div>
 
-<div id="tab-intel" class="tab-content active">
+<div id="tab-adopcion" class="tab-content active">
+    
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-value">39</div><div class="kpi-label">Adoptantes activos</div><div class="kpi-sub">A002 en Snowflake</div></div>
-      <div class="kpi"><div class="kpi-value">343</div><div class="kpi-label">Cuentas contactadas</div></div>
-      <div class="kpi"><div class="kpi-value">1,454</div><div class="kpi-label">Contactos únicos</div></div>
-      <div class="kpi"><div class="kpi-value">11.4%</div><div class="kpi-label">Tasa adopción</div><div class="kpi-sub">39/343</div></div>
+      <div class="kpi"><div class="kpi-value">73</div><div class="kpi-label">Clientes adoptantes</div><div class="kpi-sub">con al menos 1 suscripción A*</div></div>
+      <div class="kpi"><div class="kpi-value">235,542</div><div class="kpi-label">Counterparties activas</div><div class="kpi-sub">41.2% de 571,670 únicas</div></div>
+      <div class="kpi"><div class="kpi-value">926,572</div><div class="kpi-label">Intentos totales</div><div class="kpi-sub">34.4% éxito (318,660)</div></div>
+      <div class="kpi"><div class="kpi-value">2024-11-06</div><div class="kpi-label">Primer registro</div><div class="kpi-sub">→ 2026-05-07</div></div>
     </div>
-
+    <div class="query-block">
+  <div class="query-label">Query <span class="badge">Snowflake</span></div>
+  <pre>SELECT *
+FROM COBRE_GOLD_DB.DATAWAREHOUSE.COUNTERPARTIES_SUBSCRIPTIONS;</pre>
+  <div class="query-note">Cada fila es un intento de suscribir una <code>counterparty</code> para que Nequi ejecute el débito recurrente. <strong>Adopción</strong> = al menos un <code>COBRE_RESPONSE_CODE</code> tipo <code>A*</code> (A002 ‘active subscription’, A005 ‘ok with note’, A000). El error más común es <code>R081</code> (counterparty registry expired).</div>
+</div>
     <div class="insight">
-      Snapshot del <strong>09 Abr 2026</strong> (campaña 200940423270). De las <strong>343 cuentas</strong> contactadas en el Primer Toque,
-      <strong>39 ya están adoptando Nequi Tokenization</strong> en producción (COBRE_RESPONSE_CODE = A002). El gap entre aperturas
-      (803) y adopción real (39) es la oportunidad principal.
+      <strong>Foco del reporte: adopción.</strong> Cada counterparty registrada con código <code>A*</code>
+      ya está habilitada para que Nequi ejecute débitos recurrentes. La diferencia entre counterparties
+      <em>únicas</em> (571,670) y <em>activas</em> (235,542) — actualmente
+      <strong>41.2%</strong> — es la oportunidad principal para mover la aguja.
     </div>
-
     <div class="card">
-      <div class="card-title">Funnel de la campaña — Primer Toque (snapshot 09 Abr 2026)</div>
-      <div id="chart_funnel" style="height:340px;"></div>
+      <div class="card-title">Top clientes adoptantes — Snowflake live</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Cliente</th><th style="text-align:right;">Intentos</th><th style="text-align:right;">Éxitos</th><th style="text-align:right;">Éxito %</th><th style="text-align:right;">Active / Unique CP</th><th style="text-align:right;">Active %</th><th>Primer intento</th><th>Último intento</th></tr></thead>
+          <tbody><tr>
+          <td><strong>RIDETECH COLOMBIA S.A.S - Yango</strong><br><small style="color:#888;font-family:monospace;">cli_b2esd7fixl</small></td>
+          <td style="text-align:right;">685,304</td>
+          <td style="text-align:right;">197,706</td>
+          <td style="text-align:right;color:#922B21;font-weight:700;">28.8%</td>
+          <td style="text-align:right;">147,296 / 447,902</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">32.9%</td>
+          <td style="text-align:center;">2025-12-25</td>
+          <td style="text-align:center;">2026-05-07</td>
+        </tr><tr>
+          <td><strong>Tech365</strong><br><small style="color:#888;font-family:monospace;">cli_fsgb7afrne</small></td>
+          <td style="text-align:right;">156,065</td>
+          <td style="text-align:right;">83,622</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">53.6%</td>
+          <td style="text-align:right;">75,003 / 106,451</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">70.5%</td>
+          <td style="text-align:center;">2025-05-19</td>
+          <td style="text-align:center;">2026-05-07</td>
+        </tr><tr>
+          <td><strong>GRUPO EMPRESARIAL ANAV SAS</strong><br><small style="color:#888;font-family:monospace;">cli_gia504</small></td>
+          <td style="text-align:right;">50,665</td>
+          <td style="text-align:right;">24,140</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">47.6%</td>
+          <td style="text-align:right;">7,526 / 10,218</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">73.7%</td>
+          <td style="text-align:center;">2025-09-29</td>
+          <td style="text-align:center;">2025-12-10</td>
+        </tr><tr>
+          <td><strong>Abaco</strong><br><small style="color:#888;font-family:monospace;">cli_aab546</small></td>
+          <td style="text-align:right;">16,690</td>
+          <td style="text-align:right;">5,939</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">35.6%</td>
+          <td style="text-align:right;">2,503 / 2,754</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">90.9%</td>
+          <td style="text-align:center;">2025-04-29</td>
+          <td style="text-align:center;">2025-12-12</td>
+        </tr><tr>
+          <td><strong>UCREDIT SKILLS</strong><br><small style="color:#888;font-family:monospace;">cli_ucr638</small></td>
+          <td style="text-align:right;">10,357</td>
+          <td style="text-align:right;">1,495</td>
+          <td style="text-align:right;color:#922B21;font-weight:700;">14.4%</td>
+          <td style="text-align:right;">1,469 / 1,849</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">79.4%</td>
+          <td style="text-align:center;">2025-06-13</td>
+          <td style="text-align:center;">2025-11-12</td>
+        </tr><tr>
+          <td><strong>Horizonte S.A.S</strong><br><small style="color:#888;font-family:monospace;">cli_ooi706</small></td>
+          <td style="text-align:right;">2,180</td>
+          <td style="text-align:right;">1,393</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">63.9%</td>
+          <td style="text-align:right;">1,152 / 1,726</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">66.7%</td>
+          <td style="text-align:center;">2025-07-10</td>
+          <td style="text-align:center;">2025-11-26</td>
+        </tr><tr>
+          <td><strong>Allcredit</strong><br><small style="color:#888;font-family:monospace;">cli_qvxfg7wceb</small></td>
+          <td style="text-align:right;">601</td>
+          <td style="text-align:right;">419</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">69.7%</td>
+          <td style="text-align:right;">183 / 243</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">75.3%</td>
+          <td style="text-align:center;">2025-06-12</td>
+          <td style="text-align:center;">2025-08-29</td>
+        </tr><tr>
+          <td><strong>Compra mientras alquilas sas duppla</strong><br><small style="color:#888;font-family:monospace;">cli_wcp69iecud</small></td>
+          <td style="text-align:right;">1,287</td>
+          <td style="text-align:right;">1,066</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">82.8%</td>
+          <td style="text-align:right;">131 / 169</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">77.5%</td>
+          <td style="text-align:center;">2025-01-02</td>
+          <td style="text-align:center;">2026-04-20</td>
+        </tr><tr>
+          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_vdke2laqnj</small></td>
+          <td style="text-align:right;">3,062</td>
+          <td style="text-align:right;">2,656</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">86.7%</td>
+          <td style="text-align:right;">64 / 91</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">70.3%</td>
+          <td style="text-align:center;">2024-11-06</td>
+          <td style="text-align:center;">2026-05-06</td>
+        </tr><tr>
+          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_xxz85j60is</small></td>
+          <td style="text-align:right;">68</td>
+          <td style="text-align:right;">23</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">33.8%</td>
+          <td style="text-align:right;">22 / 27</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">81.5%</td>
+          <td style="text-align:center;">2025-11-27</td>
+          <td style="text-align:center;">2026-05-07</td>
+        </tr><tr>
+          <td><strong>Cobre Tesoreria</strong><br><small style="color:#888;font-family:monospace;">cli_u2zvkkh50b</small></td>
+          <td style="text-align:right;">21</td>
+          <td style="text-align:right;">21</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">19 / 19</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2025-09-15</td>
+          <td style="text-align:center;">2025-11-18</td>
+        </tr><tr>
+          <td><strong>Intelch</strong><br><small style="color:#888;font-family:monospace;">cli_onh2xv1dkt</small></td>
+          <td style="text-align:right;">18</td>
+          <td style="text-align:right;">18</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">18 / 18</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-04-20</td>
+          <td style="text-align:center;">2026-05-04</td>
+        </tr><tr>
+          <td><strong>Su Seguranza</strong><br><small style="color:#888;font-family:monospace;">cli_sag686</small></td>
+          <td style="text-align:right;">19</td>
+          <td style="text-align:right;">18</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">94.7%</td>
+          <td style="text-align:right;">17 / 18</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">94.4%</td>
+          <td style="text-align:center;">2025-04-29</td>
+          <td style="text-align:center;">2025-08-06</td>
+        </tr><tr>
+          <td><strong>UFund</strong><br><small style="color:#888;font-family:monospace;">cli_udn364</small></td>
+          <td style="text-align:right;">29</td>
+          <td style="text-align:right;">16</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">55.2%</td>
+          <td style="text-align:right;">16 / 19</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">84.2%</td>
+          <td style="text-align:center;">2025-04-30</td>
+          <td style="text-align:center;">2025-12-11</td>
+        </tr><tr>
+          <td><strong>Paycashglobal</strong><br><small style="color:#888;font-family:monospace;">cli_tpnwvndplj</small></td>
+          <td style="text-align:right;">16</td>
+          <td style="text-align:right;">12</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">75.0%</td>
+          <td style="text-align:right;">12 / 14</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">85.7%</td>
+          <td style="text-align:center;">2026-02-10</td>
+          <td style="text-align:center;">2026-04-21</td>
+        </tr><tr>
+          <td><strong>Infiniaweb.com</strong><br><small style="color:#888;font-family:monospace;">cli_y21znpmrxg</small></td>
+          <td style="text-align:right;">12</td>
+          <td style="text-align:right;">7</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">58.3%</td>
+          <td style="text-align:right;">7 / 8</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">87.5%</td>
+          <td style="text-align:center;">2026-03-03</td>
+          <td style="text-align:center;">2026-04-29</td>
+        </tr><tr>
+          <td><strong>Prestemonos</strong><br><small style="color:#888;font-family:monospace;">cli_bdgczxcwd0</small></td>
+          <td style="text-align:right;">18</td>
+          <td style="text-align:right;">7</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">38.9%</td>
+          <td style="text-align:right;">7 / 17</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">41.2%</td>
+          <td style="text-align:center;">2025-07-09</td>
+          <td style="text-align:center;">2025-09-11</td>
+        </tr><tr>
+          <td><strong>Muralpay</strong><br><small style="color:#888;font-family:monospace;">cli_ksxvevoqng</small></td>
+          <td style="text-align:right;">5</td>
+          <td style="text-align:right;">5</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">5 / 5</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-04-08</td>
+          <td style="text-align:center;">2026-04-29</td>
+        </tr><tr>
+          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_coe542</small></td>
+          <td style="text-align:right;">7</td>
+          <td style="text-align:right;">6</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">85.7%</td>
+          <td style="text-align:right;">4 / 5</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">80.0%</td>
+          <td style="text-align:center;">2025-03-05</td>
+          <td style="text-align:center;">2025-11-04</td>
+        </tr><tr>
+          <td><strong>RISI MX</strong><br><small style="color:#888;font-family:monospace;">cli_wtexf9cetf</small></td>
+          <td style="text-align:right;">5</td>
+          <td style="text-align:right;">4</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">80.0%</td>
+          <td style="text-align:right;">4 / 5</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">80.0%</td>
+          <td style="text-align:center;">2026-03-16</td>
+          <td style="text-align:center;">2026-04-13</td>
+        </tr><tr>
+          <td><strong>FLASH LATAM PAYMENTS S.A.S.</strong><br><small style="color:#888;font-family:monospace;">cli_aamjnj6dc8</small></td>
+          <td style="text-align:right;">6</td>
+          <td style="text-align:right;">4</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">66.7%</td>
+          <td style="text-align:right;">4 / 6</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">66.7%</td>
+          <td style="text-align:center;">2026-03-26</td>
+          <td style="text-align:center;">2026-05-04</td>
+        </tr><tr>
+          <td><strong>COLURS</strong><br><small style="color:#888;font-family:monospace;">cli_oq6vfdg5bz</small></td>
+          <td style="text-align:right;">7</td>
+          <td style="text-align:right;">4</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">57.1%</td>
+          <td style="text-align:right;">4 / 7</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">57.1%</td>
+          <td style="text-align:center;">2026-03-31</td>
+          <td style="text-align:center;">2026-05-04</td>
+        </tr><tr>
+          <td><strong>Esgiro OP COL</strong><br><small style="color:#888;font-family:monospace;">cli_dlwm5pgetv</small></td>
+          <td style="text-align:right;">4</td>
+          <td style="text-align:right;">3</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">75.0%</td>
+          <td style="text-align:right;">3 / 4</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">75.0%</td>
+          <td style="text-align:center;">2026-01-09</td>
+          <td style="text-align:center;">2026-02-05</td>
+        </tr><tr>
+          <td><strong>Alzent digital</strong><br><small style="color:#888;font-family:monospace;">cli_zkggvlvqf0</small></td>
+          <td style="text-align:right;">24</td>
+          <td style="text-align:right;">3</td>
+          <td style="text-align:right;color:#922B21;font-weight:700;">12.5%</td>
+          <td style="text-align:right;">3 / 6</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">50.0%</td>
+          <td style="text-align:center;">2025-09-18</td>
+          <td style="text-align:center;">2026-04-16</td>
+        </tr><tr>
+          <td><strong>Mesta MX</strong><br><small style="color:#888;font-family:monospace;">cli_zjfx9kpbl8</small></td>
+          <td style="text-align:right;">3</td>
+          <td style="text-align:right;">3</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">3 / 3</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-01-08</td>
+          <td style="text-align:center;">2026-02-13</td>
+        </tr><tr>
+          <td><strong>QUINTERO ASOCIADOS</strong><br><small style="color:#888;font-family:monospace;">cli_qia597</small></td>
+          <td style="text-align:right;">3</td>
+          <td style="text-align:right;">3</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">3 / 3</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2025-06-04</td>
+          <td style="text-align:center;">2025-06-18</td>
+        </tr><tr>
+          <td><strong>RISI MX</strong><br><small style="color:#888;font-family:monospace;">cli_5zcwg0qgwx</small></td>
+          <td style="text-align:right;">6</td>
+          <td style="text-align:right;">3</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">50.0%</td>
+          <td style="text-align:right;">3 / 5</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">60.0%</td>
+          <td style="text-align:center;">2026-03-16</td>
+          <td style="text-align:center;">2026-04-08</td>
+        </tr><tr>
+          <td><strong>RISI MX</strong><br><small style="color:#888;font-family:monospace;">cli_wqgs3idvmc</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-04-07</td>
+          <td style="text-align:center;">2026-04-07</td>
+        </tr><tr>
+          <td><strong>fluyez MX</strong><br><small style="color:#888;font-family:monospace;">cli_hrqnfmkejh</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-04-28</td>
+          <td style="text-align:center;">2026-04-28</td>
+        </tr><tr>
+          <td><strong>PMI CO</strong><br><small style="color:#888;font-family:monospace;">cli_sqelgxxlbx</small></td>
+          <td style="text-align:right;">7</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#922B21;font-weight:700;">28.6%</td>
+          <td style="text-align:right;">2 / 5</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">40.0%</td>
+          <td style="text-align:center;">2026-01-06</td>
+          <td style="text-align:center;">2026-03-19</td>
+        </tr><tr>
+          <td><strong>Shield MX</strong><br><small style="color:#888;font-family:monospace;">cli_exxyj84vdh</small></td>
+          <td style="text-align:right;">7</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#922B21;font-weight:700;">28.6%</td>
+          <td style="text-align:right;">2 / 7</td>
+          <td style="text-align:right;color:#922B21;font-weight:700;">28.6%</td>
+          <td style="text-align:center;">2026-02-13</td>
+          <td style="text-align:center;">2026-04-03</td>
+        </tr><tr>
+          <td><strong>Orange Latam</strong><br><small style="color:#888;font-family:monospace;">cli_fbxifdes32</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-03-12</td>
+          <td style="text-align:center;">2026-03-12</td>
+        </tr><tr>
+          <td><strong>RISI MX</strong><br><small style="color:#888;font-family:monospace;">cli_re28ovfgkh</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-04-01</td>
+          <td style="text-align:center;">2026-04-14</td>
+        </tr><tr>
+          <td><strong>ARQ</strong><br><small style="color:#888;font-family:monospace;">cli_th5ezoyh3w</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-03-13</td>
+          <td style="text-align:center;">2026-03-25</td>
+        </tr><tr>
+          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_siikld3ljw</small></td>
+          <td style="text-align:right;">5</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">40.0%</td>
+          <td style="text-align:right;">2 / 4</td>
+          <td style="text-align:right;color:#9B6000;font-weight:700;">50.0%</td>
+          <td style="text-align:center;">2025-12-15</td>
+          <td style="text-align:center;">2026-02-05</td>
+        </tr><tr>
+          <td><strong>Future Pay CO</strong><br><small style="color:#888;font-family:monospace;">cli_vfq699unxo</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-03-25</td>
+          <td style="text-align:center;">2026-03-25</td>
+        </tr><tr>
+          <td><strong>Aviatur</strong><br><small style="color:#888;font-family:monospace;">cli_asinemz5rl</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-05-06</td>
+          <td style="text-align:center;">2026-05-06</td>
+        </tr><tr>
+          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_8gv2wyvywv</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2025-06-11</td>
+          <td style="text-align:center;">2026-05-05</td>
+        </tr><tr>
+          <td><strong>Trokera.</strong><br><small style="color:#888;font-family:monospace;">cli_trh8jvjvbc</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-05-06</td>
+          <td style="text-align:center;">2026-05-06</td>
+        </tr><tr>
+          <td><strong>Bitrus MX</strong><br><small style="color:#888;font-family:monospace;">cli_kkpzwv0ibd</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:right;">2 / 2</td>
+          <td style="text-align:right;color:#27AE60;font-weight:700;">100.0%</td>
+          <td style="text-align:center;">2026-05-05</td>
+          <td style="text-align:center;">2026-05-05</td>
+        </tr></tbody>
+        </table>
+      </div>
+      
+        <details style="margin-top:8px;">
+          <summary style="cursor:pointer;color:var(--primary);font-weight:600;font-size:13px;padding:8px;">Ver 33 clientes adicionales</summary>
+          <div style="overflow-x:auto;margin-top:8px;">
+            <table>
+              <thead><tr><th>Cliente</th><th style="text-align:right;">Intentos</th><th style="text-align:right;">Éxitos</th><th style="text-align:right;">Éxito %</th><th style="text-align:right;">Active / Unique CP</th><th style="text-align:right;">Active %</th><th>Primer intento</th><th>Último intento</th></tr></thead>
+              <tbody><tr>
+              <td>Selenio SAS MX<br><small style="color:#888;font-family:monospace;">cli_loa379</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">2 / 2</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-22</td>
+              <td style="text-align:center;">2026-04-22</td>
+            </tr><tr>
+              <td>Klu Colombia<br><small style="color:#888;font-family:monospace;">cli_jcdk66wzyg</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">2 / 2</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-03-26</td>
+              <td style="text-align:center;">2026-04-01</td>
+            </tr><tr>
+              <td>Esgiro OP COL<br><small style="color:#888;font-family:monospace;">cli_nnnaa84tg0</small></td>
+              <td style="text-align:right;">4</td>
+              <td style="text-align:right;">3</td>
+              <td style="text-align:right;">75.0%</td>
+              <td style="text-align:right;">1 / 2</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:center;">2026-01-06</td>
+              <td style="text-align:center;">2026-04-01</td>
+            </tr><tr>
+              <td>Solventa Colombia SAS<br><small style="color:#888;font-family:monospace;">cli_sas548</small></td>
+              <td style="text-align:right;">7</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">28.6%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-03-18</td>
+              <td style="text-align:center;">2026-04-14</td>
+            </tr><tr>
+              <td>Qash<br><small style="color:#888;font-family:monospace;">cli_yia3rpfssc</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:right;">1 / 2</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:center;">2026-03-24</td>
+              <td style="text-align:center;">2026-03-24</td>
+            </tr><tr>
+              <td>B89 SA<br><small style="color:#888;font-family:monospace;">cli_g1uihad7bm</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-02-12</td>
+              <td style="text-align:center;">2026-02-12</td>
+            </tr><tr>
+              <td>Paymentsbakery Sa de Cv.<br><small style="color:#888;font-family:monospace;">cli_zvzblapjer</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-14</td>
+              <td style="text-align:center;">2026-04-14</td>
+            </tr><tr>
+              <td>Velafi/ Trubit MX (Nebula)<br><small style="color:#888;font-family:monospace;">cli_q5sanudchl</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-03-12</td>
+              <td style="text-align:center;">2026-03-12</td>
+            </tr><tr>
+              <td>Sendola CO<br><small style="color:#888;font-family:monospace;">cli_ypg9wtjqhb</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-05-04</td>
+              <td style="text-align:center;">2026-05-04</td>
+            </tr><tr>
+              <td>Omma Cash CO<br><small style="color:#888;font-family:monospace;">cli_funkgaes7d</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-05-06</td>
+              <td style="text-align:center;">2026-05-06</td>
+            </tr><tr>
+              <td>PayBoom MX<br><small style="color:#888;font-family:monospace;">cli_tg85ncuooa</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-24</td>
+              <td style="text-align:center;">2026-04-24</td>
+            </tr><tr>
+              <td>OpenFX MX<br><small style="color:#888;font-family:monospace;">cli_fqe2ctkhx8</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-02-25</td>
+              <td style="text-align:center;">2026-02-25</td>
+            </tr><tr>
+              <td>Betterbro MX<br><small style="color:#888;font-family:monospace;">cli_kpmhfqeuri</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-03-10</td>
+              <td style="text-align:center;">2026-03-10</td>
+            </tr><tr>
+              <td>NONCO<br><small style="color:#888;font-family:monospace;">cli_s9lsaduu8b</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-30</td>
+              <td style="text-align:center;">2026-04-30</td>
+            </tr><tr>
+              <td>Supefina<br><small style="color:#888;font-family:monospace;">cli_b0wble9b0f</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-29</td>
+              <td style="text-align:center;">2026-04-29</td>
+            </tr><tr>
+              <td>Velafi/ Trubit MX (Nebula)<br><small style="color:#888;font-family:monospace;">cli_83glq73yk4</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-01</td>
+              <td style="text-align:center;">2026-04-01</td>
+            </tr><tr>
+              <td>COLURS<br><small style="color:#888;font-family:monospace;">cli_csc628</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-03-18</td>
+              <td style="text-align:center;">2026-03-18</td>
+            </tr><tr>
+              <td>Prizmapay<br><small style="color:#888;font-family:monospace;">cli_c9vqruubyd</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:right;">1 / 2</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:center;">2026-03-19</td>
+              <td style="text-align:center;">2026-04-14</td>
+            </tr><tr>
+              <td>Supefina<br><small style="color:#888;font-family:monospace;">cli_sua648</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-22</td>
+              <td style="text-align:center;">2026-04-22</td>
+            </tr><tr>
+              <td>QUIKCREDITO MX<br><small style="color:#888;font-family:monospace;">cli_miyihmgztz</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-03-24</td>
+              <td style="text-align:center;">2026-03-24</td>
+            </tr><tr>
+              <td>Prizmapay<br><small style="color:#888;font-family:monospace;">cli_hjbnnqo8hy</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:right;">1 / 2</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:center;">2026-03-20</td>
+              <td style="text-align:center;">2026-03-26</td>
+            </tr><tr>
+              <td>Lemon CO<br><small style="color:#888;font-family:monospace;">cli_q9dfiwngs7</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:right;">1 / 2</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:center;">2026-04-30</td>
+              <td style="text-align:center;">2026-04-30</td>
+            </tr><tr>
+              <td>Xisfo MX<br><small style="color:#888;font-family:monospace;">cli_hndpytxdpb</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-05-05</td>
+              <td style="text-align:center;">2026-05-05</td>
+            </tr><tr>
+              <td>PayBoom MX<br><small style="color:#888;font-family:monospace;">cli_zd0mvlmzvy</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-03-12</td>
+              <td style="text-align:center;">2026-03-12</td>
+            </tr><tr>
+              <td>Mandioca<br><small style="color:#888;font-family:monospace;">cli_8fytpficsh</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-05-06</td>
+              <td style="text-align:center;">2026-05-06</td>
+            </tr><tr>
+              <td>Bitpoint<br><small style="color:#888;font-family:monospace;">cli_hprmqymewx</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-01-07</td>
+              <td style="text-align:center;">2026-01-07</td>
+            </tr><tr>
+              <td>Exlatin Sas<br><small style="color:#888;font-family:monospace;">cli_leyq7pp4ll</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:right;">1 / 2</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:center;">2026-05-06</td>
+              <td style="text-align:center;">2026-05-06</td>
+            </tr><tr>
+              <td>Wallib SAS<br><small style="color:#888;font-family:monospace;">cli_52zjuxckr3</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-05-04</td>
+              <td style="text-align:center;">2026-05-04</td>
+            </tr><tr>
+              <td>Key2Pay/Aurora MX<br><small style="color:#888;font-family:monospace;">cli_ffyiyidy6y</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-03-19</td>
+              <td style="text-align:center;">2026-03-19</td>
+            </tr><tr>
+              <td>PayBoom MX<br><small style="color:#888;font-family:monospace;">cli_zyptsc8v4l</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-24</td>
+              <td style="text-align:center;">2026-04-24</td>
+            </tr><tr>
+              <td>Desarrollos Especializados y Digitales<br><small style="color:#888;font-family:monospace;">cli_fhegxxkmsb</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-02-12</td>
+              <td style="text-align:center;">2026-02-12</td>
+            </tr><tr>
+              <td>Majority Global LLC (Wallet) MX<br><small style="color:#888;font-family:monospace;">cli_tkargozhgz</small></td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:right;">1 / 2</td>
+              <td style="text-align:right;">50.0%</td>
+              <td style="text-align:center;">2026-05-07</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td>Nexxdiotc Mx<br><small style="color:#888;font-family:monospace;">cli_nxd287</small></td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:right;">1 / 1</td>
+              <td style="text-align:right;">100.0%</td>
+              <td style="text-align:center;">2026-04-27</td>
+              <td style="text-align:center;">2026-04-27</td>
+            </tr></tbody>
+            </table>
+          </div>
+        </details>
+    </div>
+    
+        <div class="card">
+          <div class="card-title">Distribución por COBRE_RESPONSE_CODE</div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Code</th><th>Descripción</th><th style="text-align:right;">N filas</th><th style="text-align:right;">Clientes</th><th style="text-align:right;">Counterparties</th><th>Primer visto</th><th>Último visto</th></tr></thead>
+              <tbody><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R081</span></td>
+              <td style="font-size:12px;">Counterparty registry expired</td>
+              <td style="text-align:right;">428,884</td>
+              <td style="text-align:right;">4</td>
+              <td style="text-align:right;">308,994</td>
+              <td style="text-align:center;">2025-12-15</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">A002</span></td>
+              <td style="font-size:12px;">SUCCESS</td>
+              <td style="text-align:right;">202,130</td>
+              <td style="text-align:right;">6</td>
+              <td style="text-align:right;">151,592</td>
+              <td style="text-align:center;">2025-12-16</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">A005</span></td>
+              <td style="font-size:12px;">Sucessful registry</td>
+              <td style="text-align:right;">116,338</td>
+              <td style="text-align:right;">16</td>
+              <td style="text-align:right;">82,538</td>
+              <td style="text-align:center;">2024-11-06</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R005</span></td>
+              <td style="font-size:12px;">Account number does not exist</td>
+              <td style="text-align:right;">80,267</td>
+              <td style="text-align:right;">3</td>
+              <td style="text-align:right;">41,149</td>
+              <td style="text-align:center;">2025-12-23</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R084</span></td>
+              <td style="font-size:12px;">Counterparty registry rejected</td>
+              <td style="text-align:right;">29,062</td>
+              <td style="text-align:right;">4</td>
+              <td style="text-align:right;">22,172</td>
+              <td style="text-align:center;">2025-12-16</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R001</span></td>
+              <td style="font-size:12px;">Inactive or blocked account</td>
+              <td style="text-align:right;">21,921</td>
+              <td style="text-align:right;">10</td>
+              <td style="text-align:right;">3,616</td>
+              <td style="text-align:center;">2025-01-22</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R042</span></td>
+              <td style="font-size:12px;">Invalid bank code</td>
+              <td style="text-align:right;">8,276</td>
+              <td style="text-align:right;">7</td>
+              <td style="text-align:right;">69</td>
+              <td style="text-align:center;">2025-01-07</td>
+              <td style="text-align:center;">2026-04-22</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R006</span></td>
+              <td style="font-size:12px;">Invalid account number</td>
+              <td style="text-align:right;">7,699</td>
+              <td style="text-align:right;">11</td>
+              <td style="text-align:right;">1,349</td>
+              <td style="text-align:center;">2024-11-20</td>
+              <td style="text-align:center;">2026-05-04</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R069</span></td>
+              <td style="font-size:12px;">ERROR</td>
+              <td style="text-align:right;">6,612</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">4,413</td>
+              <td style="text-align:center;">2026-01-26</td>
+              <td style="text-align:center;">2026-04-21</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R001</span></td>
+              <td style="font-size:12px;">Inactive or blocked account</td>
+              <td style="text-align:right;">6,194</td>
+              <td style="text-align:right;">7</td>
+              <td style="text-align:right;">869</td>
+              <td style="text-align:center;">2025-01-02</td>
+              <td style="text-align:center;">2026-05-04</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R043</span></td>
+              <td style="font-size:12px;">Technical error in financial institution</td>
+              <td style="text-align:right;">4,449</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">2,363</td>
+              <td style="text-align:center;">2025-12-29</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R085</span></td>
+              <td style="font-size:12px;">Client not configured for service</td>
+              <td style="text-align:right;">3,346</td>
+              <td style="text-align:right;">6</td>
+              <td style="text-align:right;">3,188</td>
+              <td style="text-align:center;">2025-12-09</td>
+              <td style="text-align:center;">2026-03-27</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R005</span></td>
+              <td style="font-size:12px;">Account number does not exist</td>
+              <td style="text-align:right;">2,362</td>
+              <td style="text-align:right;">10</td>
+              <td style="text-align:right;">1,200</td>
+              <td style="text-align:center;">2024-12-05</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R069</span></td>
+              <td style="font-size:12px;">Technical error</td>
+              <td style="text-align:right;">1,941</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1,611</td>
+              <td style="text-align:center;">2026-03-12</td>
+              <td style="text-align:center;">2026-04-13</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R000</span></td>
+              <td style="font-size:12px;">Rejected</td>
+              <td style="text-align:right;">1,526</td>
+              <td style="text-align:right;">5</td>
+              <td style="text-align:right;">244</td>
+              <td style="text-align:center;">2025-06-19</td>
+              <td style="text-align:center;">2026-03-25</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R069</span></td>
+              <td style="font-size:12px;">Technical error</td>
+              <td style="text-align:right;">1,521</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1,500</td>
+              <td style="text-align:center;">2025-12-12</td>
+              <td style="text-align:center;">2025-12-29</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R004</span></td>
+              <td style="font-size:12px;">Invalid ID</td>
+              <td style="text-align:right;">1,137</td>
+              <td style="text-align:right;">9</td>
+              <td style="text-align:right;">264</td>
+              <td style="text-align:center;">2024-11-20</td>
+              <td style="text-align:center;">2026-05-05</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R008</span></td>
+              <td style="font-size:12px;">Rejected by the customer</td>
+              <td style="text-align:right;">662</td>
+              <td style="text-align:right;">5</td>
+              <td style="text-align:right;">48</td>
+              <td style="text-align:center;">2025-05-28</td>
+              <td style="text-align:center;">2026-02-09</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R027</span></td>
+              <td style="font-size:12px;">Exceeds account top</td>
+              <td style="text-align:right;">598</td>
+              <td style="text-align:right;">7</td>
+              <td style="text-align:right;">195</td>
+              <td style="text-align:center;">2025-03-11</td>
+              <td style="text-align:center;">2026-04-16</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R006</span></td>
+              <td style="font-size:12px;">Invalid account number</td>
+              <td style="text-align:right;">595</td>
+              <td style="text-align:right;">6</td>
+              <td style="text-align:right;">183</td>
+              <td style="text-align:center;">2025-05-28</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R025</span></td>
+              <td style="font-size:12px;">Required information missing</td>
+              <td style="text-align:right;">272</td>
+              <td style="text-align:right;">6</td>
+              <td style="text-align:right;">72</td>
+              <td style="text-align:center;">2025-06-13</td>
+              <td style="text-align:center;">2025-12-22</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R069</span></td>
+              <td style="font-size:12px;">Technical error  </td>
+              <td style="text-align:right;">267</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">7</td>
+              <td style="text-align:center;">2025-04-16</td>
+              <td style="text-align:center;">2025-12-29</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">A002</span></td>
+              <td style="font-size:12px;">Success</td>
+              <td style="text-align:right;">185</td>
+              <td style="text-align:right;">58</td>
+              <td style="text-align:right;">177</td>
+              <td style="text-align:center;">2025-11-27</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R070</span></td>
+              <td style="font-size:12px;">Conterparty not registered</td>
+              <td style="text-align:right;">108</td>
+              <td style="text-align:right;">3</td>
+              <td style="text-align:right;">30</td>
+              <td style="text-align:center;">2025-05-29</td>
+              <td style="text-align:center;">2025-10-10</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R000</span></td>
+              <td style="font-size:12px;">Rejected</td>
+              <td style="text-align:right;">52</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">32</td>
+              <td style="text-align:center;">2025-11-14</td>
+              <td style="text-align:center;">2025-12-10</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R000</span></td>
+              <td style="font-size:12px;">Rejected</td>
+              <td style="text-align:right;">37</td>
+              <td style="text-align:right;">8</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:center;">2025-12-15</td>
+              <td style="text-align:center;">2026-04-29</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R086</span></td>
+              <td style="font-size:12px;">The counterparty was rejected by compliance</td>
+              <td style="text-align:right;">30</td>
+              <td style="text-align:right;">16</td>
+              <td style="text-align:right;">30</td>
+              <td style="text-align:center;">2026-02-18</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF9C3;color:#7C5B00">E001</span></td>
+              <td style="font-size:12px;">Failed</td>
+              <td style="text-align:right;">27</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:center;">2026-02-16</td>
+              <td style="text-align:center;">2026-05-06</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R043</span></td>
+              <td style="font-size:12px;">Technical error in financial institution</td>
+              <td style="text-align:right;">26</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">3</td>
+              <td style="text-align:center;">2025-10-31</td>
+              <td style="text-align:center;">2026-05-04</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R000</span></td>
+              <td style="font-size:12px;">Rejected</td>
+              <td style="text-align:right;">21</td>
+              <td style="text-align:right;">4</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:center;">2025-12-22</td>
+              <td style="text-align:center;">2026-04-28</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R000</span></td>
+              <td style="font-size:12px;">Rejected</td>
+              <td style="text-align:right;">12</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">3</td>
+              <td style="text-align:center;">2025-05-08</td>
+              <td style="text-align:center;">2025-10-01</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R069</span></td>
+              <td style="font-size:12px;">Technical error  </td>
+              <td style="text-align:right;">11</td>
+              <td style="text-align:right;">4</td>
+              <td style="text-align:right;">7</td>
+              <td style="text-align:center;">2024-11-13</td>
+              <td style="text-align:center;">2025-04-22</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R000</span></td>
+              <td style="font-size:12px;">Rejected</td>
+              <td style="text-align:right;">10</td>
+              <td style="text-align:right;">5</td>
+              <td style="text-align:right;">9</td>
+              <td style="text-align:center;">2025-12-05</td>
+              <td style="text-align:center;">2026-02-17</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">A000</span></td>
+              <td style="font-size:12px;">SUCCESS</td>
+              <td style="text-align:right;">7</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">3</td>
+              <td style="text-align:center;">2025-12-12</td>
+              <td style="text-align:center;">2025-12-15</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R069</span></td>
+              <td style="font-size:12px;">Technical error  </td>
+              <td style="text-align:right;">4</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:center;">2024-11-12</td>
+              <td style="text-align:center;">2024-11-18</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R044</span></td>
+              <td style="font-size:12px;">Error in account enrollment</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">2</td>
+              <td style="text-align:center;">2025-01-13</td>
+              <td style="text-align:center;">2025-01-31</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF9C3;color:#7C5B00">E001</span></td>
+              <td style="font-size:12px;">Failed</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:center;">2026-05-07</td>
+              <td style="text-align:center;">2026-05-07</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R010</span></td>
+              <td style="font-size:12px;">Account not authorized for debit</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:center;">2025-10-08</td>
+              <td style="text-align:center;">2025-10-08</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R069</span></td>
+              <td style="font-size:12px;">Technical error  </td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:center;">2024-11-15</td>
+              <td style="text-align:center;">2024-11-15</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">R069</span></td>
+              <td style="font-size:12px;">Technical error  </td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:right;">1</td>
+              <td style="text-align:center;">2024-11-18</td>
+              <td style="text-align:center;">2024-11-18</td>
+            </tr></tbody>
+            </table>
+          </div>
+        </div>
+    <div class="chart-container full" style="margin-bottom:16px;">
+      <div class="chart-title">Volumen diario por bucket (A active · R rejected/expired)</div>
+      <div id="chart_daily" style="height:340px;"></div>
     </div>
 
     <hr>
     <div class="card-title" style="margin-bottom:12px;">Conversaciones Diio — Nequi Tokenization</div>
     <div class="insight">
       <strong>12 conversaciones</strong> con mención explícita de Nequi Tokenization
-      (extraídas vía MCP Diio entre 2025-09 y 2026-05). Yango aparece 3 veces — cliente prioritario en optimización de la integración.
+      (extraídas vía MCP Diio entre 2025-09 y 2026-05). Yango aparece 3× — cliente prioritario en optimización.
     </div>
     <div style="overflow-x:auto;">
       <table>
@@ -303,7 +1337,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">Migración técnica</td>
           <td style="font-size:12px;">2026-03-16</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">4/5</span></td>
-          <td style="font-size:12px;max-width:380px;">Migración a un nuevo riel de pagos Nequi más eficiente y seguro, alineación al estándar actual.</td>
+          <td style="font-size:12px;max-width:380px;">Migración a un nuevo riel de pagos Nequi más eficiente y seguro.</td>
           <td style="font-size:12px;">Sin deal asociado</td>
         </tr><tr>
           <td><strong>Nequi (Nataly Sierra)</strong></td>
@@ -311,7 +1345,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">Optimización plataforma</td>
           <td style="font-size:12px;">2026-01-21</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#F3F4F6;color:#4B5563">—</span></td>
-          <td style="font-size:12px;max-width:380px;">Optimización técnica de la plataforma Cobre + Nequi para mejorar UX y resolver fricciones operativas.</td>
+          <td style="font-size:12px;max-width:380px;">Optimización técnica Cobre + Nequi para mejorar UX y resolver fricciones operativas.</td>
           <td style="font-size:12px;">Partner alignment</td>
         </tr><tr>
           <td><strong>Yango (Alejandro Sanabria)</strong></td>
@@ -319,7 +1353,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">Lanzamiento</td>
           <td style="font-size:12px;">2025-11-19</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">5/5</span></td>
-          <td style="font-size:12px;max-width:380px;">Optimización de integración Yango ↔ Cobre para lanzamiento exitoso, claridad técnica y operativa de tokenización Nequi.</td>
+          <td style="font-size:12px;max-width:380px;">Optimización de integración Yango ↔ Cobre para lanzamiento exitoso, claridad técnica/operativa de tokenización Nequi.</td>
           <td style="font-size:12px;">Sin deal asociado</td>
         </tr><tr>
           <td><strong>Nequi</strong></td>
@@ -335,7 +1369,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">Integración tesorería</td>
           <td style="font-size:12px;">2025-10-29</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">4/5</span></td>
-          <td style="font-size:12px;max-width:380px;">Integración exitosa de la plataforma de tesorería de Cobre con procesos de pago del cliente, foco en Nequi sin efectivo.</td>
+          <td style="font-size:12px;max-width:380px;">Integración exitosa de tesorería Cobre con procesos de pago, foco en Nequi sin efectivo.</td>
           <td style="font-size:12px;">Sin deal asociado</td>
         </tr><tr>
           <td><strong>Pexto Capital</strong></td>
@@ -343,7 +1377,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">Resolución problemas</td>
           <td style="font-size:12px;">2025-10-07</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">4/5</span></td>
-          <td style="font-size:12px;max-width:380px;">Alineación de procesos para eliminar fricciones operativas en la gestión de pagos Nequi.</td>
+          <td style="font-size:12px;max-width:380px;">Alineación de procesos para eliminar fricciones operativas en pagos Nequi.</td>
           <td style="font-size:12px;">Sin deal asociado</td>
         </tr><tr>
           <td><strong>Cliente (Ximena Cubillos)</strong></td>
@@ -351,7 +1385,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">Resolución fricciones</td>
           <td style="font-size:12px;">2025-10-02</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">4/5</span></td>
-          <td style="font-size:12px;max-width:380px;">Identificación y resolución de fricciones en la experiencia con pagos Nequi — proceso de integración más directo.</td>
+          <td style="font-size:12px;max-width:380px;">Identificación y resolución de fricciones en la experiencia con pagos Nequi.</td>
           <td style="font-size:12px;">Sin deal asociado</td>
         </tr><tr>
           <td><strong>Brale</strong></td>
@@ -359,7 +1393,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">Asociación tesorería</td>
           <td style="font-size:12px;">2025-09-23</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">4/5</span></td>
-          <td style="font-size:12px;max-width:380px;">Exploración de asociación Cobre + Brale para gestión de tesorería con tecnología de tokenización.</td>
+          <td style="font-size:12px;max-width:380px;">Exploración de asociación Cobre + Brale para gestión de tesorería con tokenización.</td>
           <td style="font-size:12px;">Exploración</td>
         </tr><tr>
           <td><strong>DoPayment (Francisco Rodríguez · Flavio Egoavil)</strong></td>
@@ -367,34 +1401,30 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <td style="font-size:12px;">Clarificación técnica</td>
           <td style="font-size:12px;">2025-09-05</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">5/5</span></td>
-          <td style="font-size:12px;max-width:380px;">Clarificación técnica y operativa para asegurar eficiencia del flujo de pagos e integración con Nequi.</td>
+          <td style="font-size:12px;max-width:380px;">Clarificación técnica/operativa para asegurar eficiencia del flujo de pagos e integración con Nequi.</td>
           <td style="font-size:12px;">Sin deal asociado</td>
         </tr></tbody>
       </table>
     </div>
     </div>
-<div id="tab-resumen" class="tab-content">
+<div id="tab-email" class="tab-content">
+    <div class="insight">
+      Snapshot del <strong>09 Abr 2026</strong> — campaña <code>200940423270</code> (Primer Toque, ES, Colombia).
+      Esta tab es para referencia; el segundo toque del plan aún no se ha disparado y la métrica de adopción real vive en la tab principal.
+    </div>
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-value">1,452</div><div class="kpi-label">Enviados</div></div>
-      <div class="kpi"><div class="kpi-value">55.3%</div><div class="kpi-label">Tasa apertura</div><div class="kpi-sub">803 aperturas</div></div>
+      <div class="kpi"><div class="kpi-value">343</div><div class="kpi-label">Cuentas contactadas</div></div>
+      <div class="kpi"><div class="kpi-value">1,454</div><div class="kpi-label">Contactos únicos</div></div>
+      <div class="kpi"><div class="kpi-value">55.3%</div><div class="kpi-label">Open rate</div><div class="kpi-sub">803 aperturas</div></div>
       <div class="kpi"><div class="kpi-value">5.2%</div><div class="kpi-label">CTOR</div><div class="kpi-sub">42 clics</div></div>
-      <div class="kpi"><div class="kpi-value">0.1%</div><div class="kpi-label">Bounce rate</div></div>
     </div>
 
     <div class="card">
       <div class="card-title">Funnel Primer Toque</div>
-      <div id="chart_funnel_resumen" style="height:340px;"></div>
+      <div id="chart_funnel" style="height:340px;"></div>
     </div>
 
-    <div class="insight">
-      El Primer Toque alcanzó 1,454 contactos únicos en 343 cuentas. El segundo toque
-      programado en el plan original aún no se ha lanzado (campaña planeada).
-    </div>
-    </div>
-<div id="tab-segmentos" class="tab-content">
-    <div class="insight">
-      Clasificación P1–P5 de las 343 cuentas contactadas según engagement con el Primer Toque.
-    </div>
+    <h3 style="font-size:14px;font-weight:600;margin:18px 0 12px;color:var(--text);">Segmentos P1–P5</h3>
     <div class="kpi-grid" style="margin-bottom:20px;"><div class="kpi" style="border-left:4px solid #266D6C;">
           <div class="kpi-value" style="color:#266D6C;">23</div>
           <div class="kpi-label">P1 · Hot Lead</div>
@@ -416,48 +1446,11 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
           <div class="kpi-label">P5 · Bounce</div>
           <div class="kpi-sub">0.6% · Limpieza</div>
         </div></div>
-    <div class="card">
-      <div class="card-title">Distribución por segmento</div>
-      <table>
-        <thead><tr><th>Segmento</th><th>Etiqueta</th><th>Definición</th><th style="text-align:right;">Cuentas</th><th style="text-align:right;">%</th></tr></thead>
-        <tbody><tr style="background:#E4F0EF;">
-          <td><strong style="color:#266D6C;">P1</strong></td>
-          <td>Hot Lead</td>
-          <td>Abrió y hizo clic</td>
-          <td style="text-align:right;font-weight:700;">23</td>
-          <td style="text-align:right;">6.7%</td>
-        </tr><tr style="background:#EBF3F2;">
-          <td><strong style="color:#518A89;">P2</strong></td>
-          <td>Warm</td>
-          <td>Todos abrieron</td>
-          <td style="text-align:right;font-weight:700;">92</td>
-          <td style="text-align:right;">26.8%</td>
-        </tr><tr style="background:#FFF8E5;">
-          <td><strong style="color:#9B6000;">P3</strong></td>
-          <td>Tibia</td>
-          <td>Algunos abrieron</td>
-          <td style="text-align:right;font-weight:700;">149</td>
-          <td style="text-align:right;">43.4%</td>
-        </tr><tr style="background:#FCEFEE;">
-          <td><strong style="color:#922B21;">P4</strong></td>
-          <td>Sin interacción</td>
-          <td>Nadie abrió</td>
-          <td style="text-align:right;font-weight:700;">77</td>
-          <td style="text-align:right;">22.4%</td>
-        </tr><tr style="background:#F1F0EC;">
-          <td><strong style="color:#7D7D7B;">P5</strong></td>
-          <td>Bounce</td>
-          <td>Limpieza</td>
-          <td style="text-align:right;font-weight:700;">2</td>
-          <td style="text-align:right;">0.6%</td>
-        </tr></tbody>
-      </table>
-    </div>
     </div>
 
 <div class="report-footer">
   <span>Cobre · Product Marketing · anab@cobre.co</span>
-  <span>HubSpot · Snowflake · Diio · snapshot 09 Abr 2026 · Generado 07 May 2026</span>
+  <span>Snowflake · HubSpot · Diio · Generado 07 May 2026</span>
 </div>
 
 </div>
@@ -472,20 +1465,24 @@ function switchTab(tab,evt){
 
     var funnel_cfg = {
       type:'funnel',
-      y:['Enviados','Aperturas únicas','Clics únicos','Adoptantes'],
-      x:[1452, 803, 42, 39],
-      marker:{color:['#266D6C','#518A89','#7DA7A7','#A8C5C4']},
+      y:['Enviados','Aperturas únicas','Clics únicos'],
+      x:[1452,803,42],
+      marker:{color:['#266D6C','#518A89','#7DA7A7']},
       texttemplate:'%{value:,} (%{percentInitial:.1%})',textposition:'inside',
       connector:{line:{color:'#C1C0BD',width:2}}
     };
-    var funnel_layout = {
+    Plotly.newPlot('chart_funnel',[funnel_cfg],{
       margin:{t:10,b:10,l:120,r:20},
       paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
       showlegend:false,font:{family:'Inter,sans-serif',size:12}
-    };
-    Plotly.newPlot('chart_funnel',[funnel_cfg],funnel_layout,{responsive:true,displayModeBar:false});
-    Plotly.newPlot('chart_funnel_resumen',[funnel_cfg],funnel_layout,{responsive:true,displayModeBar:false});
+    },{responsive:true,displayModeBar:false});
     
+            Plotly.newPlot('chart_daily',[{name:"A* other success",x:["2025-12-12", "2025-12-15"],y:[4, 3],type:"bar",marker:{color:"#A8C5C4"}},{name:"A002 active subscription",x:["2025-11-27", "2025-11-28", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-09", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-26", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[6, 2, 1, 2, 2, 1, 1, 1, 3, 3, 1, 3, 4, 1, 4, 3, 1, 105, 143, 113, 40, 120, 99, 91, 120, 101, 106, 117, 125, 105, 74, 81, 126, 111, 127, 122, 108, 84, 123, 138, 32, 27, 22, 15, 14, 16, 22, 19, 6, 11, 10, 13, 23, 1, 10, 14, 11, 5, 4, 11, 13, 16, 18, 20, 17, 6, 21, 16, 16, 14, 16, 14, 46, 86, 66, 21, 43, 24, 15, 18, 27, 20, 11, 24, 16, 22, 9, 20, 18, 26, 38, 266, 691, 620, 5436, 7896, 6827, 5145, 5587, 5901, 5276, 3763, 4581, 4492, 4653, 5173, 5256, 4418, 4155, 4061, 4565, 3621, 2895, 3464, 3260, 3645, 3497, 3436, 3402, 3940, 3977, 3408, 2596, 1981, 2485, 2450, 2834, 2686, 2304, 2125, 1925, 1854, 1868, 2239, 4007, 4134, 3779, 3446, 3388, 3617, 3402, 4026, 3295, 3302, 2748, 2803, 2173],type:"bar",marker:{color:"#27AE60"}},{name:"A005 ok with note",x:["2024-11-06", "2024-11-08", "2024-11-14", "2024-11-18", "2024-11-20", "2024-11-21", "2024-11-22", "2024-11-25", "2024-11-26", "2024-12-06", "2024-12-10", "2024-12-11", "2024-12-13", "2024-12-16", "2025-01-03", "2025-01-14", "2025-01-16", "2025-01-22", "2025-01-24", "2025-01-30", "2025-02-03", "2025-02-05", "2025-02-06", "2025-02-07", "2025-02-10", "2025-02-11", "2025-02-12", "2025-02-13", "2025-02-14", "2025-02-19", "2025-02-20", "2025-02-21", "2025-02-25", "2025-02-26", "2025-02-27", "2025-03-04", "2025-03-05", "2025-03-11", "2025-03-12", "2025-03-13", "2025-03-25", "2025-04-01", "2025-04-04", "2025-04-07", "2025-04-10", "2025-04-11", "2025-04-14", "2025-04-15", "2025-04-21", "2025-04-23", "2025-04-25", "2025-04-28", "2025-04-29", "2025-04-30", "2025-05-02", "2025-05-05", "2025-05-06", "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-12", "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-26", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30", "2025-06-03", "2025-06-04", "2025-06-05", "2025-06-06", "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13", "2025-06-16", "2025-06-17", "2025-06-18", "2025-06-19", "2025-06-20", "2025-06-24", "2025-06-25", "2025-06-26", "2025-06-27", "2025-07-01", "2025-07-02", "2025-07-03", "2025-07-04", "2025-07-07", "2025-07-08", "2025-07-09", "2025-07-10", "2025-07-11", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-28", "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-04", "2025-08-05", "2025-08-06", "2025-08-08", "2025-08-11", "2025-08-12", "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22", "2025-08-25", "2025-08-26", "2025-08-27", "2025-08-28", "2025-08-29", "2025-09-01", "2025-09-02", "2025-09-03", "2025-09-04", "2025-09-05", "2025-09-08", "2025-09-09", "2025-09-10", "2025-09-11", "2025-09-12", "2025-09-15", "2025-09-16", "2025-09-17", "2025-09-18", "2025-09-19", "2025-09-22", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26", "2025-09-29", "2025-09-30", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-06", "2025-10-07", "2025-10-08", "2025-10-09", "2025-10-10", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-20", "2025-10-21", "2025-10-22", "2025-10-23", "2025-10-24", "2025-10-27", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-31", "2025-11-01", "2025-11-04", "2025-11-05", "2025-11-06", "2025-11-07", "2025-11-10", "2025-11-11", "2025-11-12", "2025-11-13", "2025-11-14", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-27", "2025-11-28", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-26", "2025-12-29", "2025-12-30", "2026-01-02", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[1, 2, 1, 1, 2, 3, 4, 1, 2, 7, 7, 8, 15, 2, 22, 1, 2, 2, 3, 1, 1, 24, 1, 1, 1, 6, 1, 3, 1, 14, 4, 1, 1, 1, 10, 1, 1, 2, 4, 1, 2, 18, 10, 3, 5, 20, 1, 9, 2389, 1, 1, 11, 14, 2, 4, 23, 4, 7, 169, 5, 32, 7, 26, 44, 71, 57, 16, 7, 2, 18, 19, 60, 15, 314, 265, 325, 719, 262, 246, 248, 365, 294, 228, 2949, 270, 468, 207, 179, 317, 236, 449, 198, 130, 237, 424, 164, 126, 133, 874, 129, 143, 86, 116, 380, 157, 178, 201, 93, 1363, 187, 170, 201, 177, 366, 217, 168, 183, 162, 469, 279, 330, 567, 371, 244, 739, 1392, 514, 1780, 743, 649, 439, 728, 351, 563, 534, 471, 844, 480, 383, 462, 365, 939, 416, 465, 430, 492, 812, 324, 192, 187, 145, 412, 177, 169, 186, 279, 701, 446, 333, 329, 323, 662, 368, 323, 254, 284, 856, 377, 318, 698, 586, 414, 318, 374, 332, 772, 624, 237, 4994, 221, 825, 16, 1692, 377, 329, 14, 1400, 5552, 399, 3027, 1413, 2034, 452, 477, 844, 417, 2387, 3984, 329, 631, 389, 816, 191, 282, 948, 365, 348, 338, 776, 410, 330, 331, 333, 771, 450, 380, 444, 827, 404, 771, 795, 327, 271, 277, 329, 817, 279, 264, 362, 781, 323, 270, 289, 352, 665, 269, 216, 256, 239, 603, 264, 238, 288, 222, 440, 201, 279, 236, 284, 604, 270, 260, 251, 216, 585, 241, 230, 226, 199, 519, 184, 204, 192, 109, 450, 175, 160, 232, 200, 491, 194, 90, 193, 198, 634, 259, 239, 168, 486, 257, 211, 746, 264, 196, 201, 206, 484, 272, 281, 345, 328, 627, 353, 347, 319, 281, 663, 171, 160, 174, 699, 337, 10],type:"bar",marker:{color:"#518A89"}},{name:"R* other reject",x:["2024-11-12", "2024-11-13", "2024-11-15", "2024-11-18", "2024-11-20", "2024-11-21", "2024-12-05", "2024-12-09", "2024-12-10", "2024-12-11", "2024-12-17", "2025-01-02", "2025-01-07", "2025-01-09", "2025-01-13", "2025-01-21", "2025-01-22", "2025-01-23", "2025-01-24", "2025-01-31", "2025-02-04", "2025-02-05", "2025-02-12", "2025-02-18", "2025-02-19", "2025-02-20", "2025-03-07", "2025-03-11", "2025-03-27", "2025-04-03", "2025-04-16", "2025-04-21", "2025-04-22", "2025-05-05", "2025-05-06", "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-12", "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-19", "2025-05-20", "2025-05-24", "2025-05-26", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30", "2025-05-31", "2025-06-03", "2025-06-04", "2025-06-05", "2025-06-06", "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13", "2025-06-14", "2025-06-16", "2025-06-17", "2025-06-18", "2025-06-19", "2025-06-20", "2025-06-21", "2025-06-24", "2025-06-25", "2025-06-26", "2025-06-27", "2025-06-28", "2025-06-30", "2025-07-01", "2025-07-02", "2025-07-03", "2025-07-04", "2025-07-07", "2025-07-08", "2025-07-09", "2025-07-10", "2025-07-11", "2025-07-12", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-26", "2025-07-28", "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-02", "2025-08-04", "2025-08-05", "2025-08-06", "2025-08-07", "2025-08-08", "2025-08-09", "2025-08-11", "2025-08-12", "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-16", "2025-08-17", "2025-08-18", "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22", "2025-08-23", "2025-08-24", "2025-08-25", "2025-08-26", "2025-08-27", "2025-08-28", "2025-08-29", "2025-08-30", "2025-08-31", "2025-09-01", "2025-09-02", "2025-09-03", "2025-09-04", "2025-09-05", "2025-09-06", "2025-09-08", "2025-09-09", "2025-09-10", "2025-09-11", "2025-09-12", "2025-09-15", "2025-09-16", "2025-09-17", "2025-09-18", "2025-09-19", "2025-09-22", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26", "2025-09-29", "2025-09-30", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-04", "2025-10-05", "2025-10-06", "2025-10-07", "2025-10-08", "2025-10-09", "2025-10-10", "2025-10-11", "2025-10-12", "2025-10-13", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-18", "2025-10-19", "2025-10-20", "2025-10-21", "2025-10-22", "2025-10-23", "2025-10-24", "2025-10-25", "2025-10-26", "2025-10-27", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-31", "2025-11-01", "2025-11-02", "2025-11-03", "2025-11-04", "2025-11-05", "2025-11-06", "2025-11-07", "2025-11-08", "2025-11-09", "2025-11-10", "2025-11-11", "2025-11-12", "2025-11-13", "2025-11-14", "2025-11-15", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-22", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-27", "2025-11-28", "2025-11-29", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-06", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-13", "2025-12-14", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-20", "2025-12-21", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-25", "2025-12-26", "2025-12-27", "2025-12-28", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[1, 3, 1, 2, 8, 3, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 5, 1, 6, 1, 1, 1, 2, 263, 4, 3, 1, 15, 15, 2, 1, 6, 2, 1, 4, 8, 11, 1, 3, 3, 3, 19, 18, 20, 2, 34, 13, 18, 10, 12, 12, 17, 226, 30, 9, 23, 15, 15, 20, 16, 1, 30, 6, 11, 16, 2, 2, 25, 15, 11, 15, 45, 15, 10, 10, 5, 1, 44, 22, 27, 22, 8, 374, 110, 13, 11, 7, 5, 39, 374, 9, 22, 15, 1, 84, 144, 118, 96, 115, 41, 24, 16, 141, 304, 76, 16, 2, 18, 417, 420, 351, 460, 34, 31, 374, 335, 380, 414, 433, 54, 46, 393, 406, 380, 425, 19, 10, 47, 130, 26, 29, 124, 52, 34, 12, 81, 19, 30, 323, 18, 31, 35, 62, 350, 60, 37, 230, 171, 163, 260, 562, 246, 237, 265, 192, 181, 184, 657, 260, 236, 299, 526, 181, 274, 593, 227, 224, 244, 536, 185, 266, 631, 231, 2221, 1551, 183, 166, 169, 682, 2915, 1522, 206, 255, 162, 202, 226, 2818, 254, 1024, 145, 507, 408, 201, 265, 371, 279, 479, 889, 3695, 3236, 202, 4115, 566, 193, 238, 145, 385, 354, 588, 293, 304, 204, 125, 260, 283, 292, 224, 279, 222, 166, 329, 356, 355, 107, 344, 314, 166, 484, 1827, 332, 31, 134, 87, 74, 158, 115, 107, 111, 115, 97, 62, 63, 122, 119, 126, 121, 102, 63, 132, 144, 103, 98, 123, 89, 50, 106, 103, 101, 87, 115, 78, 45, 124, 64, 93, 81, 83, 64, 33, 68, 72, 81, 104, 114, 104, 49, 112, 99, 86, 70, 78, 60, 43, 96, 113, 110, 117, 113, 87, 57, 141, 93, 92, 98, 60, 71, 44, 81, 70, 102, 103, 335, 546, 557, 4837, 5645, 4827, 4212, 3375, 3826, 3474, 2417, 2386, 2034, 2187, 2329, 2380, 2324, 1892, 2009, 2065, 2102, 3586, 1672, 1842, 1824, 1480, 1440, 1371, 1596, 1800, 1562, 1407, 975, 1207, 1207, 1427, 1476, 1308, 1187, 1001, 894, 998, 1015, 1690, 1831, 2058, 1981, 2018, 2257, 2474, 2753, 2504, 2586, 1669, 1692, 1284],type:"bar",marker:{color:"#9B6000"}},{name:"R081 expired",x:["2025-12-15", "2025-12-16", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-17", "2026-01-18", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-08", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-14", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-21", "2026-03-22", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[2, 1, 126, 2538, 4253, 48, 171, 124, 100, 185, 162, 171, 146, 161, 106, 70, 82, 139, 126, 141, 148, 116, 84, 163, 195, 263, 279, 290, 264, 171, 271, 318, 321, 301, 321, 252, 164, 197, 174, 258, 291, 200, 140, 102, 250, 205, 256, 243, 337, 351, 212, 337, 392, 334, 342, 308, 315, 124, 211, 496, 411, 347, 413, 324, 203, 383, 307, 358, 351, 205, 272, 184, 294, 307, 272, 365, 1051, 1824, 1858, 16185, 19863, 17343, 14376, 11821, 13062, 11808, 7443, 8931, 8155, 8033, 9421, 9080, 8027, 7078, 7473, 8693, 7363, 15834, 6311, 6620, 6561, 5750, 5415, 5217, 5846, 6289, 5687, 5105, 4068, 5050, 4741, 5618, 5382, 5032, 4197, 3605, 3548, 3650, 4169, 6377, 6884, 6562, 6340, 6130, 6959, 7058, 8129, 6784, 6842, 5114, 5458, 3820],type:"bar",marker:{color:"#922B21"}},{name:"other",x:["2026-02-16", "2026-02-17", "2026-02-18", "2026-02-26", "2026-03-04", "2026-03-30", "2026-04-17", "2026-04-20", "2026-04-22", "2026-04-24", "2026-04-28", "2026-05-06", "2026-05-07"],y:[1, 1, 6, 1, 1, 5, 1, 2, 2, 1, 3, 3, 1],type:"bar",marker:{color:"#7D7D7B"}}],{
+              barmode:'stack',margin:{t:10,b:60,l:60,r:10},
+              xaxis:{title:'Fecha'},yaxis:{title:'Filas'},
+              paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+              legend:{orientation:'h',y:-0.3},font:{family:'Inter,sans-serif',size:11}
+            },{responsive:true,displayModeBar:false});
 </script>
 </body>
 </html>

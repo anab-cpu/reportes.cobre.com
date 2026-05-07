@@ -180,6 +180,29 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
   .top-nav,.tabs,.report-footer{display:none !important;}
   .tab-content{display:block !important;page-break-inside:avoid;}
 }
+
+.query-block{
+  background:var(--cloudy);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;margin:12px 0;
+}
+.query-block .query-label{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;
+  color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.query-block .query-label .badge{
+  background:var(--teal-pale);color:var(--teal-deep);
+  padding:2px 8px;border-radius:10px;font-size:9.5px;letter-spacing:0.04em;
+}
+.query-block pre{
+  margin:0;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:6px;
+  font-family:'SF Mono','Monaco','Consolas','Courier New',monospace;
+  font-size:12px;line-height:1.5;color:var(--deep);
+  white-space:pre-wrap;word-wrap:break-word;overflow-x:auto;
+}
+.query-block .query-note{
+  font-size:11.5px;color:var(--cloudy-80);margin-top:8px;line-height:1.4;
+}
+.query-block .query-note strong{color:var(--text);}
 </style>
 </head>
 <body>
@@ -253,6 +276,16 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       <div class="kpi"><div class="kpi-value">12</div><div class="kpi-label">Completadas</div><div class="kpi-sub">28.6% de éxito</div></div>
       <div class="kpi"><div class="kpi-value">$27.00</div><div class="kpi-label">Monto completado MXN</div><div class="kpi-sub">al 2026-05-06</div></div>
     </div>
+    <div class="query-block">
+  <div class="query-label">Query <span class="badge">Snowflake</span></div>
+  <pre>SELECT *
+FROM COBRE_GOLD_DB.DATAWAREHOUSE.MONEY_MOVEMENTS
+WHERE GEOGRAPHY = 'mex'
+  AND TYPE      = 'r2p_spei'
+  AND MM_FLOW   = 'payin'
+  AND CLIENT_ID NOT IN ('cli_xxz85j60is');  -- excluye Engineering Alpha (testing interno)</pre>
+  <div class="query-note">Filtro derivado por descubrimiento de schema. <code>r2p_spei</code> = request-to-pay SPEI (CLABE one-time generada por solicitud). <strong>Pendiente confirmar con producto</strong> si éste es el filtro canónico de CLABEs Dinámicas o si existe otra implementación en TRANSACTIONS.</div>
+</div>
     <div class="insight-red">
       <strong>Producto en pre-launch.</strong> Sólo <strong>4 clientes externos</strong> han probado CLABEs Dinámicas en producción
       (42 txns totales, 12 completadas). Los montos completados suman <strong>$27.00 MXN</strong> —
