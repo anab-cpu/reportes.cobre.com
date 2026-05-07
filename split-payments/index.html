@@ -1,400 +1,1745 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Split Payments — Reporte de Aperturas</title>
-  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
-  <style>
-*, *::before, *::after { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #F1F0EC;
-  color: #212121;
-  font-size: 15px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Split Payments — Reporte PMM</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+:root {
+  --bg:#F1F0EC; --card:#FFFFFF; --primary:#266D6C; --secondary:#518A89;
+  --success:#27AE60; --warning:#D4820A; --error:#C0392B;
+  --text:#1A1A1A; --muted:#6B7280; --border:#E5E3DC;
 }
-.page { max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);font-size:14px;line-height:1.5;}
+.container{max-width:1200px;margin:0 auto;padding:24px 20px;}
 
-/* Header */
-.main-header {
-  background: linear-gradient(135deg, #266D6C 0%, #1a4f4e 100%);
-  color: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 1.5rem;
-}
-.main-header h1 { margin: 0; font-size: 1.7rem; }
-.main-header p  { margin: 0.3rem 0 0; font-size: 0.9rem; color: #c8e6e5; }
+.header{background:linear-gradient(135deg,var(--primary) 0%,#1a4f4e 100%);color:white;padding:28px 32px;border-radius:12px;margin-bottom:24px;}
+.header h1{font-size:22px;font-weight:700;margin-bottom:6px;}
+.header p{opacity:.85;font-size:13px;}
 
-/* KPI grid */
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.8rem; }
-.kpi-card {
-  background: white; border-radius: 12px; padding: 1rem 1.2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-left: 5px solid #266D6C;
-}
-.kpi-value { font-size: 1.9rem; font-weight: 700; color: #266D6C; margin: 0; }
-.kpi-label { font-size: 0.8rem; color: #666; margin: 0; }
-.kpi-delta { font-size: 0.75rem; color: #27AE60; font-weight: 600; margin: 0.2rem 0 0; }
+.conclusions{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:24px;margin-bottom:24px;}
+.conclusions h2{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--primary);}
 
-/* Tabs */
-.tab-bar {
-  display: flex; gap: 0; flex-wrap: wrap;
-  background: white; border-radius: 12px 12px 0 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07); overflow: hidden;
-  margin-bottom: 0;
-}
-.tab-btn {
-  padding: 0.8rem 1.2rem; font-size: 0.88rem; font-weight: 600;
-  color: #555; background: transparent; border: none; cursor: pointer;
-  border-bottom: 3px solid transparent; white-space: nowrap;
-  transition: color .2s, border-color .2s;
-}
-.tab-btn:hover   { color: #266D6C; background: #f5f5f5; }
-.tab-btn.active  { color: #266D6C; border-bottom-color: #266D6C; background: #f9f9f9; }
-.tab-content     { display: none; }
-.tab-content.active { display: block; }
-.tab-panel {
-  background: white; border-radius: 0 0 12px 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  padding: 1.5rem; margin-bottom: 1.5rem;
-}
+.card{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:16px;}
+.card-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px;}
 
-/* Layouts */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-@media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
+.kpi-value{font-size:24px;font-weight:700;color:var(--primary);}
+.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.04em;}
+.kpi-sub{font-size:12px;color:var(--secondary);margin-top:2px;}
 
-/* Tables */
-.table-wrap { overflow-x: auto; border-radius: 8px; }
-.data-table {
-  width: 100%; border-collapse: collapse; font-size: 0.85rem;
-}
-.data-table th {
-  background: #266D6C; color: white;
-  padding: 0.5rem 0.75rem; text-align: left; white-space: nowrap;
-}
-.data-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid #eee; }
-.data-table tbody tr:hover { background: #f5fafa; }
-.contact-table th { background: #518A89; }
+.seg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
+.seg-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;}
+.seg-card h3{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--primary);}
+.seg-card ul{list-style:none;padding:0;}
+.seg-card li{padding:4px 0;font-size:13px;}
+.seg-card li::before{content:"▸";color:var(--secondary);margin-right:6px;}
 
-/* Segment cards */
-.seg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-@media (max-width: 900px) { .seg-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 580px) { .seg-grid { grid-template-columns: 1fr; } }
-.seg-card { border-radius: 12px; padding: 1.2rem; border: 1.5px solid; }
+.kam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px;}
+.kam-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;border-left:4px solid var(--primary);}
+.kam-card h3{font-size:13px;font-weight:700;margin-bottom:8px;}
+.kam-stat{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-top:1px dashed var(--border);}
+.kam-stat:first-of-type{border-top:none;}
+.kam-stat-val{font-weight:700;}
 
-/* Company rows */
-.company-row {
-  display: flex; align-items: center; gap: 0.8rem;
-  background: white; border-radius: 8px;
-  padding: 0.6rem 0.9rem; margin: 0.3rem 0;
-  border: 1px solid #e0e0e0;
-}
+.chart-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
+.chart-container{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.chart-container.full{grid-column:1/-1;}
+.chart-title{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;font-weight:600;}
 
-/* Details/accordion */
-.company-detail {
-  background: #fafafa; border-radius: 8px;
-  border: 1px solid #e8e8e8; margin: 0.4rem 0;
-  overflow: hidden;
-}
-.company-detail summary {
-  padding: 0.7rem 1rem; cursor: pointer;
-  font-size: 0.9rem; list-style: none;
-  user-select: none;
-}
-.company-detail summary::-webkit-details-marker { display: none; }
-.company-detail summary::before { content: "▶ "; font-size: 0.7rem; color: #999; }
-.company-detail[open] summary::before { content: "▼ "; }
+table{width:100%;border-collapse:collapse;font-size:12px;}
+table thead th{background:#F8F7F2;color:var(--muted);padding:10px 12px;text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border);}
+table tbody td{padding:9px 12px;border-bottom:1px solid #F0EFEA;vertical-align:top;}
+table tbody tr:hover{background:#FAFAF7;}
 
-/* Alert / success boxes */
-.alert-box   { background: #FDECEB; border: 1.5px solid #C0392B; border-radius: 10px; padding: 0.9rem 1.1rem; margin-bottom: 0.8rem; }
-.success-box { background: #E8F8EE; border: 1.5px solid #27AE60; border-radius: 10px; padding: 0.9rem 1.1rem; }
-.action-card { background: #E4F0EF; border-radius: 10px; padding: 1rem; border-left: 4px solid #266D6C; font-size: 0.9rem; margin-bottom: 1rem; }
+.insight{background:#F0F8F8;border-left:4px solid var(--primary);padding:14px 16px;border-radius:6px;margin:12px 0;font-size:13px;}
+.insight-yellow{background:#FFFBEA;border-left-color:#D4820A;}
+.insight-red{background:#FDECEA;border-left-color:#C0392B;}
 
-/* Section title */
-.section-title {
-  font-size: 1rem; font-weight: 700; color: #266D6C;
-  border-bottom: 2px solid #266D6C;
-  padding-bottom: 0.35rem; margin-bottom: 0.9rem;
-}
+.tabs{display:flex;gap:6px;border-bottom:2px solid var(--border);margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{padding:10px 18px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
 
-/* Message template */
-.template-preview { display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start; }
-.msg-preview-card {
-  max-width: 440px; border: 1px solid #e0e0e0;
-  border-radius: 12px; overflow: hidden; flex-shrink: 0;
-}
-.code-block {
-  background: #f5f5f5; border: 1px solid #ddd;
-  border-radius: 6px; padding: 0.8rem;
-  font-family: monospace; font-size: 0.82rem;
-  white-space: pre-wrap; word-break: break-word;
-}
+.seg-bucket{padding:16px;border-radius:10px;margin-bottom:14px;border-left:6px solid #ccc;}
+.seg-bucket h3{font-size:14px;font-weight:700;margin-bottom:8px;}
 
-/* Conclusions block */
-.conclusions-block {
-  background: white; border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  padding: 1.5rem; margin-bottom: 1.5rem;
-  border-top: 4px solid #266D6C;
-}
-.conclusions-title {
-  font-size: 1rem; font-weight: 700; color: #266D6C;
-  border-bottom: 2px solid #266D6C;
-  padding-bottom: 0.35rem; margin-bottom: 0.8rem;
-}
-
-/* Insight box */
-.insight-box {
-  background: #FAFAFA; border-radius: 10px;
-  border: 1.5px solid #8E44AD; padding: 1.2rem;
-}
-
-/* Footer */
-.footer { text-align: center; color: #aaa; font-size: 0.78rem; margin-top: 2rem; }
+hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 </style>
 </head>
 <body>
-<div class="page">
+<div class="container">
 
-  <div class="main-header">
-    <h1>📧 Split Payments — Reporte de Campaña</h1>
-    <p>Campaña: PMM_Split Payments · "¿Cómo pagar $50.000.000 por Bre-B?" · Cobre · Generado: 07 May 2026 12:52</p>
-  </div>
+<div class="header">
+  <h1>💳 Split Payments — Reporte PMM</h1>
+  <p>9 KAMs · "¿Cómo pagar $50.000.000 por Bre-B?" · HubSpot Events API + Snowflake (SPLIT_ID) + Diio MCP · Generado: 07 May 2026</p>
+</div>
 
-  
-<div class="conclusions-block">
-  <div class="two-col" style="gap:1.5rem;">
-    <div>
-      <div class="conclusions-title">Resumen ejecutivo</div>
-      <p style="margin:0.5rem 0;">
-        La campaña <b>Split Payments</b> alcanzó <b>439 contactos</b>
-        en <b>189 empresas</b> con un open rate de <b>44.9%</b>
-        y click rate de <b>0.7%</b>.
-        <b>Pipeline activo (P1+P2): 71 empresas</b>
-        (38% del total).
-      </p>
-      <ul style="margin:0.5rem 0;padding-left:1.2rem;line-height:1.8;">
-        <li>Open rate <b>44.9%</b> — dentro del rango B2B esperado.</li>
-        <li>Click rate bajo (<b>0.7%</b>) — el CTA es el problema, no el interés.</li>
-        <li><b>3</b> hot leads (P1) requieren acción inmediata del KAM.</li>
-        <li><b>68</b> warm leads (P2) abrieron pero no clicaron — alta probabilidad de conversión con seguimiento correcto.</li>
+
+    <div class="conclusions">
+      <h2>Conclusiones</h2>
+      <div class="seg-grid">
+        <div class="seg-card">
+          <h3>🗄️ Uso real (Snowflake)</h3>
+          <ul>
+            <li><strong>2 clientes activos</strong> — producto en pre-launch</li>
+            <li>8 txns (3 completadas · 5 fallidas)</li>
+            <li>$30.0M COP movilizados</li>
+            <li>Principal causa de falla: <strong>f004 daily-limit</strong> (5 txns)</li>
+          </ul>
+        </div>
+        <div class="seg-card">
+          <h3>📧 Activación por email</h3>
+          <ul>
+            <li><strong>439 envíos</strong> personalizados desde 9 KAMs</li>
+            <li>Apertura global: <strong>44.9%</strong></li>
+            <li>P1 Hot: <strong>3</strong> · P2 Warm: <strong>68</strong> · P3 Tibia: <strong>41</strong></li>
+            <li>Gap aperturas → uso real ≈ <strong>195</strong> cuentas</li>
+          </ul>
+        </div>
+        <div class="seg-card">
+          <h3>💬 Pipeline (Diio)</h3>
+          <ul>
+            <li>2 conversaciones con mención explícita</li>
+            <li>Ver detalle abajo</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:14px;font-weight:600;margin:20px 0 12px;color:var(--text);">Hallazgos clave</h3>
+      <ul style="margin-left:1.2rem;line-height:1.9;font-size:13px;">
+        <li><strong>El producto necesita levantar el cap diario:</strong> 5 de 8 txns en producción fallaron por <code>f004 Daily transaction amount limit has been reached</code> — bloquea adopción real.</li>
+        <li><strong>La campaña sí movió interés:</strong> 197 contactos abrieron, pero sólo 2 clientes han hecho txns. Hay que cerrar el loop.</li>
+        <li><strong>Acción inmediata:</strong> contactar P1 (3 cuentas hot) esta semana, push email para P2+P3 (109 cuentas).</li>
       </ul>
     </div>
-    <div>
-      <div class="conclusions-title">Próximos pasos</div>
-      <ol style="margin:0.5rem 0;padding-left:1.3rem;line-height:1.8;"><li style='margin-bottom:0.4rem;'><b>Esta semana</b> — 3 empresa(s) P1: KAM hace contacto directo con propuesta o demo.</li><li style='margin-bottom:0.4rem;'><b>Próximos 3 días</b> — 68 empresa(s) P2: CTA de baja fricción ("¿15 min esta semana?").</li><li style='margin-bottom:0.4rem;'><b>Próxima semana</b> — 41 empresa(s) P3: reenvío a contactos que no abrieron, con nuevo subject.</li><li style='margin-bottom:0.4rem;'><b>Paralelo</b> — 77 empresa(s) P4: WhatsApp personalizado por KAM, no re-envío masivo.</li><li style='margin-bottom:0.4rem;'><b>Aprendizaje</b> — El CTA es el cuello de botella recurrente. Siguiente campaña: test A/B de CTA.</li></ol>
+    
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('intel',event)">🔍 Uso real + Pipeline</button>
+  <button class="tab-btn" onclick="switchTab('resumen',event)">📧 Resumen envíos</button>
+  <button class="tab-btn" onclick="switchTab('segmentos',event)">📊 Segmentos P1–P5</button>
+</div>
+
+<div id="tab-intel" class="tab-content active">
+    
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-value">2</div><div class="kpi-label">Clientes activos</div><div class="kpi-sub">con SPLIT_ID en prod</div></div>
+      <div class="kpi"><div class="kpi-value">8</div><div class="kpi-label">Total txns split</div><div class="kpi-sub">3 splits únicos</div></div>
+      <div class="kpi"><div class="kpi-value">3</div><div class="kpi-label">Completadas</div><div class="kpi-sub">37.5% de éxito</div></div>
+      <div class="kpi"><div class="kpi-value">$30.0M</div><div class="kpi-label">Monto completado</div><div class="kpi-sub">2026-04-08 → 2026-04-08</div></div>
     </div>
-  </div>
+    <div class="insight-yellow">
+      <strong>Producto en pre-launch.</strong> Sólo 2 clientes han probado Split Payments en producción
+      (8 txns, 3 splits únicos). El campaña PMM (2026-04-08 → 2026-04-08) aún no
+      ha movido la aguja en uso real — la conversión de aperturas a txn está pendiente.
+    </div>
+    <div class="card">
+      <div class="card-title">🥇 Clientes con uso real — Split Payments (Snowflake live)</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Cliente</th><th style="text-align:right;">Total txn</th><th style="text-align:right;">Splits únicos</th><th style="text-align:right;">Completadas</th><th style="text-align:right;">Éxito</th><th style="text-align:right;">Monto completado</th><th>Primer uso</th><th>Último uso</th></tr></thead>
+          <tbody><tr>
+          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_vdke2laqnj</small></td>
+          <td style="text-align:right;">6</td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">3</td>
+          <td style="text-align:right;color:#C0392B;font-weight:700;">50.0%</td>
+          <td style="text-align:right;font-family:monospace;">$30.0M COP</td>
+          <td style="text-align:center;">2026-04-08</td>
+          <td style="text-align:center;">2026-04-08</td>
+        </tr><tr>
+          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_xxz85j60is</small></td>
+          <td style="text-align:right;">2</td>
+          <td style="text-align:right;">1</td>
+          <td style="text-align:right;">0</td>
+          <td style="text-align:right;color:#C0392B;font-weight:700;">0.0%</td>
+          <td style="text-align:right;font-family:monospace;">$0 COP</td>
+          <td style="text-align:center;">2026-04-08</td>
+          <td style="text-align:center;">2026-04-08</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    
+        <div class="card">
+          <div class="card-title">Distribución por status — todas las txns split</div>
+          <table>
+            <thead><tr><th>State</th><th>Code</th><th>Descripción</th><th style="text-align:right;">N</th><th style="text-align:right;">Monto</th></tr></thead>
+            <tbody><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">failed</span></td>
+              <td style="font-family:monospace;font-size:11px;">f004</td>
+              <td style="font-size:12px;">Daily transaction amount limit has been reached</td>
+              <td style="text-align:right;">5</td>
+              <td style="text-align:right;">$45.0M COP</td>
+            </tr><tr>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">completed</span></td>
+              <td style="font-family:monospace;font-size:11px;">nan</td>
+              <td style="font-size:12px;">nan</td>
+              <td style="text-align:right;">3</td>
+              <td style="text-align:right;">$30.0M COP</td>
+            </tr></tbody>
+          </table>
+        </div>
+    <div class="chart-container full" style="margin-bottom:16px;">
+      <div class="chart-title">Volumen diario por status</div>
+      <div id="chart_sf_daily" style="height:300px;"></div>
+    </div>
+        <hr>
+        <div class="card-title" style="margin-bottom:12px;">💬 Conversaciones Diio — Split Payments</div>
+        <div class="insight">
+          <strong>2 conversaciones</strong> con mención explícita a Split Payments
+          (extraídas vía MCP Diio).
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Empresa</th><th>KAM</th><th>Tipo</th><th>Fecha</th><th>Odds</th><th>Resumen</th><th>Deal</th></tr></thead>
+            <tbody><tr>
+              <td><strong>On Top (getontop.com)</strong></td>
+              <td style="font-size:12px;">Sofía Bernate · Manuela Osorio · María Vidal</td>
+              <td style="font-size:12px;">G: Seguimiento</td>
+              <td style="font-size:12px;">2026-03-27</td>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">4/5</span></td>
+              <td style="font-size:12px;max-width:340px;">Sofia presentó la beta de Split Payments para superar el límite de $12M COP por txn en Bre-B: metadata 'split=true' divide pagos hasta 10K USD en múltiples txns con split_id compartido para reconciliación. On Top evalúa UX vs FastPay (eficiente hasta 3 splits).</td>
+              <td style="font-size:12px;">Activo · evaluación UX</td>
+            </tr><tr>
+              <td><strong>CVI / Toyota</strong></td>
+              <td style="font-size:12px;">Juliana Romero</td>
+              <td style="font-size:12px;">EC: Discovery</td>
+              <td style="font-size:12px;">2025-09-16</td>
+              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF9C3;color:#7C5B00">3/5</span></td>
+              <td style="font-size:12px;max-width:340px;">Mención tangencial de 'pagos múltiples' (nómina, arriendo, operaciones). No es Split Payments propiamente, sino multiplicidad de pagos.</td>
+              <td style="font-size:12px;">—</td>
+            </tr></tbody>
+          </table>
+        </div></div>
+<div id="tab-resumen" class="tab-content">
+    
+    <div class="kpi-grid" style="margin-bottom:20px;">
+      <div class="kpi"><div class="kpi-value">439</div><div class="kpi-label">Total enviados</div><div class="kpi-sub">9 KAMs</div></div>
+      <div class="kpi"><div class="kpi-value">189</div><div class="kpi-label">Empresas únicas</div></div>
+      <div class="kpi"><div class="kpi-value">44.9%</div><div class="kpi-label">Open rate global</div><div class="kpi-sub">197 aperturas</div></div>
+      <div class="kpi"><div class="kpi-value">3</div><div class="kpi-label">Clics totales</div><div class="kpi-sub">2 bounces</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Aperturas por KAM</div>
+      <div class="kam-grid">
+        <div class="kam-card">
+          <h3>Alberto Quintana</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">23</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">39.1% (9)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">0.0% (0)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">0</span></div>
+        </div>
+        <div class="kam-card">
+          <h3>Angie Duque</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">18</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">50.0% (9)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">11.1% (1)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">0</span></div>
+        </div>
+        <div class="kam-card">
+          <h3>Daniela Viuche</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">90</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">44.4% (40)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">0.0% (0)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">0</span></div>
+        </div>
+        <div class="kam-card">
+          <h3>JP</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">40</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">52.5% (21)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">0.0% (0)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">0</span></div>
+        </div>
+        <div class="kam-card">
+          <h3>Jose Carlos</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">38</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">55.3% (21)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">0.0% (0)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">0</span></div>
+        </div>
+        <div class="kam-card">
+          <h3>Manuela Jaramillo</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">35</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">40.0% (14)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">7.1% (1)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">0</span></div>
+        </div>
+        <div class="kam-card">
+          <h3>Manuela Osorio</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">21</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">57.1% (12)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">0.0% (0)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">0</span></div>
+        </div>
+        <div class="kam-card">
+          <h3>Marco Montaño</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">29</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">55.2% (16)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">0.0% (0)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">0</span></div>
+        </div>
+        <div class="kam-card">
+          <h3>Santiago Ramírez</h3>
+          <div class="kam-stat"><span>Enviados</span><span class="kam-stat-val">145</span></div>
+          <div class="kam-stat"><span>Apertura</span><span class="kam-stat-val">37.9% (55)</span></div>
+          <div class="kam-stat"><span>CTOR</span><span class="kam-stat-val">1.8% (1)</span></div>
+          <div class="kam-stat"><span>Rebotes</span><span class="kam-stat-val">2</span></div>
+        </div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-container">
+        <div class="chart-title">Apertura por KAM</div>
+        <div id="chart_kam_open" style="height:340px;"></div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Distribución de engagement</div>
+        <div id="chart_engagement_dist" style="height:340px;"></div>
+      </div>
+    </div>
+    
+        <div class="card" style="margin-top:16px;">
+          <div class="card-title">Contactos que hicieron clic</div>
+          <table>
+            <thead><tr><th>Email</th><th>Empresa</th><th>KAM</th><th>Clics</th></tr></thead>
+            <tbody><tr><td>namirahana.hamed@codere.com</td><td>CODERE ONLINE</td><td>Manuela Jaramillo</td><td style="text-align:center;">6</td></tr><tr><td>laura.mejia@dropi.co</td><td>Dropi</td><td>Santiago Ramírez</td><td style="text-align:center;">1</td></tr><tr><td>alejandrosotom85@gmail.com</td><td>DE LA RENTA INVERSIONES SAS</td><td>Angie Duque</td><td style="text-align:center;">1</td></tr></tbody>
+          </table>
+        </div>
+    </div>
+<div id="tab-segmentos" class="tab-content">
+    <div class="insight">
+      Clasificación de cuentas en P1–P5 según engagement combinado de los emails personalizados de los KAMs.
+      <strong>P2 + P3</strong> (109 cuentas) son los candidatos para re-envío automatizado vía HubSpot.
+    </div>
+    <div class="kpi-grid" style="margin-bottom:20px;">
+        <div class="kpi" style="border-left:4px solid #27AE60;">
+          <div class="kpi-value" style="color:#27AE60;">3</div>
+          <div class="kpi-label">🔥 P1 · Hot Lead</div>
+          <div class="kpi-sub">1.6%</div>
+        </div>
+        <div class="kpi" style="border-left:4px solid #266D6C;">
+          <div class="kpi-value" style="color:#266D6C;">68</div>
+          <div class="kpi-label">💙 P2 · Warm Lead</div>
+          <div class="kpi-sub">36.0%</div>
+        </div>
+        <div class="kpi" style="border-left:4px solid #D4820A;">
+          <div class="kpi-value" style="color:#D4820A;">41</div>
+          <div class="kpi-label">🟡 P3 · Tibia</div>
+          <div class="kpi-sub">21.7%</div>
+        </div>
+        <div class="kpi" style="border-left:4px solid #C0392B;">
+          <div class="kpi-value" style="color:#C0392B;">77</div>
+          <div class="kpi-label">❄️ P4 · Sin interacción</div>
+          <div class="kpi-sub">40.7%</div>
+        </div>
+        <div class="kpi" style="border-left:4px solid #7F8C8D;">
+          <div class="kpi-value" style="color:#7F8C8D;">0</div>
+          <div class="kpi-label">🚫 P5 · Bounce</div>
+          <div class="kpi-sub">0.0%</div>
+        </div></div>
+    
+        <div class="seg-bucket" style="background:#E8F8EE;border-left-color:#27AE60;">
+          <h3 style="color:#27AE60;">🔥 P1 · Hot Lead — 3 cuentas</h3>
+          <p style="font-size:12px;color:#555;margin-bottom:10px;">Al menos un contacto abrió Y hizo clic · <strong>Acción:</strong> Contactar KAM esta semana — máxima prioridad</p>
+          <div style="overflow-x:auto;background:white;border-radius:6px;">
+            <table>
+              <thead><tr><th>Empresa</th><th>KAM</th><th>Contactos</th><th>Abrieron</th><th>Clicaron</th><th>Bounces</th></tr></thead>
+              <tbody><tr>
+              <td><strong>CODERE ONLINE</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">16</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>DE LA RENTA INVERSIONES SAS</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Dropi</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+            </tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="seg-bucket" style="background:#E4F0EF;border-left-color:#266D6C;">
+          <h3 style="color:#266D6C;">💙 P2 · Warm Lead — 68 cuentas</h3>
+          <p style="font-size:12px;color:#555;margin-bottom:10px;">Todos los contactos abrieron, ninguno hizo clic · <strong>Acción:</strong> Enviar push email desde HubSpot</p>
+          <div style="overflow-x:auto;background:white;border-radius:6px;">
+            <table>
+              <thead><tr><th>Empresa</th><th>KAM</th><th>Contactos</th><th>Abrieron</th><th>Clicaron</th><th>Bounces</th></tr></thead>
+              <tbody><tr>
+              <td><strong>Global66 MX</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>KIKI LATAM MX</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Palomma</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>FECEM (Fondo de empleados)</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>FENALCO</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Factor logic</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Finkargo Mex</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>INVERSIONES MALAPA</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>KONECTA</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>LAVAQUINHA SAS</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Payamigo</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Pinguino</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Prix Colombia</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Qargo Coffee</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Xisfo</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>99minutos Colombia</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Alzent digital</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>BE TO BEE SAS</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>BetterBro</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>COINSENDA</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>COLPROCESA SAS</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>COLURS</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Carga Paramo</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Comfenalco Cartagena</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Cuenta predeterminada</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Depay</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Dlocal Colombia Sas</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Efinti</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>FLASH LATAM PAYMENTS S.A.S.</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Factcil.</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Felix Pago CO</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Fluyez</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>GEH Suites Hotel</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>GLIM</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Heincke</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>ImiBank</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Innovatelearnig</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>J&T Express Colombia</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Juanautos El Cerro S.A.S.</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Liberr</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Ligo</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>MD CAPITAL</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Majority Payments (Remmitances)</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Mattilda COL</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Multiempleos SA</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Nexxdi</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Privilege Team SAS</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Pronto Paga y Estelarbet MX</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Punto Pago</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Qash</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>SIDDHI SAS</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>STONE MANAGEMENT S.A.S.</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Seguros Mundial</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Smart Pay LLC</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Supefina</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Supra MX</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Thunes</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Transborder</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Trixel</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Trokera.</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Urbaser Colombia S.A.S. ESP</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>VEYRA SOLUTIONS LLC</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>VIVVI SAS</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Wallib SAS</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Ztech</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>alo credit</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>belo app</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>ÜCOLLECT S.A.S.</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="seg-bucket" style="background:#FEF3DC;border-left-color:#D4820A;">
+          <h3 style="color:#D4820A;">🟡 P3 · Tibia — 41 cuentas</h3>
+          <p style="font-size:12px;color:#555;margin-bottom:10px;">Algunos contactos abrieron (apertura parcial) · <strong>Acción:</strong> Re-envío de campaña HubSpot</p>
+          <div style="overflow-x:auto;background:white;border-radius:6px;">
+            <table>
+              <thead><tr><th>Empresa</th><th>KAM</th><th>Contactos</th><th>Abrieron</th><th>Clicaron</th><th>Bounces</th></tr></thead>
+              <tbody><tr>
+              <td><strong>Veolia</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">17</td>
+              <td style="text-align:center;">13</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">1</td>
+            </tr><tr>
+              <td><strong>Cobre</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">12</td>
+              <td style="text-align:center;">8</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Fundacion Red Mision</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">16</td>
+              <td style="text-align:center;">8</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Jeeves</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">9</td>
+              <td style="text-align:center;">8</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>ALIANZA TEMPORALES</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">7</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Avales y Creditos SA</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">5</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Bamboo Payment</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">7</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Beeteller CO</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">5</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Gema Tours S.A.S</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">7</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>NVIO PAGOS COLOMBIA</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">11</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>HABI</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>HANNA HOPS BEER CO.</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Rapicredit SAS</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>B89 SA</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Compra mientras alquilas sas duppla</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">5</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Estafeta Mexicana</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>LOCALPAYMENT</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Mundial de Viajes Investments SAS</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Payana (Anayap)</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">6</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Retorna</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>COLBET S.A.S</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>ComboPlay</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Doctor Peso Colombia</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Domoinc SAS</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>ECOAMBIENTAL ACTIVA DE COLOMBIA S.A.S. E.S.P.</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>FacilitaPay</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Finamco SAS</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">5</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Green Coffee Company</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Grupo Auteco</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Holdings BPO</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Ihungo sas</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Inswitch Colombia</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Liquitech</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>NONCO</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Prodesa</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">5</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Skandia Holding de Colombia S.A.</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>T.H. Soluciones Group</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Telefonica</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>UFund</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>YAYAS EXPERIENCIAS GASTRONOMICAS SAS</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">10</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>web  strategies</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="seg-bucket" style="background:#FDECEB;border-left-color:#C0392B;">
+          <h3 style="color:#C0392B;">❄️ P4 · Sin interacción — 77 cuentas</h3>
+          <p style="font-size:12px;color:#555;margin-bottom:10px;">Ningún contacto abrió el correo · <strong>Acción:</strong> Contacto por WhatsApp vía KAM</p>
+          <div style="overflow-x:auto;background:white;border-radius:6px;">
+            <table>
+              <thead><tr><th>Empresa</th><th>KAM</th><th>Contactos</th><th>Abrieron</th><th>Clicaron</th><th>Bounces</th></tr></thead>
+              <tbody><tr>
+              <td><strong>AGRO INSUMOS LA MESETA S.A.S.</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Aeroviajes Pacifico</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Alemana Automotriz S.A.</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Ayenda SAS</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">5</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Betplay</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">9</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Biodiversal</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Bitia sas</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Bitpoint</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>COLPAYMENTS S.A.S</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>COLURS SA MX</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>COMERCIAL DE RECAUDOS S.A.S.</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>COVAL SAS</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Carls Jr. MX</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Cirkular agro</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Cogrepos SAS</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Confío</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>DUE PAYMENTS INC</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>DYP Capital</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Dopayment</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>EFEXpay</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Echange MX</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Efecty</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>El Dorado</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Endeavor</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Exlatin Sas</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Ezytec</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>FINTRA LOGISTICS SAS</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>FIPTO MX</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>FLETX</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Fintra SAS</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Get in Motion</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Gigha S.A.S</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Global Services Financial</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Gmail</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Gohill SAS</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Grupo Davissa</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>INDUCASCOS</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>J&T Express MX</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>KATAGA S.A.S.</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Klik</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Konfie</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Koywe</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Kredit Plus</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Leap Colombia</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">1</td>
+            </tr><tr>
+              <td><strong>Ligbot</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>MassPay - CO</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Monnet Payments Pagos En Linea SAS</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>More</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Nizzo Capital SAS</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Obed services</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Ola Fintech</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Omnex Group MX</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>PA SKANDIA SOCIEDAD FIDUCIARIA</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Pagsmile Limited</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Payflow</strong></td>
+              <td>Manuela Jaramillo</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Prizmapay</strong></td>
+              <td>Alberto Quintana</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Remitee</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Righa</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Roda Latam SAS</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Rosas Don Eloy</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>SIIGO S.A.S.</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>SMS ELECTRONIC SAS</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">7</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Selenio SAS</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Servientrega</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Solventa Colombia SAS</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Sumazari</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Tech365</strong></td>
+              <td>Marco Montaño</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Transfast</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Trébol MX</strong></td>
+              <td>Santiago Ramírez</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Velafi/ Trubit COL (Momentum)</strong></td>
+              <td>Manuela Osorio</td>
+              <td style="text-align:center;">2</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>WATERHOUSE DE COLOMBIA SAS</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Wagon</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Wallbit</strong></td>
+              <td>Angie Duque</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>XTransfer</strong></td>
+              <td>JP</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>Xisfo MX</strong></td>
+              <td>Jose Carlos</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>lht colombia</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">1</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr><tr>
+              <td><strong>weibook</strong></td>
+              <td>Daniela Viuche</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+              <td style="text-align:center;">0</td>
+            </tr></tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+
 </div>
-
-
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="showTab('tab1',this)">📊 Resumen envíos</button>
-    <button class="tab-btn" onclick="showTab('tab4',this)">🎯 Segmentos</button>
-    <button class="tab-btn" onclick="showTab('tab_intel',this)">🧠 Inteligencia</button>
-  </div>
-
-  <div class="tab-panel">
-    <div id="tab1" class="tab-content active">
-<div class="kpi-grid"><div class="kpi-card" style="border-left-color:#266D6C;"><p class="kpi-value">439</p><p class="kpi-label">Contactos enviados</p></div><div class="kpi-card" style="border-left-color:#266D6C;"><p class="kpi-value">189</p><p class="kpi-label">Empresas alcanzadas</p></div><div class="kpi-card" style="border-left-color:#27AE60;"><p class="kpi-value">44.9%</p><p class="kpi-label">Tasa de apertura</p></div><div class="kpi-card" style="border-left-color:#518A89;"><p class="kpi-value">0.7%</p><p class="kpi-label">Tasa de clic</p></div><div class="kpi-card" style="border-left-color:#27AE60;"><p class="kpi-value">112</p><p class="kpi-label">Empresas con interés</p><p class="kpi-delta">59% del total</p></div><div class="kpi-card" style="border-left-color:#266D6C;"><p class="kpi-value">373</p><p class="kpi-label">Total re-lecturas</p><p class="kpi-delta">proxy de interés adicional</p></div></div>
-
-<div class="two-col" style="margin-top:1.5rem;">
-  <div>
-    <div class="section-title">Apertura y clic por KAM</div>
-    <div>                            <div id="7d3389f1-b0d5-4372-8a85-fe2ad270bb80" class="plotly-graph-div" style="height:320px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("7d3389f1-b0d5-4372-8a85-fe2ad270bb80")) {                    Plotly.newPlot(                        "7d3389f1-b0d5-4372-8a85-fe2ad270bb80",                        [{"marker":{"color":"#266D6C"},"name":"% Apertura","text":["57%","55%","55%","52%","50%","44%","40%","39%","38%"],"textposition":"outside","x":["Manuela Osorio","Jose Carlos","Marco Montaño","JP","Angie Duque","Daniela Viuche","Manuela Jaramillo","Alberto Quintana","Santiago Ramírez"],"y":{"dtype":"f8","bdata":"zczMzMyMTEBmZmZmZqZLQJqZmZmZmUtAAAAAAABASkAAAAAAAABJQDMzMzMzM0ZAAAAAAAAAREDNzMzMzIxDQDMzMzMz80JA"},"type":"bar"},{"marker":{"color":"#518A89"},"name":"% Clic","text":["0%","0%","0%","0%","6%","0%","3%","0%","1%"],"textposition":"outside","x":["Manuela Osorio","Jose Carlos","Marco Montaño","JP","Angie Duque","Daniela Viuche","Manuela Jaramillo","Alberto Quintana","Santiago Ramírez"],"y":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmZmZmZmYWQAAAAAAAAAAAMzMzMzMzB0AAAAAAAAAAAGZmZmZmZuY\u002f"},"type":"bar"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"t":10,"b":10,"l":0,"r":0},"yaxis":{"ticksuffix":"%","range":[0,115]},"legend":{"orientation":"h","yanchor":"bottom","y":1.02},"barmode":"group","plot_bgcolor":"rgba(0,0,0,0)","paper_bgcolor":"rgba(0,0,0,0)","height":320},                        {"responsive": true, "displayModeBar": false}                    )                };            </script>        </div>
-  </div>
-  <div>
-    <div class="section-title">Distribución P1–P5 (empresas)</div>
-    <div>                            <div id="4c5bd25d-39d5-44ec-a23f-288a3aa0b143" class="plotly-graph-div" style="height:320px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("4c5bd25d-39d5-44ec-a23f-288a3aa0b143")) {                    Plotly.newPlot(                        "4c5bd25d-39d5-44ec-a23f-288a3aa0b143",                        [{"hole":0.5,"hovertemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{value} empresas\u003cextra\u003e\u003c\u002fextra\u003e","labels":["🔥 P1 · Hot Lead","💙 P2 · Warm Lead","🟡 P3 · Tibia","❄️ P4 · Sin interacción"],"marker":{"colors":["#27AE60","#266D6C","#D4820A","#C0392B"]},"textinfo":"label+percent","values":[3,68,41,77],"type":"pie"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"t":10,"b":10,"l":0,"r":0},"showlegend":false,"plot_bgcolor":"rgba(0,0,0,0)","paper_bgcolor":"rgba(0,0,0,0)","height":320},                        {"responsive": true, "displayModeBar": false}                    )                };            </script>        </div>
-  </div>
-</div>
-
-<div style="margin-top:1.5rem;">
-  <div class="section-title">Embudo de campaña</div>
-  <div>                            <div id="1ae3411e-67be-4e93-a647-19bfa903d031" class="plotly-graph-div" style="height:220px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("1ae3411e-67be-4e93-a647-19bfa903d031")) {                    Plotly.newPlot(                        "1ae3411e-67be-4e93-a647-19bfa903d031",                        [{"marker":{"color":["#266D6C","#518A89","#27AE60"]},"textinfo":"value+percent initial","x":[439,197,3],"y":["Enviados","Abrieron","Hicieron clic"],"type":"funnel"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"t":10,"b":10,"l":50,"r":50},"plot_bgcolor":"rgba(0,0,0,0)","paper_bgcolor":"rgba(0,0,0,0)","height":220},                        {"responsive": true, "displayModeBar": false}                    )                };            </script>        </div>
-</div>
-
-
-<hr style="margin:2rem 0;border:none;border-top:2px solid #E4F0EF;">
-<div class="section-title" style="font-size:1.1rem;">Segundo Toque · content_id 211607258267</div>
-<div class="action-card">El segundo toque subió la apertura <b>+11.9pp</b> en el subconjunto del primer toque (57% vs 45% original). El CTA sigue sin generar clics — próximo envío necesita cambio de CTA.</div>
-<div class="kpi-grid" style="margin-top:1rem;"><div class="kpi-card" style="border-left-color:#266D6C;"><p class="kpi-value">2,362</p><p class="kpi-label">Enviados</p></div><div class="kpi-card" style="border-left-color:#27AE60;"><p class="kpi-value">52.2%</p><p class="kpi-label">Apertura</p></div><div class="kpi-card" style="border-left-color:#518A89;"><p class="kpi-value">1.2%</p><p class="kpi-label">Clic</p></div><div class="kpi-card" style="border-left-color:#8E44AD;"><p class="kpi-value">317</p><p class="kpi-label">Del 1er toque</p><p class="kpi-delta">92% recibieron ambos toques</p></div><div class="kpi-card" style="border-left-color:#27AE60;"><p class="kpi-value">180</p><p class="kpi-label">Abrieron el 2do</p><p class="kpi-delta">57% de los que recibieron ambos</p></div></div>
-
-</div>
-    <div id="tab4" class="tab-content">
-<div class="section-title">Segmentos P1–P5</div>
-<div class="seg-grid">
-<div class="seg-card" style="border-color:#27AE60;background:#E8F8EE;">
-  <div style="display:flex;justify-content:space-between;">
-    <span style="font-size:1.5rem;">🔥</span>
-    <span style="font-size:2rem;font-weight:700;color:#27AE60;">3</span>
-  </div>
-  <p style="font-weight:700;color:#27AE60;margin:0.3rem 0 0;">P1 · Hot Lead</p>
-  <p style="color:#555;font-size:0.82rem;margin:0.2rem 0;">Al menos un contacto abrió Y hizo clic</p>
-  <p style="font-size:0.8rem;font-style:italic;color:#27AE60;margin:0.5rem 0;">➜ Contactar KAM esta semana — máxima prioridad</p>
-  <details><summary style="font-size:0.85rem;cursor:pointer;color:#27AE60;">Ver 3 empresa(s)</summary><div style="margin-top:0.5rem;"><div class="company-row"><span style="font-weight:600;flex:2;">CODERE ONLINE</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 4/16&nbsp;&nbsp;🖱 1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">DE LA RENTA INVERSIONES SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 1/1&nbsp;&nbsp;🖱 1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Dropi</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 1/1&nbsp;&nbsp;🖱 1</span></div></div></details>
-</div>
-
-<div class="seg-card" style="border-color:#266D6C;background:#E4F0EF;">
-  <div style="display:flex;justify-content:space-between;">
-    <span style="font-size:1.5rem;">💙</span>
-    <span style="font-size:2rem;font-weight:700;color:#266D6C;">68</span>
-  </div>
-  <p style="font-weight:700;color:#266D6C;margin:0.3rem 0 0;">P2 · Warm Lead</p>
-  <p style="color:#555;font-size:0.82rem;margin:0.2rem 0;">Todos los contactos abrieron, ninguno hizo clic</p>
-  <p style="font-size:0.8rem;font-style:italic;color:#266D6C;margin:0.5rem 0;">➜ Enviar push email desde HubSpot</p>
-  <details><summary style="font-size:0.85rem;cursor:pointer;color:#266D6C;">Ver 68 empresa(s)</summary><div style="margin-top:0.5rem;"><div class="company-row"><span style="font-weight:600;flex:2;">Global66 MX</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 3/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">KIKI LATAM MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 3/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Palomma</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 3/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">FECEM (Fondo de empleados)</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">FENALCO</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Factor logic</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Finkargo Mex</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">INVERSIONES MALAPA</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">KONECTA</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">LAVAQUINHA SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Payamigo</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Pinguino</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Prix Colombia</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Qargo Coffee</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Xisfo</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 2/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">99minutos Colombia</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Alzent digital</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">BE TO BEE SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">BetterBro</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">COINSENDA</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">COLPROCESA SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">COLURS</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Carga Paramo</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Comfenalco Cartagena</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Cuenta predeterminada</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Depay</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Dlocal Colombia Sas</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Efinti</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">FLASH LATAM PAYMENTS S.A.S.</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Factcil.</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Felix Pago CO</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Fluyez</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">GEH Suites Hotel</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">GLIM</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Heincke</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">ImiBank</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Innovatelearnig</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">J&amp;T Express Colombia</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Juanautos El Cerro S.A.S.</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Liberr</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Ligo</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">MD CAPITAL</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Majority Payments (Remmitances)</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Mattilda COL</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Multiempleos SA</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Nexxdi</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Privilege Team SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Pronto Paga y Estelarbet MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Punto Pago</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Qash</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">SIDDHI SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">STONE MANAGEMENT S.A.S.</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Seguros Mundial</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Smart Pay LLC</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Supefina</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Supra MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Thunes</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Transborder</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Trixel</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Trokera.</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Urbaser Colombia S.A.S. ESP</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">VEYRA SOLUTIONS LLC</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">VIVVI SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Wallib SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Ztech</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">alo credit</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">belo app</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 1/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">ÜCOLLECT S.A.S.</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/1</span></div></div></details>
-</div>
-
-<div class="seg-card" style="border-color:#D4820A;background:#FEF3DC;">
-  <div style="display:flex;justify-content:space-between;">
-    <span style="font-size:1.5rem;">🟡</span>
-    <span style="font-size:2rem;font-weight:700;color:#D4820A;">41</span>
-  </div>
-  <p style="font-weight:700;color:#D4820A;margin:0.3rem 0 0;">P3 · Tibia</p>
-  <p style="color:#555;font-size:0.82rem;margin:0.2rem 0;">Algunos contactos abrieron (apertura parcial)</p>
-  <p style="font-size:0.8rem;font-style:italic;color:#D4820A;margin:0.5rem 0;">➜ Re-envío de campaña HubSpot</p>
-  <details><summary style="font-size:0.85rem;cursor:pointer;color:#D4820A;">Ver 41 empresa(s)</summary><div style="margin-top:0.5rem;"><div class="company-row"><span style="font-weight:600;flex:2;">Veolia</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 13/17</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Cobre</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 8/12</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Fundacion Red Mision</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 8/16</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Jeeves</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 8/9</span></div><div class="company-row"><span style="font-weight:600;flex:2;">ALIANZA TEMPORALES</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 4/7</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Avales y Creditos SA</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 4/5</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Bamboo Payment</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 4/7</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Beeteller CO</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 4/5</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Gema Tours S.A.S</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 4/7</span></div><div class="company-row"><span style="font-weight:600;flex:2;">NVIO PAGOS COLOMBIA</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 4/11</span></div><div class="company-row"><span style="font-weight:600;flex:2;">HABI</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 3/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">HANNA HOPS BEER CO.</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 3/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Rapicredit SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 3/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">B89 SA</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 2/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Compra mientras alquilas sas duppla</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 2/5</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Estafeta Mexicana</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 2/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">LOCALPAYMENT</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 2/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Mundial de Viajes Investments SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 2/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Payana (Anayap)</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 2/6</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Retorna</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 2/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">COLBET S.A.S</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">ComboPlay</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Doctor Peso Colombia</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Domoinc SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">ECOAMBIENTAL ACTIVA DE COLOMBIA S.A.S. E.S.P.</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">FacilitaPay</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Finamco SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 1/5</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Green Coffee Company</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Grupo Auteco</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 1/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Holdings BPO</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 1/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Ihungo sas</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Inswitch Colombia</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Liquitech</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">NONCO</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 1/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Prodesa</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/5</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Skandia Holding de Colombia S.A.</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">T.H. Soluciones Group</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Telefonica</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 1/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">UFund</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">YAYAS EXPERIENCIAS GASTRONOMICAS SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 1/10</span></div><div class="company-row"><span style="font-weight:600;flex:2;">web  strategies</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 1/3</span></div></div></details>
-</div>
-
-<div class="seg-card" style="border-color:#C0392B;background:#FDECEB;">
-  <div style="display:flex;justify-content:space-between;">
-    <span style="font-size:1.5rem;">❄️</span>
-    <span style="font-size:2rem;font-weight:700;color:#C0392B;">77</span>
-  </div>
-  <p style="font-weight:700;color:#C0392B;margin:0.3rem 0 0;">P4 · Sin interacción</p>
-  <p style="color:#555;font-size:0.82rem;margin:0.2rem 0;">Ningún contacto abrió el correo</p>
-  <p style="font-size:0.8rem;font-style:italic;color:#C0392B;margin:0.5rem 0;">➜ Contacto por WhatsApp vía KAM</p>
-  <details><summary style="font-size:0.85rem;cursor:pointer;color:#C0392B;">Ver 77 empresa(s)</summary><div style="margin-top:0.5rem;"><div class="company-row"><span style="font-weight:600;flex:2;">AGRO INSUMOS LA MESETA S.A.S.</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Aeroviajes Pacifico</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Alemana Automotriz S.A.</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Ayenda SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/5</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Betplay</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/9</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Biodiversal</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Bitia sas</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Bitpoint</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">COLPAYMENTS S.A.S</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">COLURS SA MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">COMERCIAL DE RECAUDOS S.A.S.</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">COVAL SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Carls Jr. MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Cirkular agro</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Cogrepos SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Confío</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">DUE PAYMENTS INC</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">DYP Capital</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Dopayment</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">EFEXpay</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Echange MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Efecty</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">El Dorado</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Endeavor</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Exlatin Sas</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Ezytec</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">FINTRA LOGISTICS SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">FIPTO MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">FLETX</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Fintra SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Get in Motion</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Gigha S.A.S</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Global Services Financial</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Gmail</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Gohill SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Grupo Davissa</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">INDUCASCOS</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">J&amp;T Express MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">KATAGA S.A.S.</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Klik</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Konfie</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Koywe</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Kredit Plus</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 0/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Leap Colombia</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Ligbot</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">MassPay - CO</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Monnet Payments Pagos En Linea SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">More</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Nizzo Capital SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Obed services</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Ola Fintech</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Omnex Group MX</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">PA SKANDIA SOCIEDAD FIDUCIARIA</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 0/4</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Pagsmile Limited</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Payflow</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Jaramillo</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Prizmapay</span><span style="color:#888;font-size:0.82rem;flex:1;">Alberto Quintana</span><span style="font-size:0.8rem;">👁 0/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Remitee</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Righa</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Roda Latam SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Rosas Don Eloy</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">SIIGO S.A.S.</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">SMS ELECTRONIC SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/7</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Selenio SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Servientrega</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Solventa Colombia SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Sumazari</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Tech365</span><span style="color:#888;font-size:0.82rem;flex:1;">Marco Montaño</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Transfast</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Trébol MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Santiago Ramírez</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Velafi/ Trubit COL (Momentum)</span><span style="color:#888;font-size:0.82rem;flex:1;">Manuela Osorio</span><span style="font-size:0.8rem;">👁 0/2</span></div><div class="company-row"><span style="font-weight:600;flex:2;">WATERHOUSE DE COLOMBIA SAS</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Wagon</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/3</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Wallbit</span><span style="color:#888;font-size:0.82rem;flex:1;">Angie Duque</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">XTransfer</span><span style="color:#888;font-size:0.82rem;flex:1;">JP</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">Xisfo MX</span><span style="color:#888;font-size:0.82rem;flex:1;">Jose Carlos</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">lht colombia</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/1</span></div><div class="company-row"><span style="font-weight:600;flex:2;">weibook</span><span style="color:#888;font-size:0.82rem;flex:1;">Daniela Viuche</span><span style="font-size:0.8rem;">👁 0/3</span></div></div></details>
-</div>
-
-<div class="seg-card" style="border-color:#7F8C8D;background:#F2F3F4;">
-  <div style="display:flex;justify-content:space-between;">
-    <span style="font-size:1.5rem;">🚫</span>
-    <span style="font-size:2rem;font-weight:700;color:#7F8C8D;">0</span>
-  </div>
-  <p style="font-weight:700;color:#7F8C8D;margin:0.3rem 0 0;">P5 · Bounce</p>
-  <p style="color:#555;font-size:0.82rem;margin:0.2rem 0;">Todos los contactos de la cuenta hicieron bounce</p>
-  <p style="font-size:0.8rem;font-style:italic;color:#7F8C8D;margin:0.5rem 0;">➜ Depurar / actualizar emails en base de datos</p>
-  
-</div>
-</div>
-</div>
-    <div id="tab_intel" class="tab-content">
-<div class="action-card">
-  Estado de adopción de Split Payments: uso real en producción (Snowflake)
-  y conversaciones comerciales registradas (Diio).
-</div>
-
-<div class="section-title" style="font-size:1.1rem;">🗄️ Uso en producción (Snowflake)</div>
-<div class="action-card">
-  Query: <code>SELECT DISTINCT CLIENT_ID FROM MONEY_MOVEMENTS WHERE SPLIT_ID IS NOT NULL</code><br>
-  <b>0 clientes externos</b> usando Split Payments en producción a la fecha.
-  Solo cuentas internas de Cobre en validación (8 abr 2026).
-  El error recurrente es <b>f004</b> — límite diario de monto del riel — que es exactamente
-  el problema que Split Payments resuelve. Validación en curso.
-</div>
-<div class="kpi-grid" style="margin-bottom:1.5rem;"><div class="kpi-card" style="border-left-color:#C0392B;"><p class="kpi-value">0</p><p class="kpi-label">Clientes externos</p><p class="kpi-delta">0 en producción real</p></div><div class="kpi-card" style="border-left-color:#D4820A;"><p class="kpi-value">2</p><p class="kpi-label">Cuentas internas</p><p class="kpi-delta">validación / pruebas</p></div><div class="kpi-card" style="border-left-color:#266D6C;"><p class="kpi-value">8</p><p class="kpi-label">Movimientos totales</p></div><div class="kpi-card" style="border-left-color:#27AE60;"><p class="kpi-value">3</p><p class="kpi-label">Completados</p><p class="kpi-delta">38% tasa de éxito</p></div><div class="kpi-card" style="border-left-color:#C0392B;"><p class="kpi-value">5</p><p class="kpi-label">Fallidos</p></div><div class="kpi-card" style="border-left-color:#266D6C;"><p class="kpi-value">$75.0M</p><p class="kpi-label">Monto total (COP)</p></div></div>
-
-<div class="section-title">Detalle por cuenta</div>
-<div class="table-wrap">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Empresa</th><th>CLIENT_ID</th><th>Movimientos</th>
-        <th>Completados</th><th>Fallidos</th><th>Tasa éxito</th>
-        <th>Monto total</th><th>Primera vez</th><th>Última vez</th><th>Días activo</th>
-      </tr>
-    </thead>
-    <tbody><tr>
-  <td><b>Cobre Producto</b>
-    <span style="background:#D4820A;color:white;border-radius:4px;padding:1px 6px;font-size:0.72rem;margin-left:6px;">Interno</span>
-  </td>
-  <td style="font-size:0.8rem;color:#888;">cli_vdke2laqnj</td>
-  <td style="text-align:center;">6</td>
-  <td style="text-align:center;color:#27AE60;font-weight:600;">3</td>
-  <td style="text-align:center;color:#C0392B;font-weight:600;">3</td>
-  <td style="text-align:center;color:#27AE60;font-weight:700;">50%</td>
-  <td style="text-align:right;">$60.0M COP</td>
-  <td style="font-size:0.8rem;">2026-04-08</td>
-  <td style="font-size:0.8rem;">2026-04-08</td>
-  <td style="text-align:center;">1 días</td>
-</tr><tr>
-  <td><b>Cobre Demo</b>
-    <span style="background:#D4820A;color:white;border-radius:4px;padding:1px 6px;font-size:0.72rem;margin-left:6px;">Interno</span>
-  </td>
-  <td style="font-size:0.8rem;color:#888;">cli_xxz85j60is</td>
-  <td style="text-align:center;">2</td>
-  <td style="text-align:center;color:#27AE60;font-weight:600;">0</td>
-  <td style="text-align:center;color:#C0392B;font-weight:600;">2</td>
-  <td style="text-align:center;color:#C0392B;font-weight:700;">0%</td>
-  <td style="text-align:right;">$15.0M COP</td>
-  <td style="font-size:0.8rem;">2026-04-08</td>
-  <td style="font-size:0.8rem;">2026-04-08</td>
-  <td style="text-align:center;">1 días</td>
-</tr></tbody>
-  </table>
-</div>
-
-<div class="section-title" style="margin-top:1.5rem;">Códigos de resultado</div>
-<div class="table-wrap">
-  <table class="data-table">
-    <thead><tr><th>Empresa</th><th>Estado</th><th>Código</th><th>Descripción</th><th>N</th></tr></thead>
-    <tbody><tr>
-  <td>Cobre Producto</td>
-  <td>✅ completed</td>
-  <td style="font-family:monospace;font-size:0.8rem;">nan</td>
-  <td style="font-size:0.82rem;">—</td>
-  <td style="text-align:center;font-weight:700;">3</td>
-</tr><tr>
-  <td>Cobre Producto</td>
-  <td>❌ failed</td>
-  <td style="font-family:monospace;font-size:0.8rem;">f004</td>
-  <td style="font-size:0.82rem;">—</td>
-  <td style="text-align:center;font-weight:700;">3</td>
-</tr><tr>
-  <td>Cobre Demo</td>
-  <td>❌ failed</td>
-  <td style="font-family:monospace;font-size:0.8rem;">f004</td>
-  <td style="font-size:0.82rem;">—</td>
-  <td style="text-align:center;font-weight:700;">2</td>
-</tr></tbody>
-  </table>
-</div>
-
-<div class="section-title" style="margin-top:1.5rem;">Actividad diaria</div>
-<div>                            <div id="ff479344-b84a-4906-a02e-4929441d6dc3" class="plotly-graph-div" style="height:220px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("ff479344-b84a-4906-a02e-4929441d6dc3")) {                    Plotly.newPlot(                        "ff479344-b84a-4906-a02e-4929441d6dc3",                        [{"name":"Cobre Demo","text":{"dtype":"f8","bdata":"AAAAAAAAAEA="},"textposition":"outside","x":["08 Apr"],"y":{"dtype":"i1","bdata":"Ag=="},"type":"bar"},{"name":"Cobre Producto","text":{"dtype":"f8","bdata":"AAAAAAAAGEA="},"textposition":"outside","x":["08 Apr"],"y":{"dtype":"i1","bdata":"Bg=="},"type":"bar"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"t":10,"b":10,"l":0,"r":0},"legend":{"orientation":"h","yanchor":"bottom","y":1.02},"barmode":"group","height":220,"plot_bgcolor":"rgba(0,0,0,0)","paper_bgcolor":"rgba(0,0,0,0)"},                        {"responsive": true, "displayModeBar": false}                    )                };            </script>        </div>
-
-<hr style="margin:2rem 0;border:none;border-top:2px solid #E4F0EF;">
-<div class="section-title" style="font-size:1.1rem;">💬 Conversaciones Diio — Split Payments (1 registros)</div>
-<div class="action-card">Reuniones con clientes donde Split Payments fue mencionado como producto de interés.</div>
-<div class="table-wrap">
-  <table class="data-table">
-    <thead><tr><th>Empresa</th><th>Ejecutivo</th><th>Fecha</th><th>Tipo</th><th>Sentimiento</th><th>Resumen</th></tr></thead>
-    <tbody><tr>
-  <td><b>Sergio ssergio, Martin Zuchowicki</b></td>
-  <td style="font-size:0.82rem;">Sofia Bernate Silva, Manuela Osorio Serrano</td>
-  <td style="font-size:0.82rem;">2026-03-27</td>
-  <td style="font-size:0.82rem;">G: Seguimiento</td>
-  <td><span style="color:#888;font-weight:600;">3</span></td>
-  <td style="font-size:0.82rem;">The conversation reflects a highly collaborative and technical strategic alignment between Cobre and On Top to enhance payment capabilities in Colombia. The tone is professional, forward-thinking, and</td>
-</tr></tbody>
-  </table>
-</div>
-</div>
-  </div>
-
-  <div class="footer">Reporte generado automáticamente · Cobre · 07 May 2026 12:52</div>
-</div>
-
 <script>
-function showTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-  // Redraw plotly charts inside this tab (needed after display:none → block)
-  var plots = document.getElementById(id).querySelectorAll('.js-plotly-plot');
-  plots.forEach(function(p) { Plotly.relayout(p, {autosize: true}); });
+function switchTab(tab,evt){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  evt.target.classList.add('active');
+  setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
 }
+
+            Plotly.newPlot('chart_kam_open',[
+              {name:'Abrieron',x:["Manuela Osorio", "Jose Carlos", "Marco Monta\u00f1o", "JP", "Angie Duque", "Daniela Viuche", "Manuela Jaramillo", "Alberto Quintana", "Santiago Ram\u00edrez"],y:[12, 21, 16, 21, 9, 40, 14, 9, 55],type:'bar',marker:{color:'#266D6C'}},
+              {name:'Enviados',x:["Manuela Osorio", "Jose Carlos", "Marco Monta\u00f1o", "JP", "Angie Duque", "Daniela Viuche", "Manuela Jaramillo", "Alberto Quintana", "Santiago Ram\u00edrez"],y:[21, 38, 29, 40, 18, 90, 35, 23, 145],type:'bar',marker:{color:'#E5E3DC'}}
+            ],{barmode:'overlay',margin:{t:10,b:80,l:40,r:10},
+              xaxis:{tickangle:-30},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+              legend:{orientation:'h',y:-0.35},font:{family:'-apple-system,sans-serif',size:11}
+            },{responsive:true,displayModeBar:false});
+        Plotly.newPlot('chart_engagement_dist',[{
+          type:'pie',
+          labels:['Abrieron (sin clic)','Clicaron','No abrieron','Rebotes'],
+          values:[194,3,242,2],
+          marker:{colors:['#266D6C','#27AE60','#E5E3DC','#C0392B']},
+          hole:0.42,textinfo:'label+value',textfont:{size:11}
+        }],{margin:{t:10,b:10,l:10,r:10},
+          paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',showlegend:false
+        },{responsive:true,displayModeBar:false});
+            Plotly.newPlot('chart_sf_daily',[{name:"completed",x:["2026-04-08"],y:[3],type:"bar",marker:{color:"#27AE60"}},{name:"failed",x:["2026-04-08"],y:[5],type:"bar",marker:{color:"#C0392B"}}],{
+              barmode:'stack',margin:{t:10,b:60,l:60,r:10},
+              xaxis:{title:'Fecha'},yaxis:{title:'Txns'},
+              paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
+              legend:{orientation:'h',y:-0.3},font:{family:'-apple-system,sans-serif',size:11}
+            },{responsive:true,displayModeBar:false});
 </script>
 </body>
 </html>
