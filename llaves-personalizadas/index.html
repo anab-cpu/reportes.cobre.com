@@ -227,10 +227,10 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
         <div class="seg-card">
           <h3>Uso real (Snowflake · breb_credit)</h3>
           <ul>
-            <li><strong>9 clientes activos</strong> con llaves personalizadas en producción</li>
-            <li><strong>12,526 transacciones</strong> · 100.0% de éxito</li>
-            <li><strong>$6.53B COP</strong> movilizados (completados)</li>
-            <li>Top 3 por volumen: <strong>Selenio SAS MX</strong> (9,115) · <strong>Majority Global LLC (Wallet) MX</strong> (3,174) · <strong>cli_vdke2laqnj</strong> (156)</li>
+            <li><strong>7 clientes activos</strong> con llaves personalizadas en producción</li>
+            <li><strong>12,368 transacciones</strong> · 100.0% de éxito</li>
+            <li><strong>$5.51B COP</strong> movilizados (completados)</li>
+            <li>Top 3 por volumen: <strong>Selenio SAS MX</strong> (9,115) · <strong>Majority Global LLC (Wallet) MX</strong> (3,174) · <strong>LAVAQUINHA SAS</strong> (64)</li>
           </ul>
         </div>
         <div class="seg-card">
@@ -254,7 +254,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 
       <h3>Hallazgos clave</h3>
       <ul style="margin-left:1.2rem;line-height:1.9;font-size:13px;">
-        <li><strong>El producto tiene tracción real pero concentrada:</strong> 9 clientes activos, pero <strong>Selenio SAS MX</strong>  concentra la mayor parte del volumen.</li>
+        <li><strong>El producto tiene tracción real pero concentrada:</strong> 7 clientes activos, pero <strong>Selenio SAS MX</strong>  concentra la mayor parte del volumen.</li>
         <li><strong>Tasa de éxito muy alta:</strong> 100.0% de las txns completan exitosamente — el producto funciona técnicamente.</li>
         <li><strong>Próximo paso de PMM:</strong> escalar la cola larga (clientes con 1-100 txns) y diversificar el pipeline más allá de Littio.</li>
       </ul>
@@ -269,9 +269,9 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 
 <div id="tab-intel" class="tab-content active">
         <div class="kpi-grid" style="margin-bottom:16px;">
-          <div class="kpi"><div class="kpi-value">9</div><div class="kpi-label">Clientes activos</div><div class="kpi-sub">breb_credit en producción</div></div>
-          <div class="kpi"><div class="kpi-value">12,526</div><div class="kpi-label">Transacciones totales</div></div>
-          <div class="kpi"><div class="kpi-value">12,526</div><div class="kpi-label">Completadas</div><div class="kpi-sub">100.0%</div></div>
+          <div class="kpi"><div class="kpi-value">7</div><div class="kpi-label">Clientes activos</div><div class="kpi-sub">breb_credit en producción</div></div>
+          <div class="kpi"><div class="kpi-value">12,368</div><div class="kpi-label">Transacciones totales</div></div>
+          <div class="kpi"><div class="kpi-value">12,368</div><div class="kpi-label">Completadas</div><div class="kpi-sub">100.0%</div></div>
         </div>
         <div class="query-block">
   <div class="query-label">Query <span class="badge">Snowflake</span></div>
@@ -279,8 +279,12 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 FROM COBRE_GOLD_DB.DATAWAREHOUSE.TRANSACTIONS t
 WHERE t.TYPE       = 'breb_credit'
   AND t.KEY_VALUE  IS NOT NULL
-  AND t.KEY_VALUE NOT LIKE '@CB%';   -- excluye llaves @CB-default (Cobre interno)</pre>
-  <div class="query-note"><code>breb_credit</code> = txn Bre-B exitosa (las rechazadas viven en <code>breb_rejected</code>). El filtro <code>NOT LIKE '@CB%'</code> excluye llaves default de Cobre y deja sólo las personalizadas (prefijos como @LITTIO*, @VAKI, etc.).</div>
+  AND t.KEY_VALUE NOT LIKE '@CB%'                 -- excluye llaves @CB-default
+  AND t.CLIENT_ID NOT IN (                        -- excluye clientes internos / sandbox
+    'cli_vdke2laqnj','cli_phdanw1wsc','cli_siikld3ljw',
+    'cli_xxz85j60is','cli_zkggvlvqf0'
+  );</pre>
+  <div class="query-note"><code>breb_credit</code> = txn Bre-B exitosa (las rechazadas viven en <code>breb_rejected</code>). El filtro <code>NOT LIKE '@CB%'</code> excluye llaves default de Cobre y deja sólo las personalizadas (prefijos como @LITTIO*, @VAKI, etc.). También excluye clientes internos.</div>
 </div>
         <div class="card">
           <div class="card-title">Clientes usando Llaves Personalizadas Bre-B (Snowflake live)</div>
@@ -307,16 +311,6 @@ WHERE t.TYPE       = 'breb_credit'
               <td style="text-align:center;">2026-02-25</td>
               <td style="text-align:center;">2026-05-07</td>
               <td style="text-align:center;">72 días</td>
-            </tr><tr>
-              <td><strong>nan</strong><br><small style="color:#888;font-family:monospace;">cli_vdke2laqnj</small></td>
-              <td style="text-align:center;">156</td>
-              <td style="text-align:center;">156</td>
-              <td style="text-align:center;">100.0%</td>
-              <td style="text-align:right;">cop 1,019,785,492</td>
-              <td style="text-align:center;">9</td>
-              <td style="text-align:center;">2026-02-02</td>
-              <td style="text-align:center;">2026-05-01</td>
-              <td style="text-align:center;">89 días</td>
             </tr><tr>
               <td><strong>LAVAQUINHA SAS</strong><br><small style="color:#888;font-family:monospace;">cli_4verugamvk</small></td>
               <td style="text-align:center;">64</td>
@@ -347,16 +341,6 @@ WHERE t.TYPE       = 'breb_credit'
               <td style="text-align:center;">2026-03-06</td>
               <td style="text-align:center;">2026-03-07</td>
               <td style="text-align:center;">2 días</td>
-            </tr><tr>
-              <td><strong>nan</strong><br><small style="color:#888;font-family:monospace;">cli_xxz85j60is</small></td>
-              <td style="text-align:center;">2</td>
-              <td style="text-align:center;">2</td>
-              <td style="text-align:center;">100.0%</td>
-              <td style="text-align:right;">cop 200</td>
-              <td style="text-align:center;">1</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">2026-05-05</td>
-              <td style="text-align:center;">1 días</td>
             </tr><tr>
               <td><strong>Majority Payments (Remmitances) MX</strong><br><small style="color:#888;font-family:monospace;">cli_dccpenyzrk</small></td>
               <td style="text-align:center;">1</td>
@@ -506,7 +490,7 @@ WHERE t.TYPE       = 'breb_credit'
           </div>
           <table>
             <thead><tr><th>Email</th><th>Empresa</th><th>Clics</th></tr></thead>
-            <tbody><tr><td>tomas.bruzza@wallbit.io</td><td>Wallbit</td><td style="text-align:center;">3</td></tr><tr><td>adolfo@eldorado.io</td><td>Eldorado</td><td style="text-align:center;">1</td></tr><tr><td>parker@muralpay.com</td><td>Muralpay</td><td style="text-align:center;">1</td></tr><tr><td>coordinacioncoponline@cempresarial.co</td><td>Betplay</td><td style="text-align:center;">1</td></tr><tr><td>lothr@cobre.co</td><td>Cobre</td><td style="text-align:center;">1</td></tr><tr><td>gchaverri@omnexgroup.com</td><td>Omnex Group</td><td style="text-align:center;">1</td></tr><tr><td>marcom@cobre.co</td><td>Cobre</td><td style="text-align:center;">1</td></tr><tr><td>payouts-int@dlocal.com</td><td>Dlocal</td><td style="text-align:center;">1</td></tr><tr><td>lchantre@transborder.com.co</td><td>Transborder</td><td style="text-align:center;">1</td></tr><tr><td>nicolas@vaki.co</td><td>Vaki</td><td style="text-align:center;">1</td></tr><tr><td>liliana.romero@telefonica.com</td><td>Telefonica</td><td style="text-align:center;">1</td></tr></tbody>
+            <tbody><tr><td>tomas.bruzza@wallbit.io</td><td>Wallbit</td><td style="text-align:center;">3</td></tr><tr><td>adolfo@eldorado.io</td><td>El Dorado</td><td style="text-align:center;">1</td></tr><tr><td>parker@muralpay.com</td><td>Muralpay</td><td style="text-align:center;">1</td></tr><tr><td>coordinacioncoponline@cempresarial.co</td><td>Cempresarial</td><td style="text-align:center;">1</td></tr><tr><td>lothr@cobre.co</td><td>Cobre</td><td style="text-align:center;">1</td></tr><tr><td>gchaverri@omnexgroup.com</td><td>Omnexgroup</td><td style="text-align:center;">1</td></tr><tr><td>marcom@cobre.co</td><td>Cobre</td><td style="text-align:center;">1</td></tr><tr><td>payouts-int@dlocal.com</td><td>Dlocal</td><td style="text-align:center;">1</td></tr><tr><td>lchantre@transborder.com.co</td><td>Transborder</td><td style="text-align:center;">1</td></tr><tr><td>nicolas@vaki.co</td><td>Vaki</td><td style="text-align:center;">1</td></tr><tr><td>liliana.romero@telefonica.com</td><td>Telefonica</td><td style="text-align:center;">1</td></tr></tbody>
           </table>
         </div>
     
@@ -544,15 +528,9 @@ WHERE t.TYPE       = 'breb_credit'
         <tbody><tr>
           <td><strong>Cobre</strong></td>
           <td style="text-align:center;">33</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">85%</td>
-          <td style="text-align:center;">28</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">88%</td>
+          <td style="text-align:center;">29</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">2 clics</span></td>
-        </tr><tr>
-          <td><strong>Gmail</strong></td>
-          <td style="text-align:center;">23</td>
-          <td style="text-align:center;color:#D4820A;font-weight:700;">30%</td>
-          <td style="text-align:center;">7</td>
-          <td></td>
         </tr><tr>
           <td><strong>Dropi</strong></td>
           <td style="text-align:center;">6</td>
@@ -566,59 +544,41 @@ WHERE t.TYPE       = 'breb_credit'
           <td style="text-align:center;">4</td>
           <td></td>
         </tr><tr>
-          <td><strong>Infiniaweb</strong></td>
-          <td style="text-align:center;">5</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">80%</td>
-          <td style="text-align:center;">4</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Localpayment</strong></td>
-          <td style="text-align:center;">8</td>
-          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
-          <td style="text-align:center;">4</td>
-          <td></td>
-        </tr><tr>
           <td><strong>Conduit</strong></td>
           <td style="text-align:center;">8</td>
           <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
           <td style="text-align:center;">4</td>
           <td></td>
         </tr><tr>
-          <td><strong>Cempresarial</strong></td>
-          <td style="text-align:center;">5</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">60%</td>
+          <td><strong>Localpayment</strong></td>
+          <td style="text-align:center;">7</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">57%</td>
+          <td style="text-align:center;">4</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Gmail</strong></td>
+          <td style="text-align:center;">22</td>
+          <td style="text-align:center;color:#C0392B;font-weight:700;">18%</td>
+          <td style="text-align:center;">4</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Reizen Connections</strong></td>
+          <td style="text-align:center;">3</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
           <td style="text-align:center;">3</td>
           <td></td>
         </tr><tr>
-          <td><strong>Dlocal</strong></td>
-          <td style="text-align:center;">6</td>
-          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
+          <td><strong>Cempresarial</strong></td>
+          <td style="text-align:center;">7</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">43%</td>
           <td style="text-align:center;">3</td>
           <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">1 clics</span></td>
         </tr><tr>
-          <td><strong>Reizenconnections</strong></td>
+          <td><strong>Dlocal</strong></td>
+          <td style="text-align:center;">5</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">60%</td>
           <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Alzent digital</strong></td>
-          <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Cabify</strong></td>
-          <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
-        </tr><tr>
-          <td><strong>Tryjeeves</strong></td>
-          <td style="text-align:center;">3</td>
-          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
-          <td style="text-align:center;">3</td>
-          <td></td>
+          <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">1 clics</span></td>
         </tr><tr>
           <td><strong>Aviatur</strong></td>
           <td style="text-align:center;">3</td>
@@ -627,12 +587,18 @@ WHERE t.TYPE       = 'breb_credit'
           <td></td>
         </tr><tr>
           <td><strong>Ripple</strong></td>
+          <td style="text-align:center;">4</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Koywe</strong></td>
           <td style="text-align:center;">5</td>
           <td style="text-align:center;color:#D4820A;font-weight:700;">40%</td>
           <td style="text-align:center;">2</td>
           <td></td>
         </tr><tr>
-          <td><strong>Mattilda</strong></td>
+          <td><strong>Hannahops</strong></td>
           <td style="text-align:center;">2</td>
           <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
           <td style="text-align:center;">2</td>
@@ -644,19 +610,37 @@ WHERE t.TYPE       = 'breb_credit'
           <td style="text-align:center;">2</td>
           <td></td>
         </tr><tr>
-          <td><strong>Wallib</strong></td>
+          <td><strong>Supra</strong></td>
           <td style="text-align:center;">2</td>
           <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
           <td style="text-align:center;">2</td>
           <td></td>
         </tr><tr>
-          <td><strong>Klik</strong></td>
+          <td><strong>Infiniaweb</strong></td>
+          <td style="text-align:center;">3</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">67%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Klikenergy</strong></td>
           <td style="text-align:center;">2</td>
           <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Skandia</strong></td>
+          <td style="text-align:center;">4</td>
+          <td style="text-align:center;color:#D4820A;font-weight:700;">50%</td>
           <td style="text-align:center;">2</td>
           <td></td>
         </tr><tr>
           <td><strong>Klu</strong></td>
+          <td style="text-align:center;">2</td>
+          <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
+          <td style="text-align:center;">2</td>
+          <td></td>
+        </tr><tr>
+          <td><strong>Trubit</strong></td>
           <td style="text-align:center;">2</td>
           <td style="text-align:center;color:#27AE60;font-weight:700;">100%</td>
           <td style="text-align:center;">2</td>
@@ -743,8 +727,8 @@ function switchTab(tab,evt){
           showlegend:false,font:{family:'-apple-system,sans-serif',size:12}
         },{responsive:true,displayModeBar:false});
         Plotly.newPlot('chart_top_companies',[
-          {name:'Abrieron',x:["Cobre", "Gmail", "Dropi", "Pinguino", "Infiniaweb", "Localpayment", "Conduit", "Cempresarial", "Dlocal", "Reizenconnections", "Alzent digital", "Cabify"],y:[28, 7, 5, 4, 4, 4, 4, 3, 3, 3, 3, 3],type:'bar',marker:{color:'#266D6C'}},
-          {name:'Enviados',x:["Cobre", "Gmail", "Dropi", "Pinguino", "Infiniaweb", "Localpayment", "Conduit", "Cempresarial", "Dlocal", "Reizenconnections", "Alzent digital", "Cabify"],y:[33, 23, 6, 4, 5, 8, 8, 5, 6, 3, 3, 3],type:'bar',marker:{color:'#E5E3DC'}}
+          {name:'Abrieron',x:["Cobre", "Dropi", "Pinguino", "Conduit", "Localpayment", "Gmail", "Reizen Connections", "Cempresarial", "Dlocal", "Aviatur", "Ripple", "Koywe"],y:[29, 5, 4, 4, 4, 4, 3, 3, 3, 3, 2, 2],type:'bar',marker:{color:'#266D6C'}},
+          {name:'Enviados',x:["Cobre", "Dropi", "Pinguino", "Conduit", "Localpayment", "Gmail", "Reizen Connections", "Cempresarial", "Dlocal", "Aviatur", "Ripple", "Koywe"],y:[33, 6, 4, 8, 7, 22, 3, 7, 5, 3, 4, 5],type:'bar',marker:{color:'#E5E3DC'}}
         ],{barmode:'overlay',margin:{t:10,b:120,l:40,r:10},
           xaxis:{tickangle:-45},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
           legend:{orientation:'h',y:-0.5},font:{family:'-apple-system,sans-serif',size:11}
@@ -759,7 +743,7 @@ function switchTab(tab,evt){
         }],{margin:{t:10,b:10,l:10,r:10},
           paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',showlegend:false
         },{responsive:true,displayModeBar:false});
-        Plotly.newPlot('chart_sf_daily',[{name:"Skandia Holding de Colombia S.A.",x:["2026-04-24", "2026-04-27", "2026-04-30", "2026-05-05", "2026-05-06"],y:[4, 1, 2, 3, 1],type:"bar"},{name:"LAVAQUINHA SAS",x:["2026-03-12", "2026-03-14", "2026-04-13", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-26", "2026-04-28", "2026-04-29", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[5, 2, 3, 1, 4, 5, 1, 5, 5, 1, 1, 3, 2, 2, 3, 3, 2, 5, 3, 4, 3, 1],type:"bar"},{name:"Majority Payments (Remmitances) MX",x:["2026-02-25"],y:[1],type:"bar"},{name:"Wallbit",x:["2026-03-06", "2026-03-07"],y:[1, 1],type:"bar"},{name:"Selenio SAS MX",x:["2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05"],y:[15, 20, 93, 134, 162, 173, 143, 202, 230, 253, 238, 383, 190, 196, 250, 322, 320, 327, 287, 270, 207, 318, 329, 376, 365, 402, 307, 244, 343, 373, 390, 364, 264, 228, 127, 228, 42],type:"bar"},{name:"Selenio SAS MX",x:["2026-03-20"],y:[1],type:"bar"},{name:"Majority Global LLC (Wallet) MX",x:["2026-02-25", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-21", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[1, 1, 7, 6, 3, 1, 3, 4, 1, 1, 1, 1, 5, 3, 3, 1, 2, 7, 3, 16, 13, 10, 10, 11, 26, 31, 24, 48, 55, 43, 42, 69, 42, 50, 71, 50, 59, 55, 46, 74, 61, 90, 71, 65, 52, 53, 62, 74, 74, 65, 92, 71, 74, 60, 65, 69, 103, 84, 112, 110, 121, 591, 56],type:"bar"},{name:NaN,x:["2026-02-02", "2026-02-03", "2026-02-11", "2026-02-28", "2026-03-01", "2026-03-02", "2026-03-03", "2026-04-01", "2026-04-23", "2026-04-30", "2026-05-01"],y:[1, 2, 1, 74, 64, 1, 8, 2, 1, 1, 1],type:"bar"},{name:NaN,x:["2026-05-05"],y:[2],type:"bar"}],{
+        Plotly.newPlot('chart_sf_daily',[{name:"Skandia Holding de Colombia S.A.",x:["2026-04-24", "2026-04-27", "2026-04-30", "2026-05-05", "2026-05-06"],y:[4, 1, 2, 3, 1],type:"bar"},{name:"LAVAQUINHA SAS",x:["2026-03-12", "2026-03-14", "2026-04-13", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-26", "2026-04-28", "2026-04-29", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[5, 2, 3, 1, 4, 5, 1, 5, 5, 1, 1, 3, 2, 2, 3, 3, 2, 5, 3, 4, 3, 1],type:"bar"},{name:"Majority Payments (Remmitances) MX",x:["2026-02-25"],y:[1],type:"bar"},{name:"Wallbit",x:["2026-03-06", "2026-03-07"],y:[1, 1],type:"bar"},{name:"Selenio SAS MX",x:["2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05"],y:[15, 20, 93, 134, 162, 173, 143, 202, 230, 253, 238, 383, 190, 196, 250, 322, 320, 327, 287, 270, 207, 318, 329, 376, 365, 402, 307, 244, 343, 373, 390, 364, 264, 228, 127, 228, 42],type:"bar"},{name:"Selenio SAS MX",x:["2026-03-20"],y:[1],type:"bar"},{name:"Majority Global LLC (Wallet) MX",x:["2026-02-25", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-07", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-15", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-21", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-28", "2026-03-29", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04", "2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07"],y:[1, 1, 7, 6, 3, 1, 3, 4, 1, 1, 1, 1, 5, 3, 3, 1, 2, 7, 3, 16, 13, 10, 10, 11, 26, 31, 24, 48, 55, 43, 42, 69, 42, 50, 71, 50, 59, 55, 46, 74, 61, 90, 71, 65, 52, 53, 62, 74, 74, 65, 92, 71, 74, 60, 65, 69, 103, 84, 112, 110, 121, 591, 56],type:"bar"}],{
           barmode:'stack',
           margin:{t:10,b:60,l:60,r:10},
           xaxis:{title:'Fecha'},yaxis:{title:'Txns completadas'},

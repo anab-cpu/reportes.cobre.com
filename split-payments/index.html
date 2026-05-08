@@ -227,10 +227,10 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
         <div class="seg-card">
           <h3>Uso real (Snowflake)</h3>
           <ul>
-            <li><strong>2 clientes activos</strong> — producto en pre-launch</li>
-            <li>8 txns (3 completadas · 5 fallidas)</li>
-            <li>$30.0M COP movilizados</li>
-            <li>Principal causa de falla: <strong>f004 daily-limit</strong> (5 txns)</li>
+            <li><strong>0 clientes activos</strong> — producto en pre-launch</li>
+            <li>0 txns (0 completadas · 0 fallidas)</li>
+            <li>$0 COP movilizados</li>
+            <li>Principal causa de falla: <strong>f004 daily-limit</strong> (0 txns)</li>
           </ul>
         </div>
         <div class="seg-card">
@@ -239,7 +239,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
             <li><strong>439 envíos</strong> personalizados desde 9 KAMs</li>
             <li>Apertura global: <strong>44.9%</strong></li>
             <li>P1 Hot: <strong>3</strong> · P2 Warm: <strong>68</strong> · P3 Tibia: <strong>41</strong></li>
-            <li>Gap aperturas → uso real ≈ <strong>195</strong> cuentas</li>
+            <li>Gap aperturas → uso real ≈ <strong>197</strong> cuentas</li>
           </ul>
         </div>
         <div class="seg-card">
@@ -254,7 +254,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
       <h3 style="font-size:14px;font-weight:600;margin:20px 0 12px;color:var(--text);">Hallazgos clave</h3>
       <ul style="margin-left:1.2rem;line-height:1.9;font-size:13px;">
         <li><strong>El producto necesita levantar el cap diario:</strong> 5 de 8 txns en producción fallaron por <code>f004 Daily transaction amount limit has been reached</code> — bloquea adopción real.</li>
-        <li><strong>La campaña sí movió interés:</strong> 197 contactos abrieron, pero sólo 2 clientes han hecho txns. Hay que cerrar el loop.</li>
+        <li><strong>La campaña sí movió interés:</strong> 197 contactos abrieron, pero sólo 0 clientes han hecho txns. Hay que cerrar el loop.</li>
         <li><strong>Acción inmediata:</strong> contactar P1 (3 cuentas hot) esta semana, push email para P2+P3 (109 cuentas).</li>
       </ul>
     </div>
@@ -267,104 +267,16 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 </div>
 
 <div id="tab-intel" class="tab-content active">
-    
-    <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-value">2</div><div class="kpi-label">Clientes activos</div><div class="kpi-sub">con SPLIT_ID en prod</div></div>
-      <div class="kpi"><div class="kpi-value">8</div><div class="kpi-label">Total txns split</div><div class="kpi-sub">3 splits únicos</div></div>
-      <div class="kpi"><div class="kpi-value">3</div><div class="kpi-label">Completadas</div><div class="kpi-sub">37.5% de éxito</div></div>
-      <div class="kpi"><div class="kpi-value">$30.0M</div><div class="kpi-label">Monto completado</div><div class="kpi-sub">2026-04-08 → 2026-04-08</div></div>
-    </div>
-    <div class="query-block">
-  <div class="query-label">Query <span class="badge">Snowflake</span></div>
-  <pre>SELECT *
-FROM COBRE_GOLD_DB.DATAWAREHOUSE.MONEY_MOVEMENTS
-WHERE SPLIT_ID IS NOT NULL
-  AND SPLIT_ID <> '';</pre>
-  <div class="query-note">Filtro: cualquier money movement con <code>SPLIT_ID</code> asignado pertenece a un split. Cuenta como uso real del producto Split Payments.</div>
-</div>
-    <div class="insight-yellow">
-      <strong>Producto en pre-launch.</strong> Sólo 2 clientes han probado Split Payments en producción
-      (8 txns, 3 splits únicos). El campaña PMM (2026-04-08 → 2026-04-08) aún no
-      ha movido la aguja en uso real — la conversión de aperturas a txn está pendiente.
-    </div>
-    <div class="card">
-      <div class="card-title">Clientes con uso real — Split Payments (Snowflake live)</div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead><tr><th>Cliente</th><th style="text-align:right;">Total txn</th><th style="text-align:right;">Splits únicos</th><th style="text-align:right;">Completadas</th><th style="text-align:right;">Éxito</th><th style="text-align:right;">Monto completado</th><th>Primer uso</th><th>Último uso</th></tr></thead>
-          <tbody><tr>
-          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_vdke2laqnj</small></td>
-          <td style="text-align:right;">6</td>
-          <td style="text-align:right;">2</td>
-          <td style="text-align:right;">3</td>
-          <td style="text-align:right;color:#C0392B;font-weight:700;">50.0%</td>
-          <td style="text-align:right;font-family:monospace;">$30.0M COP</td>
-          <td style="text-align:center;">2026-04-08</td>
-          <td style="text-align:center;">2026-04-08</td>
-        </tr><tr>
-          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_xxz85j60is</small></td>
-          <td style="text-align:right;">2</td>
-          <td style="text-align:right;">1</td>
-          <td style="text-align:right;">0</td>
-          <td style="text-align:right;color:#C0392B;font-weight:700;">0.0%</td>
-          <td style="text-align:right;font-family:monospace;">$0 COP</td>
-          <td style="text-align:center;">2026-04-08</td>
-          <td style="text-align:center;">2026-04-08</td>
-        </tr></tbody>
-        </table>
-      </div>
-    </div>
-    
-        <div class="card">
-          <div class="card-title">Distribución por status — todas las txns split</div>
-          <table>
-            <thead><tr><th>State</th><th>Code</th><th>Descripción</th><th style="text-align:right;">N</th><th style="text-align:right;">Monto</th></tr></thead>
-            <tbody><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FDECEA;color:#922B21">failed</span></td>
-              <td style="font-family:monospace;font-size:11px;">f004</td>
-              <td style="font-size:12px;">Daily transaction amount limit has been reached</td>
-              <td style="text-align:right;">5</td>
-              <td style="text-align:right;">$45.0M COP</td>
-            </tr><tr>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#D5F5E3;color:#1D6A3A">completed</span></td>
-              <td style="font-family:monospace;font-size:11px;">nan</td>
-              <td style="font-size:12px;">nan</td>
-              <td style="text-align:right;">3</td>
-              <td style="text-align:right;">$30.0M COP</td>
-            </tr></tbody>
-          </table>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-value">0</div><div class="kpi-label">Clientes externos</div><div class="kpi-sub">con uso real de Split Payments</div></div>
         </div>
-    <div class="chart-container full" style="margin-bottom:16px;">
-      <div class="chart-title">Volumen diario por status</div>
-      <div id="chart_sf_daily" style="height:300px;"></div>
-    </div>
-        <hr>
-        <div class="card-title" style="margin-bottom:12px;">Conversaciones Diio — Split Payments</div>
-        <div class="insight">
-          <strong>2 conversaciones</strong> con mención explícita a Split Payments
-          (extraídas vía MCP Diio).
-        </div>
-        <div style="overflow-x:auto;">
-          <table>
-            <thead><tr><th>Empresa</th><th>KAM</th><th>Tipo</th><th>Fecha</th><th>Odds</th><th>Resumen</th><th>Deal</th></tr></thead>
-            <tbody><tr>
-              <td><strong>On Top (getontop.com)</strong></td>
-              <td style="font-size:12px;">Sofía Bernate · Manuela Osorio · María Vidal</td>
-              <td style="font-size:12px;">G: Seguimiento</td>
-              <td style="font-size:12px;">2026-03-27</td>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#CCFBF1;color:#0D7961">4/5</span></td>
-              <td style="font-size:12px;max-width:340px;">Sofia presentó la beta de Split Payments para superar el límite de $12M COP por txn en Bre-B: metadata 'split=true' divide pagos hasta 10K USD en múltiples txns con split_id compartido para reconciliación. On Top evalúa UX vs FastPay (eficiente hasta 3 splits).</td>
-              <td style="font-size:12px;">Activo · evaluación UX</td>
-            </tr><tr>
-              <td><strong>CVI / Toyota</strong></td>
-              <td style="font-size:12px;">Juliana Romero</td>
-              <td style="font-size:12px;">EC: Discovery</td>
-              <td style="font-size:12px;">2025-09-16</td>
-              <td><span style="display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#FEF9C3;color:#7C5B00">3/5</span></td>
-              <td style="font-size:12px;max-width:340px;">Mención tangencial de 'pagos múltiples' (nómina, arriendo, operaciones). No es Split Payments propiamente, sino multiplicidad de pagos.</td>
-              <td style="font-size:12px;">—</td>
-            </tr></tbody>
-          </table>
+        <div class="insight-yellow">
+          <strong>Cero clientes externos en producción.</strong>
+          Todas las txns con <code>SPLIT_ID</code> en Snowflake provienen de clientes internos
+          (cliente de producto + sandbox), excluidos por convención. La campaña PMM
+          (439 envíos, 44.9% apertura) generó interés pero la conversión a uso real está pendiente —
+          probable bloqueador: el cap diario (<code>f004</code>) que devolvía la mayoría de las txns
+          en testing interno.
         </div></div>
 <div id="tab-resumen" class="tab-content">
     
@@ -1888,12 +1800,6 @@ function switchTab(tab,evt){
         }],{margin:{t:10,b:10,l:10,r:10},
           paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',showlegend:false
         },{responsive:true,displayModeBar:false});
-            Plotly.newPlot('chart_sf_daily',[{name:"completed",x:["2026-04-08"],y:[3],type:"bar",marker:{color:"#27AE60"}},{name:"failed",x:["2026-04-08"],y:[5],type:"bar",marker:{color:"#C0392B"}}],{
-              barmode:'stack',margin:{t:10,b:60,l:60,r:10},
-              xaxis:{title:'Fecha'},yaxis:{title:'Txns'},
-              paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
-              legend:{orientation:'h',y:-0.3},font:{family:'-apple-system,sans-serif',size:11}
-            },{responsive:true,displayModeBar:false});
 </script>
 </body>
 </html>

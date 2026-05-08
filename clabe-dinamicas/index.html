@@ -227,9 +227,9 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
         <div class="seg-card">
           <h3>Uso real (Snowflake · r2p_spei MX)</h3>
           <ul>
-            <li><strong>4 clientes externos</strong> con r2p_spei en producción</li>
-            <li>42 txns (12 completadas, 30 fallidas)</li>
-            <li>$27.00 MXN movilizados — todo testing</li>
+            <li><strong>3 clientes externos</strong> con r2p_spei en producción</li>
+            <li>21 txns (4 completadas, 17 fallidas)</li>
+            <li>$21.00 MXN movilizados — todo testing</li>
             <li>Causa principal de falla: <strong>r017 expired</strong> (timeout)</li>
           </ul>
         </div>
@@ -255,7 +255,7 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 
       <h3 style="font-size:14px;font-weight:600;margin:20px 0 12px;color:var(--text);">Hallazgos clave</h3>
       <ul style="margin-left:1.2rem;line-height:1.9;font-size:13px;">
-        <li><strong>Producto en pre-launch:</strong> 4 clientes externos, todos con montos de centavos = pruebas. El "uso real" como narrativa publicada (17-Abr) sigue siendo válida.</li>
+        <li><strong>Producto en pre-launch:</strong> 3 clientes externos, todos con montos de centavos = pruebas. El "uso real" como narrativa publicada (17-Abr) sigue siendo válida.</li>
         <li><strong>Filtro provisional</strong> <code>TYPE='r2p_spei' AND MM_FLOW='payin' AND GEOGRAPHY='mex'</code> — verificar con producto si es la implementación canónica o hay más en TRANSACTIONS.</li>
         <li><strong>El pipeline Diio existe (12 cuentas mencionando Virtual CLABE)</strong> — aún no se traduce en transacciones.</li>
       </ul>
@@ -271,10 +271,10 @@ hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
 <div id="tab-intel" class="tab-content active">
     
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-value">4</div><div class="kpi-label">Clientes externos</div><div class="kpi-sub">excluye testing interno</div></div>
-      <div class="kpi"><div class="kpi-value">42</div><div class="kpi-label">Total txns</div><div class="kpi-sub">desde 2026-03-03</div></div>
-      <div class="kpi"><div class="kpi-value">12</div><div class="kpi-label">Completadas</div><div class="kpi-sub">28.6% de éxito</div></div>
-      <div class="kpi"><div class="kpi-value">$27.00</div><div class="kpi-label">Monto completado MXN</div><div class="kpi-sub">al 2026-05-06</div></div>
+      <div class="kpi"><div class="kpi-value">3</div><div class="kpi-label">Clientes externos</div><div class="kpi-sub">excluye testing interno</div></div>
+      <div class="kpi"><div class="kpi-value">21</div><div class="kpi-label">Total txns</div><div class="kpi-sub">desde 2026-04-21</div></div>
+      <div class="kpi"><div class="kpi-value">4</div><div class="kpi-label">Completadas</div><div class="kpi-sub">19.0% de éxito</div></div>
+      <div class="kpi"><div class="kpi-value">$21.00</div><div class="kpi-label">Monto completado MXN</div><div class="kpi-sub">al 2026-05-06</div></div>
     </div>
     <div class="query-block">
   <div class="query-label">Query <span class="badge">Snowflake</span></div>
@@ -283,12 +283,15 @@ FROM COBRE_GOLD_DB.DATAWAREHOUSE.MONEY_MOVEMENTS
 WHERE GEOGRAPHY = 'mex'
   AND TYPE      = 'r2p_spei'
   AND MM_FLOW   = 'payin'
-  AND CLIENT_ID NOT IN ('cli_xxz85j60is');  -- excluye Engineering Alpha (testing interno)</pre>
-  <div class="query-note">Filtro derivado por descubrimiento de schema. <code>r2p_spei</code> = request-to-pay SPEI (CLABE one-time generada por solicitud). <strong>Pendiente confirmar con producto</strong> si éste es el filtro canónico de CLABEs Dinámicas o si existe otra implementación en TRANSACTIONS.</div>
+  AND CLIENT_ID NOT IN (                          -- excluye clientes internos / sandbox
+    'cli_vdke2laqnj','cli_phdanw1wsc','cli_siikld3ljw',
+    'cli_xxz85j60is','cli_zkggvlvqf0'
+  );</pre>
+  <div class="query-note">Filtro derivado por descubrimiento de schema. <code>r2p_spei</code> = request-to-pay SPEI (CLABE one-time generada por solicitud). Excluye clientes internos. <strong>Pendiente confirmar con producto</strong> si éste es el filtro canónico de CLABEs Dinámicas.</div>
 </div>
     <div class="insight-red">
-      <strong>Producto en pre-launch.</strong> Sólo <strong>4 clientes externos</strong> han probado CLABEs Dinámicas en producción
-      (42 txns totales, 12 completadas). Los montos completados suman <strong>$27.00 MXN</strong> —
+      <strong>Producto en pre-launch.</strong> Sólo <strong>3 clientes externos</strong> han probado CLABEs Dinámicas en producción
+      (21 txns totales, 4 completadas). Los montos completados suman <strong>$21.00 MXN</strong> —
       todos son transacciones de prueba con valores de centavos a pesos. La causa principal de falla es <code>r017</code> (key/movement expirado).
     </div>
     <div class="card">
@@ -297,15 +300,6 @@ WHERE GEOGRAPHY = 'mex'
         <table>
           <thead><tr><th>Cliente</th><th style="text-align:right;">Total txn</th><th style="text-align:right;">Completadas</th><th style="text-align:right;">Éxito</th><th style="text-align:right;">Monto completado</th><th>Primer uso</th><th>Último uso</th><th>Días</th></tr></thead>
           <tbody><tr>
-          <td><strong>—</strong><br><small style="color:#888;font-family:monospace;">cli_vdke2laqnj</small></td>
-          <td style="text-align:right;">21</td>
-          <td style="text-align:right;">8</td>
-          <td style="text-align:right;color:#C0392B;font-weight:700;">38.1%</td>
-          <td style="text-align:right;font-family:monospace;">$6.00 MXN</td>
-          <td style="text-align:center;">2026-03-03</td>
-          <td style="text-align:center;">2026-04-28</td>
-          <td style="text-align:center;">57d</td>
-        </tr><tr>
           <td><strong>Esgiro OP COL</strong><br><small style="color:#888;font-family:monospace;">cli_wcz0cjro4l</small></td>
           <td style="text-align:right;">17</td>
           <td style="text-align:right;">1</td>
@@ -704,7 +698,7 @@ function switchTab(tab,evt){
           xaxis:{tickangle:-45},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
           legend:{orientation:'h',y:-0.5},font:{family:'-apple-system,sans-serif',size:11}
         },{responsive:true,displayModeBar:false});
-            Plotly.newPlot('chart_sf_daily',[{name:"completed",x:["2026-03-04", "2026-03-05", "2026-03-09", "2026-03-11", "2026-03-17", "2026-03-19", "2026-04-21", "2026-04-28", "2026-05-04", "2026-05-06"],y:[2, 2, 1, 1, 1, 1, 1, 1, 1, 1],type:"bar",marker:{color:"#27AE60"}},{name:"rejected",x:["2026-03-03", "2026-03-04", "2026-03-05", "2026-03-16", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29"],y:[3, 2, 5, 1, 1, 9, 2, 5, 2],type:"bar",marker:{color:"#C0392B"}}],{
+            Plotly.newPlot('chart_sf_daily',[{name:"completed",x:["2026-04-21", "2026-04-28", "2026-05-04", "2026-05-06"],y:[1, 1, 1, 1],type:"bar",marker:{color:"#27AE60"}},{name:"rejected",x:["2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29"],y:[1, 9, 2, 3, 2],type:"bar",marker:{color:"#C0392B"}}],{
               barmode:'stack',margin:{t:10,b:60,l:60,r:10},
               xaxis:{title:'Fecha'},yaxis:{title:'Txns'},
               paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',
