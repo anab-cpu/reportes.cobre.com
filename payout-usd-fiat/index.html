@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payout USD FIAT — Reporte de Campaña Email</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root {
+    --bg: #F1F0EC;
+    --primary: #266D6C;
+    --secondary: #518A89;
+    --success: #27AE60;
+    --warning: #D4820A;
+    --error: #C0392B;
+    --card-bg: #FFFFFF;
+    --border: #D8D6D0;
+    --text: #1A1A1A;
+    --text-muted: #6B6B6B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--text); font-size: 14px; }
+
+  /* Header */
+  .header { background: var(--primary); color: white; padding: 24px 32px; }
+  .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .header p { font-size: 13px; opacity: 0.85; }
+
+  /* Layout */
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px 32px; }
+
+  /* Conclusions */
+  .conclusions { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+  .conclusions h2 { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 16px; }
+
+  /* Seg-cards grid */
+  .seg-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .seg-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .seg-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .seg-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .seg-card h3 { font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 8px; }
+  .seg-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .seg-card strong { color: var(--text); }
+
+  /* KPI grid */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .kpi { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; text-align: center; }
+  .kpi .value { font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1.1; }
+  .kpi .label { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.3; }
+  .kpi.alert .value { color: var(--error); }
+  .kpi.warn .value { color: var(--warning); }
+  .kpi.good .value { color: var(--success); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+  .tab-btn { padding: 10px 20px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+  .tab-btn:hover { color: var(--primary); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--bg); font-weight: 600; text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: #F7F6F2; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-green { background: #E8F8EE; color: var(--success); }
+  .badge-yellow { background: #FFF4E0; color: var(--warning); }
+  .badge-red { background: #FDECEA; color: var(--error); }
+  .badge-blue { background: #E3F0F0; color: var(--primary); }
+
+  /* Cards */
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .card h3 { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+
+  /* Insight box */
+  .insight { background: #E3F0F0; border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 20px; }
+  .insight p { font-size: 13px; line-height: 1.6; color: var(--text); }
+  .insight.warn { background: #FFF4E0; border-left-color: var(--warning); }
+  .insight.alert { background: #FDECEA; border-left-color: var(--error); }
+
+  /* Chart container */
+  .chart { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .chart h3 { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* Section headers */
+  .section-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+  /* Priority table */
+  .priority-table { width: 100%; }
+  .priority-table td:first-child { width: 80px; }
+  .p1 { font-weight: 700; color: var(--error); }
+  .p2 { font-weight: 700; color: var(--warning); }
+  .p3 { font-weight: 700; color: var(--secondary); }
+  .p4 { font-weight: 700; color: var(--text-muted); }
+
+  /* Opportunity badge */
+  .opp-badge { background: #FDECEA; color: var(--error); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
+  .sf-badge { background: #E3F0F0; color: var(--primary); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
+
+  /* Company card */
+  .company-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .company-card .company-name { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Non-opener list */
+  .email-list { font-size: 12px; color: var(--text-muted); line-height: 1.7; column-count: 2; column-gap: 16px; }
+
+  @media (max-width: 768px) {
+    .seg-grid-3, .seg-grid-2, .chart-row, .two-col { grid-template-columns: 1fr; }
+    .container { padding: 16px; }
+    .header { padding: 16px; }
+    .email-list { column-count: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <h1>Payout USD FIAT — Reporte de Campaña Email</h1>
+  <p>PMM · Toques 1 y 2 · "Usa tu saldo local para pagar en EE.UU." · Cobre · 26 Mayo 2026</p>
+</div>
+
+<div class="container">
+
+<!-- ── CONCLUSIONES ── -->
+<div class="conclusions">
+  <h2>Conclusiones y siguientes pasos</h2>
+  <div class="seg-grid seg-grid-3">
+    <div class="seg-card">
+      <h3>📧 Email a clientes actuales</h3>
+      <p><strong>1,026 externos</strong> recibieron Envío 1 · <strong>879</strong> recibieron Envío 2. Apertura excepcional: <strong>53.6% → 64.3%</strong> entre toques. RedEnvelope, Pagsmile y OpenFX concentran el mayor engagement con clics repetidos en ambos toques. <strong>31 contactos nuevos</strong> alcanzados en Envío 2. <strong>3 contactos completaron el formulario de interés</strong> (Trokera CEO, Fluyez, SipelaTAM) — acción urgente requerida.</p>
+    </div>
+    <div class="seg-card">
+      <h3>🗄️ Uso real (Snowflake)</h3>
+      <p><strong>1 cliente externo real en beta: Aviatur.</strong> Ha realizado <strong>5 MMs</strong> (3 completados) entre el 6 y 13 May 2026 — $5,632 USD movilizados via FedWire y global_pay_to_usa. El resto son cuentas internas de prueba. La brecha entre engagement de email (1,000+) y activación real confirma que el reto es comercial, no técnico.</p>
+    </div>
+    <div class="seg-card">
+      <h3>💬 Diio a prospectos</h3>
+      <p><strong>Xepelin</strong> es el único cliente implementando FedWire activamente (MXN→USD→JPMorgan). <strong>OpenFX</strong> tiene deals en Negociación (CO + MX) pero sin Payout USD FIAT en la operación — cross-sell inmediato. <strong>RedEnvelope y Pagsmile</strong> sin deal en Salesforce pese a ser los top clickers.</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="priority-table">
+      <thead><tr><th>Prioridad</th><th>Acción</th><th>Empresa</th><th>KAM responsable</th></tr></thead>
+      <tbody>
+        <tr><td class="p1">P1</td><td>Crear oportunidad Salesforce y contactar — top clicker en ambos toques (10+ contactos activos). Explorar uso de FedWire para pagos a EE.UU.</td><td>RedEnvelope</td><td><span class="badge badge-red">🚨 Sin KAM asignado</span></td></tr>
+        <tr><td class="p1">P1</td><td>Cross-sell Payout USD FIAT sobre deal activo en Negociación (CO + MX). Deal vence 27 May 2026.</td><td>OpenFX</td><td>Jose Saieh</td></tr>
+        <tr><td class="p2">P2</td><td>Crear oportunidad Salesforce — 8 clics en Envío 1, 7 en Envío 2. Confirmar necesidad de pagos en EE.UU.</td><td>Pagsmile</td><td><span class="badge badge-red">🚨 Sin KAM asignado</span></td></tr>
+        <tr><td class="p2">P2</td><td>Acelerar onboarding FBO y escalar Payout USD FIAT a cartera de clientes propios de Xepelin.</td><td>Xepelin</td><td>Manuela Osorio</td></tr>
+        <tr><td class="p3">P3</td><td>Calificar: nuevo click en Envío 2. Sin deal en SF. Investigar necesidad de pagos cross-border.</td><td>GetOnTop / Trokera</td><td><span class="badge badge-red">🚨 Sin KAM asignado</span></td></tr>
+        <tr><td class="p4">P4</td><td>Nutrir: presentar caso de uso FedWire en seguimiento de implementación actual de CO.</td><td>DLocal</td><td>Jose Saieh</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── TABS ── -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('email', this)">📧 Email a clientes actuales</button>
+  <button class="tab-btn" onclick="switchTab('snowflake', this)">🗄️ Uso (Snowflake)</button>
+  <button class="tab-btn" onclick="switchTab('diio', this)">💬 Diio a prospectos</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 1 — EMAIL
+═══════════════════════════════════════════════════════ -->
+<div id="tab-email" class="tab-content active">
+
+  <!-- 0. Formulario de interés -->
+  <div class="insight" style="background:#E8F8EE;border-left-color:var(--success);">
+    <p>📋 <strong>3 contactos completaron el formulario "PMM_ Formulario - Payout USD Fiat"</strong> — señal de intención activa más allá del clic. Trokera (CEO), Fluyez y SipelaTAM dejaron sus datos solicitando información.</p>
+  </div>
+  <div class="card">
+    <h3>Formulario de interés — Leads calificados</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Empresa</th><th>Contacto</th><th>Email</th><th>Cargo</th><th>Fecha formulario</th><th>KAM</th><th>Acción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Trokera</strong></td><td>Daniel Marulanda</td><td>ceo@trokera.com</td><td>CEO y Fundador</td><td>21 May 2026</td><td><span class="badge badge-red">🚨 Sin asignar</span></td><td><span class="opp-badge">🚨 Crear oportunidad SF</span></td></tr>
+          <tr><td><strong>Fluyez</strong></td><td>Luis</td><td>hola@fluyez.com</td><td>—</td><td>11 May 2026</td><td>—</td><td><span class="badge badge-yellow">Calificar y contactar</span></td></tr>
+          <tr><td><strong>SipelaTAM</strong></td><td>Daniela González</td><td>daniela.gonzalez@sipelatam.mx</td><td>—</td><td>11 May 2026</td><td>—</td><td><span class="badge badge-yellow">Calificar y contactar</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- 1. Comparativa -->
+  <div class="section-title">Comparativa: Toque 1 vs Toque 2</div>
+  <div class="chart-row">
+    <div class="chart">
+      <h3>Alcance y engagement</h3>
+      <div id="chart-compare-bar" style="height:280px;"></div>
+    </div>
+    <div class="chart">
+      <h3>Funnel comparativo</h3>
+      <div id="chart-funnel-compare" style="height:280px;"></div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Métrica</th><th>Toque 1 (11 May)</th><th>Toque 2 (21 May)</th><th>Diferencia</th></tr></thead>
+      <tbody>
+        <tr><td>Asunto</td><td>Usa tu saldo local para pagar en EE.UU.</td><td>Haz pagos y recaudos en EE.UU.</td><td>—</td></tr>
+        <tr><td>Enviados externos</td><td>1,026</td><td>879</td><td>-147 (−14.3%)</td></tr>
+        <tr><td>Aperturas únicas externas</td><td>550</td><td>565</td><td>+15 (+2.7%)</td></tr>
+        <tr><td>Tasa de apertura</td><td>53.6%</td><td>64.3%</td><td><span class="badge badge-green">+10.7 pp</span></td></tr>
+        <tr><td>Clics externos</td><td>34</td><td>29</td><td>-5 (−14.7%)</td></tr>
+        <tr><td>CTOR externo</td><td>6.2%</td><td>5.1%</td><td>−1.1 pp</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- 2. Email 1 -->
+  <div class="section-title">Toque 1 — "Usa tu saldo local para pagar en EE.UU."</div>
+  <div class="insight">
+    <p>El primer toque alcanzó a <strong>1,026 contactos externos</strong> y logró una <strong>apertura del 53.6%</strong> — nivel alto para comunicaciones PMM. El asunto resonó con el problema de gestión de saldo en USD, atrayendo múltiples contactos de las mismas empresas (señal de interés organizacional, no solo individual).</p>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="value">1,026</div><div class="label">Enviados externos</div></div>
+    <div class="kpi good"><div class="value">550</div><div class="label">Aperturas únicas ext.</div></div>
+    <div class="kpi good"><div class="value">53.6%</div><div class="label">Tasa de apertura</div></div>
+    <div class="kpi"><div class="value">34</div><div class="label">Clics externos</div></div>
+    <div class="kpi warn"><div class="value">6.2%</div><div class="label">CTOR externo</div></div>
+  </div>
+  <div class="chart">
+    <h3>Funnel Email 1</h3>
+    <div id="chart-funnel-e1" style="height:220px;"></div>
+  </div>
+  <div class="card">
+    <h3>Top clickers externos — Toque 1</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Empresa</th><th>Clics</th><th>Contactos</th><th>Deal SF</th><th>KAM</th></tr></thead>
+        <tbody>
+          <tr><td><strong>RedEnvelope</strong></td><td>10</td><td>naila, tony, rushil, aman, settlements-cobre, ashutosh, rupesh, nivedita, priscilla, punam</td><td><span class="opp-badge">🚨 Crear oportunidad</span></td><td><span class="badge badge-red">🚨 Sin asignar</span></td></tr>
+          <tr><td><strong>Pagsmile</strong></td><td>8</td><td>luis, wilfredo, paymentpartnership, liudi, maria.jaimes, accounting, lidia_quispe, pabloramon, marina.pulgarin</td><td><span class="opp-badge">🚨 Crear oportunidad</span></td><td><span class="badge badge-red">🚨 Sin asignar</span></td></tr>
+          <tr><td><strong>OpenFX</strong></td><td>6</td><td>pallavi, naila, rushil, ishan.chatterjee, dan, simon</td><td><span class="sf-badge">SF: Negociación</span></td><td>Jose Saieh</td></tr>
+          <tr><td><strong>XCloudGame</strong></td><td>2</td><td>wangmengqi, maria.jaimes</td><td><span class="opp-badge">🚨 Crear oportunidad</span></td><td><span class="badge badge-red">🚨 Sin asignar</span></td></tr>
+          <tr><td>DLocal</td><td>1</td><td>aporfilio</td><td><span class="sf-badge">SF: Deal activo</span></td><td>Jose Saieh</td></tr>
+          <tr><td>JeevesApp (Tryjeeves)</td><td>1</td><td>juliana.ramos</td><td>—</td><td>—</td></tr>
+          <tr><td>ArqFinance</td><td>1</td><td>manuel.seguez</td><td>—</td><td>—</td></tr>
+          <tr><td>Fluyez</td><td>1</td><td>luis</td><td>—</td><td>—</td></tr>
+          <tr><td>Katagasas</td><td>1</td><td>operations</td><td>—</td><td>—</td></tr>
+          <tr><td>SipelaTAM</td><td>1</td><td>daniela.gonzalez</td><td>—</td><td>—</td></tr>
+          <tr><td>JT Express</td><td>1</td><td>monna.geng</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- 3. Email 2 -->
+  <div class="section-title">Toque 2 — "Haz pagos y recaudos en EE.UU."</div>
+  <div class="insight">
+    <p>El segundo toque amplió el mensaje a <strong>Payin + Payout + FX Rate Notifications</strong>. Con 879 enviados, logró la <strong>apertura más alta: 64.3%</strong>. El CTOR bajó ligeramente (5.1%), lo que indica que el texto del asunto atrajo más lectores pero el CTA necesita mayor claridad. OpenFX aumentó a 7 clics (de 6 en Envío 1), señal de interés creciente.</p>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="value">879</div><div class="label">Enviados externos</div></div>
+    <div class="kpi good"><div class="value">565</div><div class="label">Aperturas únicas ext.</div></div>
+    <div class="kpi good"><div class="value">64.3%</div><div class="label">Tasa de apertura</div></div>
+    <div class="kpi"><div class="value">29</div><div class="label">Clics externos</div></div>
+    <div class="kpi warn"><div class="value">5.1%</div><div class="label">CTOR externo</div></div>
+  </div>
+  <div class="chart">
+    <h3>Funnel Email 2</h3>
+    <div id="chart-funnel-e2" style="height:220px;"></div>
+  </div>
+  <div class="card">
+    <h3>Top clickers externos — Toque 2</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Empresa</th><th>Clics</th><th>Contactos</th><th>vs Envío 1</th><th>KAM</th></tr></thead>
+        <tbody>
+          <tr><td><strong>RedEnvelope</strong></td><td>9</td><td>aman, rushil, priscilla, tony, rupesh, naila, punam, nivedita, settlements-cobre, ashutosh</td><td>−1</td><td><span class="badge badge-red">🚨 Sin asignar</span></td></tr>
+          <tr><td><strong>Pagsmile</strong></td><td>7</td><td>wilfredo, lidia_quispe, pabloramon, paymentpartnership, luis, marina.pulgarin, maria.jaimes</td><td>−1</td><td><span class="badge badge-red">🚨 Sin asignar</span></td></tr>
+          <tr><td><strong>OpenFX</strong></td><td>7</td><td>pallavi, simon, naila, rushil, dan, ishan.chatterjee</td><td><span class="badge badge-green">+1</span></td><td>Jose Saieh</td></tr>
+          <tr><td><strong>XCloudGame</strong></td><td>2</td><td>wangmengqi, maria.jaimes</td><td>→</td><td><span class="badge badge-red">🚨 Sin asignar</span></td></tr>
+          <tr><td>DLocal</td><td>1</td><td>aporfilio</td><td>→</td><td>Jose Saieh</td></tr>
+          <tr><td>GetOnTop</td><td>1</td><td>mzuchowicki</td><td><span class="badge badge-blue">Nuevo</span></td><td><span class="badge badge-red">🚨 Sin asignar</span></td></tr>
+          <tr><td>Viviendasuniversales</td><td>1</td><td>ytaborda</td><td><span class="badge badge-blue">Nuevo</span></td><td>—</td></tr>
+          <tr><td>Trokera</td><td>1</td><td>ceo@trokera.com</td><td><span class="badge badge-blue">Nuevo</span></td><td><span class="badge badge-red">🚨 Sin asignar</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- 4. Solapamiento -->
+  <div class="section-title">Solapamiento Envío 1 → Envío 2</div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="value">848</div><div class="label">Recibieron ambos (96.5%)</div></div>
+    <div class="kpi good"><div class="value">447</div><div class="label">Engaged<br>(abrieron ambos)</div></div>
+    <div class="kpi warn"><div class="value">94</div><div class="label">Reactivados<br>(no abrieron Envío 1)</div></div>
+    <div class="kpi"><div class="value">31</div><div class="label">Nuevos externos<br>(solo Envío 2)</div></div>
+    <div class="kpi alert"><div class="value">329</div><div class="label">No abrieron Envío 1<br>(recibieron ambos)</div></div>
+  </div>
+
+  <div class="chart-row">
+    <div class="chart">
+      <h3>Distribución de segmentos</h3>
+      <div id="chart-overlap-pie" style="height:260px;"></div>
+    </div>
+    <div class="chart">
+      <h3>Tasa de apertura Envío 2 por segmento</h3>
+      <div id="chart-overlap-bar" style="height:260px;"></div>
+    </div>
+  </div>
+
+  <div class="seg-grid seg-grid-3">
+    <div class="seg-card">
+      <h3>Engaged (abrieron ambos)</h3>
+      <p><strong>447 contactos</strong> · Apertura Envío 2: <strong>86.1%</strong><br>Público caliente — ya mostró interés consistente. Candidatos ideales para seguimiento personalizado y demo del producto.</p>
+    </div>
+    <div class="seg-card">
+      <h3>Reactivados (Envío 2 despertó)</h3>
+      <p><strong>94 contactos</strong> · Apertura Envío 2: <strong>28.6%</strong><br>No abrieron Envío 1 pero sí Envío 2. El asunto "pagos y recaudos en EE.UU." resonó con ellos. Segundo toque fue más relevante para este segmento.</p>
+    </div>
+    <div class="seg-card">
+      <h3>Nuevos (solo Envío 2)</h3>
+      <p><strong>31 contactos</strong> · Apertura Envío 2: <strong>77.4%</strong><br>Primer contacto con el mensaje y ya alta apertura. Segmento de mayor interés proporcional — posible señal de prospección activa.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>No abrieron Envío 1 — candidatos a seguimiento directo (muestra)</h3>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">329 contactos externos recibieron ambos toques pero no abrieron Envío 1. Los más relevantes para activación directa:</p>
+    <div class="email-list">
+      aman@redenvelope.co · rushil@redenvelope.co · wilfredo@pagsmile.com · mzuchowicki@getontop.com · ytaborda@viviendasuniversales.com · ceo@trokera.com · wangmengqi@xcloudgame.com · maria.jaimes@xcloudgame.com · priscilla@redenvelope.co · punam@redenvelope.co · nivedita@redenvelope.co · rupesh@redenvelope.co · aporfilio@dlocal.com · mcabrera@bamboopayment.com · rocio.v@terrapay.com · pedro.diniz@facilitapay.com · sandeep@mesta.xyz · ana.franco@tryjeeves.com · camilo.suarez@vureloapp.com
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- 5. Nuevos contactos externos -->
+  <div class="section-title">Nuevos contactos externos (solo Envío 2 — 31 contactos, 26 empresas)</div>
+  <div class="insight">
+    <p>El segundo toque amplió la base con <strong>31 nuevos contactos externos de 26 empresas</strong>. Destacan <strong>Thunes</strong> (3 contactos incluyendo treasury y noc), <strong>ArqFinance</strong> (2 contactos), <strong>Littio</strong> (2) y <strong>Echange</strong> (2). La presencia de múltiples contactos por empresa en Thunes y ArqFinance sugiere interés institucional, no solo individual.</p>
+  </div>
+  <div class="chart">
+    <h3>Nuevos contactos por empresa</h3>
+    <div id="chart-new-contacts" style="height:340px;"></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Empresa</th><th>Contactos</th><th>Emails</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Thunes</strong></td><td>3</td><td>pm.paymentmethods.col+mex@thunes.com · noc@thunes.com · treasury@thunes.com</td></tr>
+        <tr><td><strong>ArqFinance</strong></td><td>2</td><td>sebastian.ovalle@arqfinance.com · ivan.pinto@arqfinance.com</td></tr>
+        <tr><td><strong>Littio</strong></td><td>2</td><td>stefanny.rivero@littio.co · ana.gonzalez@littio.co</td></tr>
+        <tr><td><strong>Echange</strong></td><td>2</td><td>furibe@echange.cl · mariasanchez@echange.cl</td></tr>
+        <tr><td>Conduit Financial</td><td>1</td><td>compliance@conduit.financial</td></tr>
+        <tr><td>Astropay</td><td>1</td><td>guzman.virsauskas@astropay.com</td></tr>
+        <tr><td>Moremt</td><td>1</td><td>molveira@moremt.com</td></tr>
+        <tr><td>FelixPago</td><td>1</td><td>dana.valdez@felixpago.com</td></tr>
+        <tr><td>PayCompany</td><td>1</td><td>cecilia@paycompany.com</td></tr>
+        <tr><td>Efex</td><td>1</td><td>fernanda.canseco@efex.com</td></tr>
+        <tr><td>Terrapay</td><td>1</td><td>shwetha.s@terrapay.com</td></tr>
+        <tr><td>Eronintl</td><td>1</td><td>fraudandrisk@eroninternational.com</td></tr>
+        <tr><td>Global66</td><td>1</td><td>ignacio.rodriguez@global66.com</td></tr>
+        <tr><td>CialdeRecaudos</td><td>1</td><td>operations@cialderecaudos.com</td></tr>
+        <tr><td>ZafiroPay</td><td>1</td><td>contacto@zafiropay.com</td></tr>
+        <tr><td>Acceso</td><td>1</td><td>miguel.kudry@cs.acceso-ext.co</td></tr>
+        <tr><td>NexxDio</td><td>1</td><td>victor.tumialan@nexxdiotc.com</td></tr>
+        <tr><td>TaptapSend</td><td>1</td><td>muhammad.khan.549012.mbp@taptapsend.com</td></tr>
+        <tr><td>CurrencyBird</td><td>1</td><td>catalina@currencybird.cl</td></tr>
+        <tr><td>CoinSenda</td><td>1</td><td>empresas@coinsenda.com</td></tr>
+        <tr><td>Qash.ai</td><td>1</td><td>tony@qash.ai</td></tr>
+        <tr><td>OmnexGroup</td><td>1</td><td>cacevedo@omnexgroup.com</td></tr>
+        <tr><td>Majority</td><td>1</td><td>supplierinvoice@majority.com</td></tr>
+        <tr><td>DolarApp</td><td>1</td><td>carlos.abascal@dolarapp.com</td></tr>
+        <tr><td>Due Network</td><td>1</td><td>mori.sylla@due.network</td></tr>
+        <tr><td>Manteca</td><td>1</td><td>gunth@manteca.dev</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- 6. Aprendizajes -->
+  <div class="section-title">Aprendizajes de la campaña</div>
+  <div class="seg-grid seg-grid-3">
+    <div class="seg-card">
+      <h3>Apertura — Señal fuerte</h3>
+      <p>53.6% en Envío 1 y 64.3% en Envío 2 son tasas <strong>excepcionales</strong> para emails PMM. El mensaje sobre pagos en EE.UU. desde saldo local activa alta relevancia en la base. El Envío 2 amplió el mensaje a Payin + FX lo que puede explicar el incremento adicional de apertura.</p>
+    </div>
+    <div class="seg-card">
+      <h3>Accionabilidad — Área de mejora</h3>
+      <p>CTOR de 6.2% (Envío 1) y 5.1% (Envío 2) indica que el <strong>CTA o landing necesita refuerzo</strong>. La lectura es alta pero la acción es baja. Probar: un CTA más específico ("Haz tu primer Payout FedWire"), video demo, o caso de uso con monto y tiempo de ejecución.</p>
+    </div>
+    <div class="seg-card">
+      <h3>Gaps de prospección</h3>
+      <p>Los <strong>top clickers (RedEnvelope, Pagsmile, XCloudGame, GetOnTop, Trokera)</strong> no tienen deal en Salesforce. Señal de prospección tardía — el email reveló interés no capturado. Activación directa urgente en las próximas 72 horas.</p>
+    </div>
+  </div>
+
+</div><!-- /tab-email -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 2 — SNOWFLAKE
+═══════════════════════════════════════════════════════ -->
+<div id="tab-snowflake" class="tab-content">
+
+  <div class="insight">
+    <p><strong>Hallazgo principal:</strong> Existe <strong>1 cliente externo real en beta: Aviatur</strong> (AGENCIA DE VIAJES Y TURISMO AVIATUR S.A.S.). Ha realizado <strong>5 money movements</strong> entre el 6 y 13 de mayo de 2026, con <strong>3 completados</strong> — $5,632 USD movilizados hacia agencias de viaje en EE.UU. El riel FedWire y global_pay_to_usa están funcionando en producción. La brecha con el alto engagement de email (1,000+ contactos) confirma que el reto es comercial, no técnico.</p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi good"><div class="value">1</div><div class="label">Cliente externo real<br>(Aviatur - beta)</div></div>
+    <div class="kpi good"><div class="value">3</div><div class="label">MMs completados<br>(Aviatur)</div></div>
+    <div class="kpi good"><div class="value">$5,632</div><div class="label">USD movilizados<br>(Aviatur)</div></div>
+    <div class="kpi warn"><div class="value">14</div><div class="label">MMs totales<br>01–26 May 2026</div></div>
+    <div class="kpi"><div class="value">2</div><div class="label">Tipos de riel<br>fedwire + global_pay</div></div>
+    <div class="kpi"><div class="value">6–13 May</div><div class="label">Período de actividad<br>Aviatur 2026</div></div>
+  </div>
+
+  <div class="chart">
+    <h3>Actividad diaria — Money Movements FedWire</h3>
+    <div id="chart-sf-daily" style="height:250px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Cuentas registradas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Client ID</th><th>Cuenta</th><th>Tipo</th><th>MMs</th><th>Completados</th><th>Fallidos</th><th>Monto real</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr style="background:#E8F8EE">
+            <td><code>cli_asinemz5rl</code></td>
+            <td><strong>Aviatur</strong></td>
+            <td><span class="badge badge-green">Externo (beta)</span></td>
+            <td>5</td>
+            <td>3</td>
+            <td>2</td>
+            <td><strong>$5,632 USD</strong></td>
+            <td>FedWire: $473 (Unión de Representaciones) + $498 (Cielos Abiertos) · global_pay: $4,661 · 6–13 May 2026</td>
+          </tr>
+          <tr>
+            <td><code>cli_xxz85j60is</code></td>
+            <td>Engineering Alpha</td>
+            <td><span class="badge badge-red">Interno</span></td>
+            <td>3</td>
+            <td>2</td>
+            <td>1</td>
+            <td>$10–$30</td>
+            <td>Pruebas Cobre Mayo · 2 global_pay completados $10+$30 · 1 fallido por saldo insuficiente</td>
+          </tr>
+          <tr>
+            <td><code>cli_vdke2laqnj</code></td>
+            <td>Pexto Mexico</td>
+            <td><span class="badge badge-red">Interno</span></td>
+            <td>2</td>
+            <td>1</td>
+            <td>1</td>
+            <td>$100</td>
+            <td>Subsidiaria Cobre · 1 FedWire completado $100 (13 May) · 1 global_pay processing</td>
+          </tr>
+          <tr>
+            <td><code>cli_a65xeheq9s</code></td>
+            <td>Portal Productivo</td>
+            <td><span class="badge badge-yellow">Prueba interna</span></td>
+            <td>4</td>
+            <td>1</td>
+            <td>3</td>
+            <td>$100</td>
+            <td>global_pay_to_usa · 1 completado 21 May 2026 · errores de formato documento</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Detalle de movimientos de Aviatur (cliente externo beta)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fecha</th><th>Tipo de riel</th><th>Estado</th><th>Monto</th><th>Destinatario</th></tr></thead>
+        <tbody>
+          <tr><td>06 May 2026</td><td>global_pay_to_usa</td><td><span class="badge badge-red">Fallido</span></td><td>$4,661.13</td><td>Aviatur (reintento)</td></tr>
+          <tr><td>07 May 2026</td><td>global_pay_to_usa</td><td><span class="badge badge-red">Fallido</span></td><td>$4,661.13</td><td>Aviatur (reintento)</td></tr>
+          <tr><td>07 May 2026</td><td>global_pay_to_usa</td><td><span class="badge badge-green">Completado</span></td><td>$4,661.13</td><td>Aviatur</td></tr>
+          <tr><td>07 May 2026</td><td>fedwire</td><td><span class="badge badge-green">Completado</span></td><td>$473.58</td><td>UNION DE REPRESENTACIONES SAS</td></tr>
+          <tr><td>13 May 2026</td><td>fedwire</td><td><span class="badge badge-green">Completado</span></td><td>$497.82</td><td>AGENCIA DE VIAJES Y TURISMO CIELOS ABIERTOS SAS</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Errores frecuentes en pruebas internas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Cuenta</th><th>Error</th><th>Causa</th><th>Frecuencia</th></tr></thead>
+        <tbody>
+          <tr><td>Engineering Alpha</td><td>source.amount is lower than minimum ($10)</td><td>Montos de prueba ($1–$2) por debajo del mínimo</td><td>Alta</td></tr>
+          <tr><td>Engineering Alpha</td><td>destination: Invalid id format</td><td>Format de destination_id incorrecto en pruebas API</td><td>Media</td></tr>
+          <tr><td>Engineering Alpha</td><td>Insufficient funds on account</td><td>Saldo insuficiente en cuenta de prueba</td><td>Ocasional</td></tr>
+          <tr><td>Portal Productivo</td><td>documents.0: Invalid id format</td><td>Formato de documento inválido en global_pay</td><td>3 de 4 intentos</td></tr>
+          <tr><td>Aviatur (resuelto)</td><td>global_pay_to_usa failed x2 → completado x1</td><td>2 reintentos antes de completar — flujo de retry funcional</td><td>Resuelto</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="insight">
+    <p><strong>Interpretación:</strong> El riel FedWire y global_pay_to_usa están <strong>operativos en producción</strong>. Aviatur completó 3 de 5 MMs (60% success rate) con $5,632 USD movilizados en su primera semana de beta. Los 2 fallos de Aviatur fueron reintentos del mismo pago, resueltos en el tercer intento — el retry funciona. Los errores de Engineering Alpha son de configuración de pruebas, no de producción. La brecha de 1,000+ prospectos interesados vs. 1 cliente activo confirma que el siguiente paso es activar comercialmente a Xepelin, RedEnvelope y OpenFX.</p>
+  </div>
+
+</div><!-- /tab-snowflake -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 3 — DIIO
+═══════════════════════════════════════════════════════ -->
+<div id="tab-diio" class="tab-content">
+
+  <div class="insight">
+    <p>Se identificaron <strong>15+ conversaciones relevantes</strong> con empresas interesadas en pagos USD/FedWire o Fiat a EE.UU. Solo <strong>Xepelin</strong> está en implementación activa de FedWire. <strong>OpenFX, Trace Finance, Grandeliga/Paisamex</strong> representan oportunidades calientes de alta probabilidad. Empresas como <strong>BitGo</strong> ($400-500M/mes de volumen) están en etapas tempranas pero con alto potencial.</p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi good"><div class="value">15+</div><div class="label">Conversaciones sobre pagos USD / FedWire</div></div>
+    <div class="kpi good"><div class="value">1</div><div class="label">Cliente en implementación FedWire (Xepelin)</div></div>
+    <div class="kpi warn"><div class="value">5</div><div class="label">Empresas con deals SF sin Payout USD</div></div>
+    <div class="kpi alert"><div class="value">4</div><div class="label">Empresas sin deal en SF<br>(top clickers)</div></div>
+  </div>
+
+  <!-- Tabla resumen conversaciones -->
+  <div class="card">
+    <h3>Conversaciones clave sobre Payout USD / FedWire</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Empresa</th><th>Ejecutivo</th><th>Tipo</th><th>Fecha</th><th>Prob. éxito</th><th>Eje Payout USD</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Xepelin</strong></td>
+            <td>Manuela Osorio</td>
+            <td>G: Implementación</td>
+            <td>12 May 2026</td>
+            <td><span class="badge badge-green">5/5</span></td>
+            <td>FedWire SPEI→USD→JPMorgan ya en pruebas. Min $100. SLA 30 min.</td>
+          </tr>
+          <tr>
+            <td><strong>Grandeliga / Paisamex</strong></td>
+            <td>Daniel Martinez</td>
+            <td>EM: Discovery</td>
+            <td>22 May 2026</td>
+            <td><span class="badge badge-green">5/5</span></td>
+            <td>$30-40M USD/mes · 50K SPEI/mes · Quiere cuentas USD y EUR. En proceso de onboarding.</td>
+          </tr>
+          <tr>
+            <td><strong>Trace Finance</strong></td>
+            <td>Jose Saieh / Jose Gedeon</td>
+            <td>FG: Discovery</td>
+            <td>04 Feb 2026</td>
+            <td><span class="badge badge-green">5/5</span></td>
+            <td>Fiat USD / FBO para transferencias directas. $10M/mes proyectado en MXN→USDC.</td>
+          </tr>
+          <tr>
+            <td><strong>Crossmint</strong></td>
+            <td>Camila Kempff</td>
+            <td>FG: Discovery</td>
+            <td>17 Apr 2026</td>
+            <td><span class="badge badge-green">5/5</span></td>
+            <td>Off-ramp stablecoins + cuentas fiat locales. Interés en FedWire para liquidación.</td>
+          </tr>
+          <tr>
+            <td><strong>CFI Trade / Simon Barragán</strong></td>
+            <td>Camila Kempff</td>
+            <td>FG: Discovery</td>
+            <td>19 Mar 2026</td>
+            <td><span class="badge badge-green">5/5</span></td>
+            <td>Pagos COP→USD, settlements en USD y USDT.</td>
+          </tr>
+          <tr>
+            <td><strong>Torre de Inversiones</strong></td>
+            <td>Alberto Quintana / Paula Maldonado</td>
+            <td>OTC: Discovery</td>
+            <td>20 Feb 2026</td>
+            <td><span class="badge badge-yellow">4/5</span></td>
+            <td>Pagos a proveedores en EE.UU. FBO confirmado. $7-12M/mes proyectado.</td>
+          </tr>
+          <tr>
+            <td><strong>Lemat Capital / Xending</strong></td>
+            <td>Natalia Vasquez</td>
+            <td>FG: Discovery</td>
+            <td>25 Mar 2026</td>
+            <td><span class="badge badge-green">5/5</span></td>
+            <td>FBO en EE.UU. para recibir dólares. Inicio operaciones proyectado May 2026.</td>
+          </tr>
+          <tr>
+            <td><strong>BitGo</strong></td>
+            <td>Camila Kempff / Jose Gedeon</td>
+            <td>FG: Discovery</td>
+            <td>14 Ene 2026</td>
+            <td><span class="badge badge-yellow">4/5</span></td>
+            <td>$400-500M/mes · On/Off-ramp USD Stablecoin · Partner para fiat USD en LATAM.</td>
+          </tr>
+          <tr>
+            <td><strong>VinQ (Binkio)</strong></td>
+            <td>Natalia Vasquez</td>
+            <td>FG: Discovery</td>
+            <td>20 May 2026</td>
+            <td><span class="badge badge-green">5/5</span></td>
+            <td>$2-3M/mes · cross-border fiat · Fast Payout Colombia.</td>
+          </tr>
+          <tr>
+            <td><strong>Barrera Torres</strong></td>
+            <td>Alberto Quintana</td>
+            <td>OTC: Discovery</td>
+            <td>20 Abr 2026</td>
+            <td><span class="badge badge-yellow">4/5</span></td>
+            <td>Pagos a cuentas bancarias en EE.UU. ($5/wire). COP→USD en tiempo real.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Perfiles por empresa (top 3) -->
+  <div class="section-title">Perfiles de empresas clave</div>
+
+  <div class="company-card">
+    <div class="company-name">Xepelin <span class="badge badge-green">En implementación</span></div>
+    <div class="two-col">
+      <div>
+        <p style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">SITUACIÓN ACTUAL</p>
+        <p>Implementando FedWire: SPEI → conversión USD → FedWire → cuenta JPMorgan. Min $100. SLA 30 min (horario Reserva Federal L-V 9-19 NY). Brandon Pérez y Omar Rosales como usuarios principales. Ejecutiva: Manuela Osorio Serrano.</p>
+      </div>
+      <div>
+        <p style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">DOLORES Y PRÓXIMOS PASOS</p>
+        <p>Variabilidad en tiempos FedWire vs SPEI (más predecible). Confusión entre interfaz clásica y nueva. Quieren abrir FBO para sus propios clientes — oportunidad de expansión significativa.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="company-card">
+    <div class="company-name">Grandeliga / Paisamex <span class="badge badge-yellow">Discovery activo</span></div>
+    <div class="two-col">
+      <div>
+        <p style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">SITUACIÓN ACTUAL</p>
+        <p>$30-40M USD/mes (proyección $60M). 50K transferencias SPEI/mes. Quiere recibir fondos en USD y EUR desde el extranjero y dispersar en México. Experiencia negativa previa con instituciones por compliance (Monex los rechazó). Daniel Martínez en proceso de onboarding.</p>
+      </div>
+      <div>
+        <p style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">DOLORES Y OBJECIONES</p>
+        <p>Miedo al rechazo en compliance por historial de riesgo. Procesos documentales incompletos (auditorías). Cobre se presenta como más abierto. Comprometidos a entregar contactos de legal, compliance y finanzas.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="company-card">
+    <div class="company-name">BitGo <span class="badge badge-yellow">Discovery temprano</span></div>
+    <div class="two-col">
+      <div>
+        <p style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">SITUACIÓN ACTUAL</p>
+        <p>$400-500M/mes de volumen institucional. Busca partner para on/off-ramp USD en LATAM (México principal). Propone a Cobre como canal principal para flujo global hacia MXN. Camila Kempff y Jose Gedeon gestionando.</p>
+      </div>
+      <div>
+        <p style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">OPORTUNIDAD DE PAYOUT USD</p>
+        <p>Necesitan mejorar riel SWIFT/Fiat con China (actualmente 10 bps). Cobre tiene presencia en USA y Hong Kong. FedWire puede ser complementario a su operación de stablecoins ya confirmada.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Cruce email × Diio -->
+  <div class="section-title">Cruce Email × Diio</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Empresa</th><th>KAM</th><th>Convs. Diio</th><th>Recibió Envío 1</th><th>Recibió Envío 2</th><th>Prob. éxito</th><th>Alerta</th></tr></thead>
+      <tbody>
+        <tr><td>RedEnvelope</td><td><span class="badge badge-red">🚨 Sin asignar</span></td><td>No encontrada</td><td>✅ 10 clics</td><td>✅ 9 clics</td><td>—</td><td><span class="opp-badge">🚨 Sin conversación ni deal</span></td></tr>
+        <tr><td>Pagsmile</td><td><span class="badge badge-red">🚨 Sin asignar</span></td><td>No encontrada</td><td>✅ 8 clics</td><td>✅ 7 clics</td><td>—</td><td><span class="opp-badge">🚨 Sin conversación ni deal</span></td></tr>
+        <tr><td>OpenFX</td><td>Jose Saieh</td><td>Sí (deal activo CO+MX)</td><td>✅ 6 clics</td><td>✅ 7 clics</td><td><span class="badge badge-green">75%</span></td><td><span class="badge badge-yellow">Deal sin Payout USD FIAT</span></td></tr>
+        <tr><td>Xepelin</td><td>Manuela Osorio</td><td>Sí (G: Implementación)</td><td>—</td><td>—</td><td><span class="badge badge-green">5/5</span></td><td><span class="badge badge-blue">En producción FedWire</span></td></tr>
+        <tr><td>DLocal</td><td>Jose Saieh</td><td>Sí (SF deal activo)</td><td>✅ 1 clic</td><td>✅ 1 clic</td><td>—</td><td><span class="badge badge-blue">Nutrir con caso de uso</span></td></tr>
+        <tr><td>GetOnTop</td><td><span class="badge badge-red">🚨 Sin asignar</span></td><td>No encontrada</td><td>—</td><td>✅ 1 clic</td><td>—</td><td><span class="opp-badge">🚨 Crear oportunidad</span></td></tr>
+        <tr><td>Trokera</td><td><span class="badge badge-red">🚨 Sin asignar</span></td><td>No encontrada</td><td>—</td><td>✅ 1 clic (CEO)</td><td>—</td><td><span class="opp-badge">🚨 Crear oportunidad</span></td></tr>
+        <tr><td>Grandeliga/Paisamex</td><td>Daniel Martinez</td><td>Sí (EM: Discovery)</td><td>—</td><td>—</td><td><span class="badge badge-green">5/5</span></td><td><span class="badge badge-green">En onboarding</span></td></tr>
+        <tr><td>Trace Finance</td><td>Jose Saieh</td><td>Sí (FG: Discovery)</td><td>—</td><td>—</td><td><span class="badge badge-green">5/5</span></td><td><span class="badge badge-yellow">Verificar recepción email</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- Estado en Salesforce -->
+  <div class="section-title">Estado en Salesforce — Deals identificados</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Empresa</th><th>Deal</th><th>Stage</th><th>Prob.</th><th>Cierre</th><th>Semáforo</th><th>Payout USD FIAT</th><th>Alerta</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>OpenFX</strong></td>
+          <td>Thirdparty Payouts CO</td>
+          <td>Negociación</td>
+          <td>75%</td>
+          <td>27 May 2026</td>
+          <td><span class="badge badge-green">🟢 Green</span></td>
+          <td><span class="badge badge-red">No incluido</span></td>
+          <td><span class="badge badge-yellow">Cross-sell urgente</span></td>
+        </tr>
+        <tr>
+          <td><strong>OpenFX</strong></td>
+          <td>Thirdparty Payouts MX</td>
+          <td>Negociación</td>
+          <td>75%</td>
+          <td>27 May 2026</td>
+          <td>—</td>
+          <td><span class="badge badge-red">No incluido</span></td>
+          <td><span class="badge badge-yellow">Cross-sell urgente</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Detalle OpenFX -->
+  <div class="card">
+    <h3>OpenFX — Detalle deal más relevante</h3>
+    <div class="two-col">
+      <div>
+        <p style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;">OPERACIONES CONTRATADAS</p>
+        <p>🇨🇴 <strong>Colombia:</strong> Fast Pay · R2P PSE · R2P Bancolombia · R2P Nequi · R2P Bre-B · Bre-B<br><br>🇲🇽 <strong>México:</strong> SPEI Tesored · SPEI CLABEs Tesored · SPEI Card · SPEI Virtual CLABEs<br><br>Pares de moneda: COP↔USD, COP↔USDT/USDC, USD↔MXN, MXN↔USDT/USDC<br><br><strong style="color:var(--error)">❌ Sin FedWire / Payout USD FIAT en operación actual</strong></p>
+      </div>
+      <div>
+        <p style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;">SITUACIÓN ACTUAL</p>
+        <p>Revenue potencial: <strong>$115K/mes</strong> (CO $60K + MX $100K + SaaS $15K)<br>Estado onboarding: <strong>En proceso</strong><br>KAM: <strong>Jose Saieh</strong><br>Next step: "27/4: Followup in 2 days with Tony and Rushil"<br>Tony y Rushil = top clickers de RedEnvelope también activos en OpenFX<br><br><span class="badge badge-yellow">⚠️ El deal vence hoy (27 May 2026) — acción urgente requerida</span></p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-diio -->
+
+</div><!-- /container -->
+
+<script>
+// ── Util ──────────────────────────────────────────────────────────────────────
+const C = {
+  primary: '#266D6C', secondary: '#518A89', success: '#27AE60',
+  warning: '#D4820A', error: '#C0392B', light: '#E3F0F0', bg: '#F1F0EC',
+  palette: ['#266D6C','#518A89','#27AE60','#D4820A','#C0392B','#7B5EA7','#2980B9','#1A8A7A']
+};
+const layout = (extra) => Object.assign({
+  paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+  font: { family: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif', size: 12, color: '#1A1A1A' },
+  margin: { t: 10, b: 30, l: 50, r: 10 },
+  showlegend: true, legend: { orientation: 'h', y: -0.15 }
+}, extra || {});
+const cfg = { responsive: true, displayModeBar: false };
+
+// ── 1. Comparativa bar ──────────────────────────────────────────────────────
+Plotly.newPlot('chart-compare-bar', [
+  { name: 'Enviados externos', x: ['Toque 1','Toque 2'], y: [1026, 879], type: 'bar', marker: { color: C.light } },
+  { name: 'Aperturas ext.', x: ['Toque 1','Toque 2'], y: [550, 565], type: 'bar', marker: { color: C.secondary } },
+  { name: 'Clics ext.', x: ['Toque 1','Toque 2'], y: [34, 29], type: 'bar', marker: { color: C.primary } }
+], layout({ barmode: 'group', yaxis: { gridcolor: '#E5E3DE' } }), cfg);
+
+// ── 2. Funnel comparativo ──────────────────────────────────────────────────
+Plotly.newPlot('chart-funnel-compare', [
+  { type: 'funnel', name: 'Toque 1', y: ['Enviados','Abiertos','Clics'], x: [1026, 550, 34],
+    textinfo: 'value+percent initial', marker: { color: C.secondary } },
+  { type: 'funnel', name: 'Toque 2', y: ['Enviados','Abiertos','Clics'], x: [879, 565, 29],
+    textinfo: 'value+percent initial', marker: { color: C.primary } }
+], layout({ funnelmode: 'overlay', margin: { t: 10, b: 20, l: 80, r: 10 } }), cfg);
+
+// ── 3. Funnel Envío 1 ─────────────────────────────────────────────────────────────
+Plotly.newPlot('chart-funnel-e1', [
+  { type: 'funnel', y: ['Enviados','Abiertos','Clics'], x: [1026, 550, 34],
+    textinfo: 'value+percent initial', marker: { color: [C.light, C.secondary, C.primary] },
+    connector: { line: { color: C.secondary, width: 1 } } }
+], layout({ showlegend: false, margin: { t: 10, b: 20, l: 80, r: 10 } }), cfg);
+
+// ── 4. Funnel Envío 2 ─────────────────────────────────────────────────────────────
+Plotly.newPlot('chart-funnel-e2', [
+  { type: 'funnel', y: ['Enviados','Abiertos','Clics'], x: [879, 565, 29],
+    textinfo: 'value+percent initial', marker: { color: [C.light, C.secondary, C.primary] },
+    connector: { line: { color: C.secondary, width: 1 } } }
+], layout({ showlegend: false, margin: { t: 10, b: 20, l: 80, r: 10 } }), cfg);
+
+// ── 5. Overlap pie ───────────────────────────────────────────────────────────
+Plotly.newPlot('chart-overlap-pie', [
+  { type: 'pie',
+    labels: ['Engaged (abrieron ambos)', 'Reactivados (solo Envío 2)', 'No abrieron ninguno', 'Nuevos (solo Envío 2)'],
+    values: [447, 94, 235, 31],
+    marker: { colors: [C.success, C.warning, '#D5D3CE', C.secondary] },
+    textinfo: 'label+value', hole: 0.4
+  }
+], layout({ showlegend: false, margin: { t: 10, b: 10, l: 10, r: 10 } }), cfg);
+
+// ── 6. Overlap bar ───────────────────────────────────────────────────────────
+Plotly.newPlot('chart-overlap-bar', [
+  { type: 'bar', orientation: 'h',
+    x: [86.1, 28.6, 77.4],
+    y: ['Engaged<br>(abrieron Envío 1)', 'Reactivados<br>(no abrieron Envío 1)', 'Nuevos<br>(solo Envío 2)'],
+    text: ['86.1%', '28.6%', '77.4%'], textposition: 'outside',
+    marker: { color: [C.success, C.warning, C.secondary] }
+  }
+], layout({ showlegend: false, xaxis: { title: 'Apertura Envío 2 (%)', range: [0, 105], gridcolor: '#E5E3DE' },
+  margin: { t: 10, b: 40, l: 110, r: 60 } }), cfg);
+
+// ── 7. Nuevos contactos por empresa ──────────────────────────────────────────
+const newCompanies = [
+  'Thunes','ArqFinance','Littio','Echange','Conduit','Astropay','Moremt','FelixPago',
+  'PayCompany','Efex','Terrapay','Eronintl','Global66','CialdeRecaudos','ZafiroPay',
+  'Acceso','NexxDio','TaptapSend','CurrencyBird','CoinSenda','Qash.ai','OmnexGroup',
+  'Majority','DolarApp','Due Network','Manteca'
+];
+const newCounts = [3,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+const idxSorted = newCounts.map((v,i)=>i).sort((a,b)=>newCounts[b]-newCounts[a]);
+Plotly.newPlot('chart-new-contacts', [
+  { type: 'bar', orientation: 'h',
+    x: idxSorted.map(i=>newCounts[i]),
+    y: idxSorted.map(i=>newCompanies[i]),
+    text: idxSorted.map(i=>newCounts[i]), textposition: 'outside',
+    marker: { color: C.secondary }
+  }
+], layout({ showlegend: false, yaxis: { autorange: 'reversed', tickfont: { size: 11 } },
+  xaxis: { title: 'Contactos nuevos', gridcolor: '#E5E3DE', range: [0, 4] },
+  margin: { t: 10, b: 40, l: 110, r: 40 } }), cfg);
+
+// ── 8. Snowflake actividad diaria (01–26 May 2026) ───────────────────────────
+Plotly.newPlot('chart-sf-daily', [
+  { name: 'Pruebas internas', type: 'bar',
+    x: ['06 May','08 May','13 May','20 May','21 May'],
+    y: [1, 1, 1, 4, 2],
+    marker: { color: '#B0C8C8' }
+  },
+  { name: 'Aviatur (externo)', type: 'bar',
+    x: ['06 May','07 May','13 May'],
+    y: [1, 3, 1],
+    marker: { color: C.success }
+  }
+], layout({
+  barmode: 'stack',
+  yaxis: { title: 'Money Movements', gridcolor: '#E5E3DE', dtick: 1 },
+  xaxis: { title: 'Mayo 2026', categoryorder: 'array',
+    categoryarray: ['06 May','07 May','08 May','13 May','20 May','21 May'] },
+  annotations: [
+    { x: '07 May', y: 4, text: '✅ Aviatur: 3 MMs<br>($5,632 USD)', showarrow: true,
+      arrowhead: 2, ax: -80, ay: -40, font: { size: 11, color: C.success } },
+    { x: '20 May', y: 6, text: 'Portal Productivo<br>+ Eng Alpha', showarrow: true,
+      arrowhead: 2, ax: 70, ay: -30, font: { size: 10, color: '#666' } }
+  ],
+  margin: { t: 50, b: 50, l: 50, r: 10 }
+}), cfg);
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  // Trigger resize for Plotly charts
+  setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+}
+</script>
+</body>
+</html>
